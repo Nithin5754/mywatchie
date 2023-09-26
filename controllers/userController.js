@@ -33,23 +33,36 @@ const login = async (req, res) => {
        res.render('user/login',{msg:req.session.msg,randomBannerImage});
    } catch (error) {
       console.error('Error fetching images:', error.message);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error-login page error');
    }
 }
 //homepage
+// const homepage = async(req, res) => {
+//     try {
+//          const randomBannerImage=await getRandomBannerImage();
+//            if (req.session.userId) {
+//       return  res.render('user/home',{randomBannerImage});
+//     } else {
+//        return res.redirect('/login');
+//     }
+//     } catch (error) {
+        
+//     }
+  
+// }
+
 const homepage = async(req, res) => {
     try {
          const randomBannerImage=await getRandomBannerImage();
-           if (req.session.userId) {
+           
       return  res.render('user/home',{randomBannerImage});
-    } else {
-       return res.redirect('/login');
-    }
     } catch (error) {
-        
+        console.error('Error fetching images:', error.message);
+    res.status(500).send('hompage error');
     }
   
 }
+
 // home page logout
 
 const logout = (req, res) => {
@@ -213,30 +226,71 @@ const loginPost = async (req, res) => {
 
 // otp verification
 
+
+
+// const otpVerification=async(req,res)=>{
+
+// const {otpOne,otpTwo,otpThree,otpFour,otpFive,otpSix}=req.body
+
+
+
+// const fullOtp=otpOne+otpTwo+otpThree+otpFour+otpFive+otpSix
+
+// console.log(typeof(fullOtp));
+
+// const verifyOtp=await UserCollection.findOne({otp:fullOtp})
+// console.log(verifyOtp);
+
+// if(verifyOtp){
+//   return  res.redirect('/homepage')
+// }
+// return res.redirect('/signup')
+
+
+// }
+
+
+
 const otpPage=(req,res)=>{
     res.render('user/otp')
 }
 
-const otpVerification=async(req,res)=>{
+const otpVerification = async (req, res) => {
+  const { otpOne, otpTwo, otpThree, otpFour, otpFive, otpSix } = req.body;
+  const fullOtp = otpOne + otpTwo + otpThree + otpFour + otpFive + otpSix;
 
-const {otpOne,otpTwo,otpThree,otpFour,otpFive,otpSix}=req.body
+  try {
+   const userWithOTP = await UserCollection.findOne({ otp: fullOtp });
 
-
-
-const fullOtp=otpOne+otpTwo+otpThree+otpFour+otpFive+otpSix
-
-console.log(typeof(fullOtp));
-
-const verifyOtp=await UserCollection.findOne({otp:fullOtp})
-console.log(verifyOtp);
-
-if(verifyOtp){
-  return  res.redirect('/login')
+if (!userWithOTP) {
+//   return res.redirect('/signup');
+return res.send("otp error")
+  console.log("1"); // Invalid OTP
 }
-return res.redirect('/signup')
 
 
+
+// Check if the OTP has expired
+const otpCreationTime = userWithOTP.otpCreatedAt;
+const otpExpirationTime = new Date(otpCreationTime);
+otpExpirationTime.setMinutes(otpExpirationTime.getMinutes() + 5); // OTP expires in 5 minutes
+
+if (new Date() > otpExpirationTime) {
+  return res.redirect('/signup'); 
+// OTP has expired
 }
+console.log("3");
+// Invalidate the OTP so it cannot be reused
+userWithOTP.otp = "nithin"; // Or mark it as used in your schema
+await userWithOTP.save();
+console.log("4");
+return res.redirect('/homepage');
+  } catch (error) {
+    console.error('Error during OTP verification:', error);
+    return res.status(500).send('Error during OTP verification');
+  }
+};
+
 
 
 

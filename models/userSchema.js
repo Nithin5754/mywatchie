@@ -25,6 +25,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date()
   },
+   otpCreatedAt: {
+    type: Date,
+   default: Date(),
+  },
   otp:{
     type:String,
     // required:[true,'must provide otp']
