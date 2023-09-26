@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
   registerTime: {
     type: Date,
     default: Date()
+  },
+  otp:{
+    type:String,
+    // required:[true,'must provide otp']
   }
 })
 

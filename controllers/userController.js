@@ -41,9 +41,9 @@ const homepage = async(req, res) => {
     try {
          const randomBannerImage=await getRandomBannerImage();
            if (req.session.userId) {
-        res.render('user/home',{randomBannerImage});
+      return  res.render('user/home',{randomBannerImage});
     } else {
-        res.redirect('/login');
+       return res.redirect('/login');
     }
     } catch (error) {
         
@@ -70,7 +70,7 @@ const signup = async(req, res) => {
     
     try {
           const randomBannerImage=await getRandomBannerImage();
-        res.render('user/signup',{randomBannerImage});
+      return   res.render('user/signup',{randomBannerImage});
         
     } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -94,20 +94,11 @@ const  signupData = async (req, res) => {
 
         if (checkingUser) {
             return res.send("User with the same email already exists");
-        } else {
+        } 
+        else {
 
             const saltRounds = 10; 
             const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-            // Create a new document and save it to the database
-            const newUser = new UserCollection({
-                username,
-                email,
-                password: hashedPassword,
-            });
-
-            await newUser.save();
-
 
             const mailGenerator = new Mailgen({
       theme: 'default',
@@ -154,8 +145,17 @@ const  signupData = async (req, res) => {
 
     try {
       await transporter.sendMail(mailOptions);
-      // User signup successful; send a response
-      return res.redirect('/login');
+       const newUser = new UserCollection({
+                username,
+                email,
+                password: hashedPassword,
+                otp
+            });
+
+            await newUser.save();
+            // User signup successful; send a response
+            return res.redirect('/otpVerfication');
+     
     } catch (error) {
       // Handle errors and send an error response
       console.error('Error sending email:', error);
@@ -169,7 +169,7 @@ const  signupData = async (req, res) => {
         return res.status(500).send('Error during user registration');
     }
 
-    res.redirect('/login');
+ 
     
   
 };
@@ -211,6 +211,38 @@ const loginPost = async (req, res) => {
 }
 
 
+// otp verification
+
+const otpPage=(req,res)=>{
+    res.render('user/otp')
+}
+
+const otpVerification=async(req,res)=>{
+
+const {otpOne,otpTwo,otpThree,otpFour,otpFive,otpSix}=req.body
+
+
+
+const fullOtp=otpOne+otpTwo+otpThree+otpFour+otpFive+otpSix
+
+console.log(typeof(fullOtp));
+
+const verifyOtp=await UserCollection.findOne({otp:fullOtp})
+console.log(verifyOtp);
+
+if(verifyOtp){
+  return  res.redirect('/login')
+}
+return res.redirect('/signup')
+
+
+}
+
+
+
+
+
+
 
 
 
@@ -222,5 +254,7 @@ module.exports = {
     loginPost,
     logout,
     homepage,
+    otpVerification,
+    otpPage
   
 };
