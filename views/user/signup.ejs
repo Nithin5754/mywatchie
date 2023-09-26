@@ -35,12 +35,12 @@
               class="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
               placeholder="Enter your name">
           </div>
-
+          
           <div class="flex flex-col my-4">
             <label for="email" class="text-gray-700">Email Address</label>
             <input type="email" name="email" id="email"
               class="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
-              placeholder="Enter your email">
+              placeholder="Enter your email" required>
           </div>
 
           <div class="flex flex-col my-4">
@@ -48,7 +48,7 @@
             <div x-data="{ show: false }" class="relative flex items-center mt-2">
               <input :type=" show ? 'text': 'password' " name="password" id="password"
                 class="flex-1 p-2 pr-10 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
-                placeholder="Enter your password" type="password">
+                placeholder="Enter your password" type="password" required>
               <button @click="show = !show" type="button"
                 class="absolute right-2 bg-transparent flex items-center justify-center text-gray-700">
                 <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -69,13 +69,14 @@
               </button>
             </div>
           </div>
+        
 
           <div class="flex flex-col my-4">
             <label for="password_confirmation" class="text-gray-700">Password Confirmation</label>
             <div x-data="{ show: false }" class="relative flex items-center mt-2">
               <input :type=" show ? 'text': 'password' " name="confirmPassword" id="password_confirmation"
                 class="flex-1 p-2 pr-10 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
-                placeholder="Enter your password again" type="password">
+                placeholder="Enter your password again" type="password" >
               <button @click="show = !show" type="button"
                 class="absolute right-2 bg-transparent flex items-center justify-center text-gray-700">
                 <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -98,14 +99,15 @@
           </div>
 
           <div class="flex items-center">
-            <input type="checkbox" name="remember_me" id="remember_me" class="mr-2 focus:ring-0 rounded">
+            <input type="checkbox" name="remember_me" id="remember_me" class="mr-2 focus:ring-0 rounded" required>
             <label for="remember_me" class="text-gray-700">I accept the <a href="#"
                 class="text-blue-600 hover:text-blue-700 hover:underline">terms</a> and <a href="#"
                 class="text-blue-600 hover:text-blue-700 hover:underline">privacy policy</a></label>
           </div>
 
-          <div class="my-4 flex items-center justify-end space-x-4">
-            <button
+          <div class="my-4 flex items-center justify-center space-x-4">
+      
+            <button type="submit"
               class="bg-blue-600 hover:bg-blue-700 rounded-lg px-8 py-2 text-gray-100 hover:shadow-xl transition duration-150 uppercase">Sign
               Up</button>
           </div>

@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
     lowercase: true,
-    unique: [true, 'Email is already exits'],
+    // unique: [true, 'Email is already exits'],
     required: [true, 'Email address is required'],
   },
   username: {

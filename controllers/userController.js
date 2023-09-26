@@ -1,11 +1,24 @@
-// userschema collections
 const UserCollection=require('../models/userSchema')
 const bcrypt=require('bcrypt')
+const nodemailer = require('nodemailer');
+const Mailgen = require('mailgen');
+const crypto=require('crypto')
 
 // folder from utilities in randombannerimages from unsplash 
 const getRandomBannerImage=require('../utilities/unsplash/getRandomwatches')
 
+function generateOTP(length) {
+  // Calculate the maximum value based on the length
+  const maxValue = Math.pow(10, length) - 1;
 
+  // Generate a random number within the specified range
+  const randomOTP = crypto.randomInt(0, maxValue);
+
+  // Convert the random number to a string and pad it with leading zeros
+  const otp = randomOTP.toString().padStart(length, '0');
+
+  return otp;
+}
 //loginpage
 
 const login = async (req, res) => {
@@ -24,12 +37,18 @@ const login = async (req, res) => {
    }
 }
 //homepage
-const homepage = (req, res) => {
-    if (req.session.userId) {
-        res.render('user/home');
+const homepage = async(req, res) => {
+    try {
+         const randomBannerImage=await getRandomBannerImage();
+           if (req.session.userId) {
+        res.render('user/home',{randomBannerImage});
     } else {
         res.redirect('/login');
     }
+    } catch (error) {
+        
+    }
+  
 }
 // home page logout
 
@@ -37,7 +56,7 @@ const logout = (req, res) => {
     console.log('destroy');
     req.session.destroy((err) => {
         if (err) {
-            console.error('Error destroying session:', err);
+            console.error('Error destroying session:',err);
         }
         res.redirect('/login'); 
     });
@@ -61,8 +80,8 @@ const signup = async(req, res) => {
 }
 
 //CREATE NEW USERS BY SIGNUP
-const signupData = async (req, res) => {
-    try {
+const  signupData = async (req, res) => {
+   try {
         console.log(req.body);
         const { username, email, password ,confirmPassword} = req.body;
 
@@ -88,6 +107,60 @@ const signupData = async (req, res) => {
             });
 
             await newUser.save();
+
+
+            const mailGenerator = new Mailgen({
+      theme: 'default',
+      product: {
+        name: 'MYWACHIE.COM',
+        link: 'https://mailgen.js',
+        table: {
+          data: [
+            {
+              sub: 'your password',
+              des: 'change your password',
+              pin: '2345',
+            },
+          ],
+        },
+      },
+    });
+
+    const otp = generateOTP(6);
+    console.log('Generated OTP:', otp);
+    const Email = {
+      body: {
+        name: username,
+        intro: 'Welcome to myWatchie.com here is your OTP .',
+        outro: `opt :${otp} expire in 15 m`,
+      },
+    };
+
+    const emailTemplate = mailGenerator.generate(Email);
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'nithinjoji0756@gmail.com',
+        pass: 'ccqm fuaa azqh ewrv',
+      },
+    });
+
+    const mailOptions = {
+      from: 'nithinjoji0756@gmail.com',
+      to: email,
+      subject: 'Welcome to MyApp - Activate Your Account',
+      html: emailTemplate,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      // User signup successful; send a response
+      return res.redirect('/login');
+    } catch (error) {
+      // Handle errors and send an error response
+      console.error('Error sending email:', error);
+      return res.status(500).send('Error sending email. Please try again later.');
+    }
         }
     } 
     
@@ -96,9 +169,10 @@ const signupData = async (req, res) => {
         return res.status(500).send('Error during user registration');
     }
 
-    // res.render('user/login',{msg:""});
-    res.redirect('/login')
-}
+    res.redirect('/login');
+    
+  
+};
 
 
 //login validation
