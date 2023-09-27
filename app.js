@@ -16,6 +16,7 @@ const connectDB=require('./config/connect')
 // import routes
 const userRoutes=require('./routes/userRouter')
 
+const adminRoutes=require('./routes/adminRoutes')
 
 // global midlleware
 
@@ -47,6 +48,7 @@ app.use(
 
 
 app.use('/',userRoutes)
+app.use('/',adminRoutes)
 
 
 

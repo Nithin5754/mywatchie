@@ -4,23 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-
-    <link rel="stylesheet" href="dist/output.css">
-    <!-- Link Swiper's CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-    
-    
-    <!-- googlr icons materials -->
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
-    </head>
+  <title>OTP Verification</title>
+  <link rel="stylesheet" href="dist/output.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
 </head>
 
 <body>
-
-
   <div class="h-screen bg-blue-500 py-20 px-3">
     <div class="container mx-auto">
       <div class="max-w-sm mx-auto md:max-w-lg">
@@ -31,39 +23,39 @@
               <span>Enter the OTP you received at</span>
               <span class="font-bold">+91 ******876</span>
             </div>
-        <form action="/otpVerfication" method="post">
-          <div id="otp" class="flex flex-row justify-center text-center px-2 mt-5">
-            <input class="m-2 border h-10 w-10 text-center  form-control rounded" name="otpOne" type="text" id="first"
-              maxlength="1" />
-            <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpTwo" type="text" id="second"
-              maxlength="1" />
-            <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpThree" type="text" id="third"
-              maxlength="1" />
-            <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpFour" type="text" id="fourth"
-              maxlength="1" />
-            <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpFive" type="text" id="fifth"
-              maxlength="1" />
-            <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpSix" type="text" id="sixth"
-              maxlength="1" />
-          </div>
-          
-          <div class="flex justify-center text-center mt-5">
-           <button class="flex items-center text-blue-700 hover:text-blue-900 cursor-pointer" type="submit">verify</button>
-          </div>
-        </form>
+            <form action="/otpVerfication" method="post">
+              <div id="otp" class="flex flex-row justify-center text-center px-2 mt-5">
+                <input class="m-2 border h-10 w-10 text-center  form-control rounded" name="otpOne" type="text"
+                  id="first" maxlength="1" />
+                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpTwo" type="text"
+                  id="second" maxlength="1" />
+                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpThree" type="text"
+                  id="third" maxlength="1" />
+                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpFour" type="text"
+                  id="fourth" maxlength="1" />
+                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpFive" type="text"
+                  id="fifth" maxlength="1" />
+                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpSix" type="text"
+                  id="sixth" maxlength="1" />
+              </div>
+              
+              <div class="flex justify-center text-center mt-5 ">
+                <button class="flex items-center text-blue-700 hover:text-blue-900 cursor-pointer"
+                  type="submit">Verify</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Alpine.js and Swiper JS scripts -->
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-  <!-- font-awesome -->
   <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
   <script src="/js/swiper.js"></script>
-
 </body>
 
 </html>
+
+
+

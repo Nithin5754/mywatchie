@@ -18,8 +18,8 @@ const UserSchema = new mongoose.Schema({
 
   },
   isBlocked: {
-    type: Boolean,
-    default: false
+        type: Boolean,
+        default: false 
   },
   registerTime: {
     type: Date,
@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
   },
   otp:{
     type:String,
-    // required:[true,'must provide otp']
+    required:[true,'must provide otp']
   }
 })
 
