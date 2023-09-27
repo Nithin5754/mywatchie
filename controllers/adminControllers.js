@@ -1,4 +1,5 @@
 const UserCollection=require('../models/userSchema')
+const productCollection=require('../models/admin/productSchema')
 
 
 
@@ -60,4 +61,48 @@ const userunblock = async (req,res) => {
 }
 
 
-module.exports={adminUserManagement,userblock,userunblock}
+
+const productManagement=async(req,res)=>{
+try {
+    
+    const displayProduct=await productCollection.find()
+
+   return  res.render("admin/adminProductManagement",{displayProduct})
+} catch (error) {
+     console.error('Error blocking user:', error);
+            res.status(500).send('display product error in admin page');
+}
+}
+// dispaly adding product
+const createProductDisplay=(req,res)=>{
+    res.render("admin/partials/productAdd")
+}
+//adding each product
+
+const createProduct = async (req,res) => {
+         const{productName,productDescription,productPrice,productDiscount,productQuantity}=req.body
+         try{
+            const newProduct = new productCollection({  
+                 product_name:productName, product_description: productDescription,
+                 product_price:productPrice,
+                 product_discount:productDiscount,
+                 product_qty:productQuantity,
+             
+                  
+            });
+            await newProduct.save();
+             
+            res.redirect('/adminProductManagement')
+         }
+
+         catch (error) {
+            console.error('Error creating user:', error);
+            res.status(500).send('Internal Server Error');
+        }
+}
+
+
+
+
+
+module.exports={adminUserManagement,userblock,userunblock,productManagement,createProduct,createProductDisplay}

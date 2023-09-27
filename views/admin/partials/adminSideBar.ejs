@@ -1,0 +1,39 @@
+<div x-data="{ isDashOpen: false }" class="relative group">
+  <a href="#" class="text-2xl hover:text-gray-400" @click="isDashOpen = !isDashOpen ">
+    <button type="button" class="px-4 py-2 hover:bg-gray-700">
+      <h3 class="px-1"><i class="fa-solid fa-right-to-bracket"></i></h3>
+    </button>
+  </a>
+  <aside data-aos="fade-right" x-show="isDashOpen" @click.away="isDashOpen = false"
+    class="bg-gray-800 text-white h-screen w-64 fixed top-19 left-0 overflow-y-auto z-50">
+    <div class="p-4">
+      <h1 class="text-2xl font-semibold">User Management</h1>
+    </div>
+    <ul>
+      <!-- Dashboard Link -->
+      <li class="px-4 py-2 hover:bg-gray-700">
+        <a href="#" class="block">
+          <span class="text-gray-300">Dashboard</span>
+        </a>
+      </li>
+      <!-- User Management Link -->
+      <li class="px-4 py-2 hover:bg-gray-700">
+        <a href="#" class="block">
+          <span class="text-gray-300">User Management</span>
+        </a>
+      </li>
+      <!-- Product Management Link -->
+      <li class="px-4 py-2 hover:bg-gray-700">
+        <a href="#" class="block">
+          <span class="text-gray-300">Product Management</span>
+        </a>
+      </li>
+      <!-- Product add Link -->
+      <li class="px-4 py-2 hover:bg-gray-700">
+        <a href="#" class="block">
+          <span class="text-gray-300">Add Product</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+</div>
