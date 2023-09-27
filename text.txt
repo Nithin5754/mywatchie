@@ -1,14 +1,13 @@
-const multer = require('multer');
+document.getElementById('search').addEventListener('input', function () {
+    const searchText = this.value.toLowerCase();
+    const tableRows = document.querySelectorAll('tbody tr');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/'); // Specify the destination folder
-  },
-  filename: (req, file, cb) => {
-    // Generate a unique file name (you can use Date.now() or any other method)
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  },
+    tableRows.forEach(function (row) {
+        const productName = row.querySelector('th').textContent.toLowerCase();
+        if (productName.includes(searchText)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
 });
-
-const upload = multer({ storage: storage });
