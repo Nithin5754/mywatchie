@@ -126,9 +126,9 @@
                       </td>
                       <td class="px-6 py-4">
                         <% if (list.isBlocked) { %>
-                          <a href="/userunblock/<%= list._id %>"><button>Unblock</button></a>
+                          <a href="/userunblock/<%= list._id %>" class="text-blue-700 font-extrabold"><button>Unblock</button></a>
                           <% } else { %>
-                            <a href="/userblock/<%= list._id %>"><button>Block</button></a>
+                            <a href="/userblock/<%= list._id %>" class="text-red-800 font-extrabold"><button>Block</button></a>
                             <% } %>
                       </td>
                     </tr>

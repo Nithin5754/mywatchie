@@ -26,10 +26,7 @@ const ProductSchema = new mongoose.Schema({
 type:String,
 
   },
-    isActive: {
-    type: Boolean,
-    default:false,
-  },
+
   product_discount:{
     type:Number,
     
