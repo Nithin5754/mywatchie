@@ -1,10 +1,8 @@
 // unsplash-api.js
 const axios = require('axios');
 
-
 // access key should be in.env folder for security reason
-const unsplashAccessKey =process.env.UNPLASH_API_URI;
-
+const unsplashAccessKey = process.env.UNPLASH_API_URI;
 
 async function getRandomImages(query) {
   try {
@@ -17,5 +15,5 @@ async function getRandomImages(query) {
 }
 
 module.exports = {
-  getRandomImages
-}
+  getRandomImages,
+};

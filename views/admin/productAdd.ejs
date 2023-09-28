@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,11 +13,12 @@
 <body class="bg-gray-100">
   <div class="container mx-auto p-6">
     <h1 class="text-2xl font-semibold mb-4">Add Product</h1>
-    <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4" action="/adminProductManagement/createProduct" method="post">
+    <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4" action="/adminProductManagement/createProduct"
+     method="post" enctype="multipart/form-data">
       <!-- Product Image Upload -->
       <div class="mb-4">
         <label for="productImage" class="block text-gray-700 text-sm font-bold mb-2">Product Image</label>
-        <input type="file" id="productImage" name="productImage"
+        <input type="file" id="productImage" name="image"
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           accept="image/*">
       </div>
@@ -38,17 +40,20 @@
       </div>
 
       <!-- Category -->
-      <div class="mb-4">
-        <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
-        <select id="category" name="categoryProduct"
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          required>
-          <option value="electronics">anlog</option>
-          <option value="clothing">mechanical</option>
-          <option value="books">sports</option>
-          <!-- Add more categories as needed -->
-        </select>
-      </div>
+  <div class="mb-4">
+    <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+    <select id="category" name="categoryProduct"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      required>
+     
+     
+      <% displayCategory.forEach((list, index)=> { %>
+        <option value="<%= list.product_category %>">
+          <%= list.product_category %>
+        </option>
+        <% }) %>
+    </select>
+  </div>
 
       <!-- Product Price -->
       <div class="mb-4">

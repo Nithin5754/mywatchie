@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -10,31 +10,30 @@ const UserSchema = new mongoose.Schema({
   },
   username: {
     type: String,
-    required: [true, 'must provide username']
+    required: [true, 'must provide username'],
   },
   password: {
     type: String,
-    required: [true, 'provide password']
-
+    required: [true, 'provide password'],
   },
   isBlocked: {
-        type: Boolean,
-        default: false 
+    type: Boolean,
+    default: false,
   },
   registerTime: {
     type: Date,
-    default: Date()
+    default: Date(),
   },
-   otpCreatedAt: {
+  otpCreatedAt: {
     type: Date,
-   default: Date(),
+    default: Date(),
   },
-  otp:{
-    type:String,
-    required:[true,'must provide otp']
-  }
-})
+  otp: {
+    type: String,
+    required: [true, 'must provide otp'],
+  },
+});
 
-UserCollection = mongoose.model('userCollection', UserSchema)
+UserCollection = mongoose.model('userCollection', UserSchema);
 
-module.exports = UserCollection
+module.exports = UserCollection;
