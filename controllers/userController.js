@@ -1,4 +1,5 @@
 const UserCollection = require('../models/userSchema');
+ const categoryCollections=require('../models/admin/categorySchema')
 const bcrypt = require('bcrypt');
 
 // folder from utilities in randombannerimages from unsplash
@@ -28,9 +29,12 @@ const login = async (req, res) => {
 
 const homepage = async (req, res) => {
   try {
-    const randomBannerImage = await getRandomBannerImage();
-    const message = req.query.message;
-    return res.render('user/home', { randomBannerImage, message });
+    
+    const randomBanner=await getRandomBannerImage()
+    const randomCategory=await categoryCollections.find()
+  console.log( randomCategory);
+   
+    return res.render('user/home',{randomBanner, randomCategory});
   } catch (error) {
     console.error('Error fetching images:', error.message);
     res.status(500).send('hompage error');

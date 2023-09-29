@@ -1,93 +1,32 @@
 
-<div class="swiper mySwiperCards mt-6 mb-6">
-  <div class="swiper-wrapper ">
-  <div class="swiper-slide">
-    <!-- SLIDE 1 -->
-    <div
-      class="relative m-4 flex w-full h-20 max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-      <a class="relative mx-3 mt-3 flex h-20 overflow-hidden rounded-xl" href="#">
-        <img class="" src="<%= randomBannerImage %>" alt="product image" />
-        <span class="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">39%
-          OFF</span>
-      </a>
-      <div class="mt-4 px-5 pb-5">
-        <a href="#">
-          <h1 class="text-3xl tracking-tight text-slate-900 text-center font-bold">ANALOG</h1>
-        </a>
-      </div>
+
+  <div class="flex flex-row justify-around items-center flex-wrap ">
+  
+<%  randomCategory.forEach((element,index) => { %>
+    <% if(index<4){ %>
+  <div
+    class="flex flex-col justify-around items-center p-1  rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700 w-60 h-80">
+    <div class="relative overflow-hidden bg-cover bg-no-repeat">
+      <a href="/productList"><img class="rounded-t-lg w-48" src="<%= element.category_img_url %>" alt="" /></a>
+    </div>
+    <div class="">
+      <h1 class="text-center font-extrabold text-black">
+      <%= element.product_category%>
+      </h1>
     </div>
   </div>
+    <% } %>
+   
+<% }); %>
 
-      <div class="swiper-slide">
-        <!-- SLIDE 1 -->
-        <div
-          class="relative m-4 flex w-full h-20 max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-          <a class="relative mx-3 mt-3 flex h-20 overflow-hidden rounded-xl" href="#">
-            <img class=""
-              src="<%= randomBannerImage %>"
-              alt="product image" />
-            <span class="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">39%
-              OFF</span>
-          </a>
-          <div class="mt-4 px-5 pb-5">
-            <a href="#">
-              <h1 class="text-3xl tracking-tight text-slate-900 text-center  font-bold">ANALOG</h1>
-            </a>
-          </div>
-        </div>
-      </div>
-    <div class="swiper-slide">
-      <!-- SLIDE 1 -->
-      <div
-        class="relative m-4 flex w-full h-20 max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-        <a class="relative mx-3 mt-3 flex h-20 overflow-hidden rounded-xl" href="#">
-          <img class="" src="<%= randomBannerImage %>" alt="product image" />
-          <span class="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">39%
-            OFF</span>
-        </a>
-        <div class="mt-4 px-5 pb-5">
-          <a href="#">
-            <h1 class="text-3xl tracking-tight text-slate-900 text-center  font-bold">ANALOG</h1>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="swiper-slide">
-      <!-- SLIDE 1 -->
-      <div
-        class="relative m-4 flex w-full h-20 max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-        <a class="relative mx-3 mt-3 flex h-20 overflow-hidden rounded-xl" href="#">
-          <img class="" src="<%= randomBannerImage %>" alt="product image" />
-          <span class="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">39%
-            OFF</span>
-        </a>
-        <div class="mt-4 px-5 pb-5">
-          <a href="#">
-            <h1 class="text-3xl tracking-tight text-slate-900 text-center  font-bold">ANALOG</h1>
-          </a>
-        </div>
-      </div>
-    </div>
 
-    <div class="swiper-slide">
-      <!-- SLIDE 1 -->
-      <div
-        class="relative m-4 flex w-full h-20 max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-        <a class="relative mx-3 mt-3 flex h-20 overflow-hidden rounded-xl" href="#">
-          <img class="" src="<%= randomBannerImage %>" alt="product image" />
-          <span class="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">39%
-            OFF</span>
-        </a>
-        <div class="mt-4 px-5 pb-5">
-          <a href="#">
-            <h1 class="text-3xl tracking-tight text-slate-900 text-center  font-bold">ANALOG</h1>
-          </a>
-        </div>
-      </div>
-    </div>
 
-  </div>
-  <div class="swiper-pagination"></div>
+
+
+
+
+
+
 </div> 
 
 

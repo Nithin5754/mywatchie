@@ -5,10 +5,7 @@ const productCollection = require('../models/admin/productSchema');
 const categoryCollections = require('../models/admin/categorySchema');
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 
-  // const{adminEmail,adminPassword}=req.body
-  // verifyAdmin.aPassword!=adminPassword&&verifyAdmin.aEmail!=adminEmail
-  // adminLogin
-// verifyAdmin
+
 
 
 const verifyAdmin = async (req, res) => {
@@ -62,7 +59,7 @@ const adminUserManagement = async (req, res) => {
   const user = await UserCollection.find();
   console.log(user);
 
-  res.render('admin/adminUserManagement', { user });
+  res.render('admin/adminUserManagement', { user,SideBarSection:"User Management" });
     }else{
   res.redirect('/adminLogin')
     }
@@ -113,7 +110,7 @@ const productManagement = async (req, res) => {
    if(req.session.adminData){
      const displayProduct = await productCollection.find();
 
-    return res.render('admin/adminProductManagement', { displayProduct });
+    return res.render('admin/adminProductManagement', { displayProduct,SideBarSection:"Product Management" });
    }else{
     res.redirect('/adminLogin')
    }
@@ -256,7 +253,7 @@ const adminCategoryDisplay = async (req, res) => {
   try {
  if(req.session.adminData){
     const displayCategory = await categoryCollections.find();
-    return res.render('admin/adminCategoryManagement', { displayCategory });
+    return res.render('admin/adminCategoryManagement', { displayCategory,SideBarSection:"Category Management" });
    }else{
     res.redirect('/adminLogin')
    }

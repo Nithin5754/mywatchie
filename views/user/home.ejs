@@ -15,32 +15,28 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
    
 </head>
-<body class=" scroll-smooth capitalize bg-slate-300">
+<body class=" scroll-smooth capitalize bg-slate-300 text-black">
   <!-- Include Alpine.js -->
 <!-- header.ejs -->
-<%- include('./partials/header.ejs',{message}) %>
+<%- include('./partials/header.ejs') %>
  
     
     <main style="margin-top:5rem">
   
       <section class="relative mb-5">
-        <%- include('./partials/banner.ejs',{randomBannerImage}) %>
+        <%- include('./partials/banner.ejs',{randomBanner}) %>
 
       </section>
 
       <!-- category section -->
      
-      <section >
+      <section style="margin-bottom:5rem" >
         <h1 class="text-4xl mt-8 mb-8 text-center font-bold ">Category</h1>
       <!-- Include your content here -->
-        <%- include('./partials/category.ejs',{randomBannerImage}) %>
+        <%- include('./partials/category.ejs',{ randomCategory}) %>
     </section>
-<!-- new collections -->
-    <section>
-      <h1 class="text-4xl mt-8 mb-8 text-center font-bold ">Premium Collections</h1>
-      <!-- Include your content here -->
-      <%- include('./partials/category.ejs',{randomBannerImage}) %>
-    </section>
+
+
   </main>
 
   <!-- Alpine.js and Swiper JS scripts -->
@@ -50,6 +46,7 @@
   <!-- font-awesome -->
   <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
   <script src="/js/swiper.js"></script>
+  <script src="/js/search.js"></script>
 
 </body>
 

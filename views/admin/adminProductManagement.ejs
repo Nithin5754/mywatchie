@@ -12,7 +12,7 @@
 
 <body class="bg-gray-100 font-sans">
 
-  <%- include('./partials/adminNav.ejs') %>
+  <%- include('./partials/adminNav.ejs',{SideBarSection}) %>
 
     <%- include('./partials/adminSideBar.ejs') %>
 
@@ -96,7 +96,7 @@
                 
                       <div class="pl-3">
                         <div class="text-base font-semibold" >
-                         <img class="w-24 rounded-full" src=" <%= list.product_image_url %>" alt="network issue">
+                         <img class="w-50 rounded-full" src=" <%= list.product_image_url %>" alt="network issue">
                         </div>
                 
                       </div>

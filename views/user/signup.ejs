@@ -109,7 +109,7 @@
           <div class="my-4 flex items-center justify-center space-x-4">
       
           <div x-data="{ loading: false }">
-            <button type="submit" @click="loading = true; setTimeout(() => loading = false, 3000)" 
+            <button type="submit" @click="loading = true; setTimeout(() => loading = false, 2000)" 
               x-show="!loading"
               class="bg-blue-600 hover:bg-blue-700 rounded-lg px-8 py-2 text-gray-100 hover:shadow-xl transition duration-150
               uppercase"
@@ -235,7 +235,14 @@
     </div>
   </div>
 
-
+ <!-- Alpine.js and Swiper JS scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" ></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+  <!-- font-awesome -->
+  <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
+  <script src="/js/swiper.js"></script>
+  <script src="/js/search.js"></script>
 </body>
 
 </html>

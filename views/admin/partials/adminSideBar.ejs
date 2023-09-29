@@ -7,31 +7,27 @@
   <aside data-aos="fade-right" x-show="isDashOpen" @click.away="isDashOpen = false"
     class="bg-gray-800 text-white h-screen w-64 fixed top-19 left-0 overflow-y-auto z-50">
     <div class="p-4">
-      <h1 class="text-2xl font-semibold">User Management</h1>
+      <h1 class="text-2xl font-semibold"><%= SideBarSection %></h1>
     </div>
     <ul>
-      <!-- Dashboard Link -->
-      <li class="px-4 py-2 hover:bg-gray-700">
-        <a href="#" class="block">
-          <span class="text-gray-300">Dashboard</span>
-        </a>
-      </li>
+    
+     
       <!-- User Management Link -->
       <li class="px-4 py-2 hover:bg-gray-700">
-        <a href="#" class="block">
+        <a href="/adminUserManagement" class="block">
           <span class="text-gray-300">User Management</span>
         </a>
       </li>
       <!-- Product Management Link -->
       <li class="px-4 py-2 hover:bg-gray-700">
-        <a href="#" class="block">
+        <a href="/adminProductManagement" class="block">
           <span class="text-gray-300">Product Management</span>
         </a>
       </li>
       <!-- Product add Link -->
       <li class="px-4 py-2 hover:bg-gray-700">
-        <a href="#" class="block">
-          <span class="text-gray-300">Add Product</span>
+        <a href="/adminCategoryManagement" class="block">
+          <span class="text-gray-300">Category Management</span>
         </a>
       </li>
     </ul>
