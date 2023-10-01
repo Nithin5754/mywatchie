@@ -20,7 +20,7 @@ const productDetails = async (req, res) => {
     const imgUrl = productLists.product_image_url;
     console.log(imgUrl);
 
-    res.render('user/productDetailsPage', { productLists,imgUrl});
+    res.render('user/productDetailsPage', { productLists});
   } catch (error) {
     console.error('Error fetching images:', error.message);
     res.status(500).send('Internal Server Error-login page error');

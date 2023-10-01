@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { Number } = require('twilio/lib/twiml/VoiceResponse');
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -16,6 +17,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'provide password'],
   },
+  mobileNumber:{
+    type:String
+  },
   isBlocked: {
     type: Boolean,
     default: false,
@@ -31,6 +35,10 @@ const UserSchema = new mongoose.Schema({
   otp: {
     type: String,
     required: [true, 'must provide otp'],
+  },
+  resetPass:{
+    type:String,
+    
   }
 
 });
