@@ -1,8 +1,7 @@
 const UserCollection = require('../models/userSchema');
- const categoryCollections=require('../models/admin/categorySchema')
+const categoryCollections = require('../models/admin/categorySchema');
 const bcrypt = require('bcrypt');
 
-// folder from utilities in randombannerimages from unsplash
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 
 const {
@@ -10,7 +9,6 @@ const {
   transporter,
   generateOTP,
 } = require('../utilities/emailUtils/emailUtils');
-
 
 //loginpage
 
@@ -29,12 +27,12 @@ const login = async (req, res) => {
 
 const homepage = async (req, res) => {
   try {
+    const randomBanner = await getRandomBannerImage();
+    const randomCategory = await categoryCollections.find();
+    console.log(randomCategory);
     
-    const randomBanner=await getRandomBannerImage()
-    const randomCategory=await categoryCollections.find()
-  console.log( randomCategory);
-   
-    return res.render('user/home',{randomBanner, randomCategory});
+
+    return res.render('user/home', { randomBanner, randomCategory});
   } catch (error) {
     console.error('Error fetching images:', error.message);
     res.status(500).send('hompage error');
@@ -62,7 +60,6 @@ const signup = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-
 
 const signupData = async (req, res) => {
   try {
@@ -132,7 +129,7 @@ const signupData = async (req, res) => {
 //login validation
 const loginPost = async (req, res) => {
   const { lEmail, lPassword } = req.body;
-  
+
   try {
     const user = await UserCollection.findOne({ email: lEmail });
     console.log('loginpost:', user);
@@ -145,18 +142,19 @@ const loginPost = async (req, res) => {
     if (!passwordMatch) {
       return res.render('user/login', { msg: 'Invalid Password' });
     }
-
-
   } catch (error) {
     console.error('Error during login:', error);
     return res.status(500).send('Error during login');
   }
-  if (user.blocked) {
-    console.log(user.blocked);
-    return res.render('user/login', { msg: 'user blocked' });
-  }
+ 
+
+ 
   res.redirect('/homepage');
+
 };
+
+
+// OTP PAGE WILL DISPLAY IN THIS COMMAND==========================
 
 const otpPage = (req, res) => {
   res.render('user/otp');
@@ -188,7 +186,8 @@ const otpVerification = async (req, res) => {
 
     console.log('3');
 
-    userWithOTP.otp = 'nithin';
+    userWithOTP.otp = "nithin";
+    userWithOTP.save()
     console.log('4');
     console.log();
     return res.redirect(`/homepage?message=${userWithOTP.username}`);
@@ -208,4 +207,3 @@ module.exports = {
   otpVerification,
   otpPage,
 };
-   

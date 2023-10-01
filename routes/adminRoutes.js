@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const adminAuthentication=require('../middlewares/admin/customMiddleware')
+const adminAuthentication = require('../middlewares/admin/customMiddleware');
 
 const {
   adminLogin,
@@ -21,7 +21,7 @@ const {
   adminEditCategory,
   categoryRemove,
   verifyAdmin,
-  adminLogout
+  adminLogout,
 } = require('../controllers/adminControllers');
 
 // multer
@@ -39,9 +39,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // ADMIN LOGIN
-router.route('/adminLogin').get(adminLogin).post(verifyAdmin)
+router.route('/adminLogin').get(adminLogin).post(verifyAdmin);
 
-router.route('/adminLogout').get(adminLogout)
+router.route('/adminLogout').get(adminLogout);
 
 // HOME ROUTES
 

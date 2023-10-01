@@ -26,8 +26,8 @@ const mailGenerator = new Mailgen({
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user:process.env.EMAIL_NODEMAIL,
-    pass:process.env.PASSWORD_NODEMAIL,
+    user: process.env.EMAIL_NODEMAIL,
+    pass: process.env.PASSWORD_NODEMAIL,
   },
 });
 

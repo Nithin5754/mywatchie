@@ -1,9 +1,8 @@
-const product=require('../models/admin/productSchema')
+const product = require('../models/admin/productSchema');
 
-const productList = async(req, res) => {
+const productList = async (req, res) => {
   try {
-
-    const productLists=await product.find()
+    const productLists = await product.find();
     console.log(productLists);
 
     res.render('user/productPage', { productLists });
@@ -13,21 +12,22 @@ const productList = async(req, res) => {
   }
 };
 
-const productDetails=async(req,res)=>{
+const productDetails = async (req, res) => {
   try {
-    const OneProduct=req.params.productId
-     const productLists=await product.findById(OneProduct);
-     console.log(typeof(productLists));
-     const imgUrl=productLists.product_image_url
-     console.log(imgUrl);
+    const OneProduct = req.params.productId;
+    const productLists = await product.findById(OneProduct);
+    console.log(typeof productLists);
+    const imgUrl = productLists.product_image_url;
+    console.log(imgUrl);
 
-      res.render('user/productDetailsPage', { productLists,imgUrl });
+    res.render('user/productDetailsPage', { productLists,imgUrl});
   } catch (error) {
-    
+    console.error('Error fetching images:', error.message);
+    res.status(500).send('Internal Server Error-login page error');
   }
-}
+};
 
 module.exports = {
   productList,
-  productDetails
+  productDetails,
 };

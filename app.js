@@ -8,7 +8,7 @@ const nocache = require('nocache');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 // mongodb config folder import here
-const connectDB = require('./config/connect');
+                    const connectDB = require('./config/connect');
 
 // import routes
 const userRoutes = require('./routes/userRouter');

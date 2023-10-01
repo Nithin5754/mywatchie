@@ -22,16 +22,17 @@ const UserSchema = new mongoose.Schema({
   },
   registerTime: {
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
   otpCreatedAt: {
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
   otp: {
     type: String,
     required: [true, 'must provide otp'],
-  },
+  }
+
 });
 
 UserCollection = mongoose.model('userCollection', UserSchema);
