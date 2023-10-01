@@ -36,13 +36,15 @@
           <ul x-show="isOpen" @click.away="isOpen = false"
             class="absolute right-0 mt-2 w-48 md:w-96 space-y-2 bg-gray-800 text-gray-300 z-50">
             <li>
-          <a href="#" class="text-2xl hover:text-gray-400" @click="isSignup = !isSignup">
-            <a href="/login" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">login</a>
-          </a>
-               
+    
+              <a href="#" class="text-2xl hover:text-gray-400" @click="isSignup = !isSignup">
+                     
+                <a href="<%= isUrl  %>" class="block px-4 py-2 hover:bg-gray-700 hover:text-white"><%= isProfile %> </a>
+                  
+              </a>   
             </li>
             <li>
-              <a href="/signup" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">Create New User</a>
+              <a href="<%= isCreateAccountUrl %>" class="block px-4 py-2 hover:bg-gray-700 hover:text-white"><%= isCreateAccount %></a>
             </li>
             <li>
               <a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">Language</a>
@@ -51,7 +53,7 @@
               <a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">Settings</a>
             </li>
             <li>
-              <a href="/logout" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">Log out</a>
+              <a href="/logout" class="block px-4 py-2 hover:bg-gray-700 hover:text-white"><%=  islogout%></a>
             </li>
           </ul>
         </div>
@@ -59,3 +61,5 @@
     </div>
   </nav>
 </header>
+
+isProfile,isUrl,

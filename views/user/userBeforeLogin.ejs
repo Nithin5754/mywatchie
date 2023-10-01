@@ -1,53 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mywatchie.com</title>
   <link rel="stylesheet" href="dist/output.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 
   <!-- Link Swiper's CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
   <!-- googlr icons materials -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
-   
+
 </head>
+
 <body class=" scroll-smooth capitalize bg-slate-300 text-black">
   <!-- Include Alpine.js -->
-<!-- header.ejs -->
-    <%- include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl}) %>
+  <!-- header.ejs -->
+  <%- include('./partials/header.ejs',{isProfile}) %>
 
- 
-    
+
+
     <main style="margin-top:5rem">
-  
+
       <section class="relative mb-5">
         <%- include('./partials/banner.ejs',{randomBanner}) %>
 
       </section>
 
       <!-- category section -->
-     
-      <section style="margin-bottom:5rem" >
+
+      <section style="margin-bottom:5rem">
         <h1 class="text-4xl mt-8 mb-8 text-center font-bold ">Category</h1>
-      <!-- Include your content here -->
+        <!-- Include your content here -->
         <%- include('./partials/category.ejs',{ randomCategory}) %>
-    </section>
+      </section>
 
 
-  </main>
+    </main>
 
-  <!-- Alpine.js and Swiper JS scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" ></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-  <!-- font-awesome -->
-  <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
-  <script src="/js/swiper.js"></script>
-  <script src="/js/search.js"></script>
+    <!-- Alpine.js and Swiper JS scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <!-- font-awesome -->
+    <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
+    <script src="/js/swiper.js"></script>
+    <script src="/js/search.js"></script>
 
 </body>
 

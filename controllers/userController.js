@@ -16,30 +16,78 @@ const {
 
 const login = async (req, res) => {
   try {
+
     const randomBannerImage = await getRandomBannerImage();
 
-    res.render('user/login', { msg: req.session.msg, randomBannerImage });
+    res.render('user/login', { msg: req.session.msg, randomBannerImage});
   } catch (error) {
     console.error('Error fetching images:', error.message);
     res.status(500).send('Internal Server Error-login page error');
   }
 };
+let isUrl;
+let islogout;
+let isCreateAccount;
+let  isCreateAccountUrl;
+const userBeforeLogin=async(req,res)=>{
+  try {
+     const randomBanner = await getRandomBannerImage();
+   const randomCategory = await categoryCollections.find();
+    isProfile='login';
+    isUrl='/login';
+    islogout="";
+    isCreateAccount="create account";
+    isCreateAccountUrl="/signup";
+  if(req.session.isUser){
+   return res.redirect('/homepage')
+  }
+  return res.render('user/userBeforeLogin', {randomBanner, randomCategory,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl});
+  } catch (error) {
+        console.error('Error fetching before login user:', error.message);
+   return res.status(500).send('hompagebefore login error ');
+  }
+
+}
 
 //homepage will appear using this path
 
 const homepage = async (req, res) => {
   try {
     const randomBanner = await getRandomBannerImage();
-    const randomCategory = await categoryCollections.find();
-    console.log(randomCategory);
+  const randomCategory = await categoryCollections.find();
+  const isProfile=req.session.profileName
+   islogout="log out";
+    isCreateAccount="Orders";
+    isCreateAccountUrl="/homepage"
+    isUrl='#'
+  if(isProfile===undefined){
+   
+   return res.redirect('/home')
+  }
+
+  //  console.log(isProfile);
+  //  let profile;
+  // req.session.isProfile?profile=isProfile:profile='';
+  // if(!req.session.isUser){
+  //   return res.redirect('/home')
+  // }
+
+    return res.render('user/home', {randomBanner, randomCategory,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl});
+   
     
 
-    return res.render('user/home', { randomBanner, randomCategory});
   } catch (error) {
     console.error('Error fetching images:', error.message);
-    res.status(500).send('hompage error');
+  return  res.status(500).send('hompage error');
   }
 };
+
+
+// USER PROFILE DETAILS PAGE START HERE
+
+const userDetails=(req,res)=>{
+  res.render('user/userdetails')
+}
 
 // home page logout
 
@@ -133,10 +181,11 @@ const signupData = async (req, res) => {
 //login validation
 const loginPost = async (req, res) => {
   const { lEmail, lPassword } = req.body;
+let user;
 
   try {
-    const user = await UserCollection.findOne({ email: lEmail });
-    console.log('loginpost:', user);
+    user = await UserCollection.findOne({ email: lEmail });
+
     if (!user && !passwordMatch) {
       return res.render('user/login', { msg: 'Invalid username && Password' });
     }
@@ -150,13 +199,12 @@ const loginPost = async (req, res) => {
     console.error('Error during login:', error);
     return res.status(500).send('Error during login');
   }
- 
-
- 
-  res.redirect('/homepage');
-
+  
+req.session.isUser=true
+req.session.profileName=user.username
+  res.redirect(`/homepage`);
 };
-
+// ?isProfile=${user.username}
 
 // OTP PAGE WILL DISPLAY IN THIS COMMAND==========================
 
@@ -319,6 +367,8 @@ module.exports = {
   signup,
   signupData,
   loginPost,
+  userDetails,
+  userBeforeLogin,
   resendSignup,
   logout,
   homepage,

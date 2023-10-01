@@ -3,10 +3,12 @@ const router = express.Router();
 
 const {
   login,
+   userBeforeLogin,
   signup,
   signupData,
   loginPost,
   logout,
+  userDetails,
   homepage,
   otpVerification,
   otpPage,
@@ -25,11 +27,15 @@ const {
   productDetails,
 } = require('../controllers/productUserControllers');
 
+// const userAuthentication=require('../middlewares/users/customeMiddle')
+
 router.route('/login').get(login).post(loginPost);
 router.route('/signup').get(signup).post(signupData);
 router.route('/resendSignup').get(resendSignup)
+router.route('/home').get(userBeforeLogin)
 router.route('/homepage').get(homepage);
 router.route('/logout').get(logout);
+router.route('/userDeatils').get(userDetails)
 router.route('/otpVerfication').get(otpPage).post(otpVerification);
 router.route('/forgotPassWordDisplay').get(forgotPassWordDisplay).post(validateForgotPasswordEmail)
 
