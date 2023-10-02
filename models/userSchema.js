@@ -17,8 +17,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'provide password'],
   },
-  mobileNumber:{
-    type:String
+  mobileNumber: {
+    type: String,
   },
   isBlocked: {
     type: Boolean,
@@ -36,11 +36,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'must provide otp'],
   },
-  resetPass:{
-    type:String,
-    
-  }
-
+  resetPass: {
+    type: String,
+  },
 });
 
 UserCollection = mongoose.model('userCollection', UserSchema);

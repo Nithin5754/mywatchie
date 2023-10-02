@@ -1,11 +1,10 @@
-
-
-
 const UserAuthentication = (req, res, next) => {
-  if (req.session.isUser) {
- next();
+  console.log('req.session.isUser:', req.session.isUser);
+  if (req.session && req.session.isUser) {
+    next();
   } else {
-   
+    console.log('Redirecting to /home');
+    return res.redirect('/');
   }
 };
 

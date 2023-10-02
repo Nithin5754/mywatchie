@@ -3,8 +3,7 @@ const categoryCollections = require('../models/admin/categorySchema');
 const bcrypt = require('bcrypt');
 
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
-const twiloGet=require('../utilities/twilio/twilio')
-
+const twiloGet = require('../utilities/twilio/twilio');
 
 const {
   mailGenerator,
@@ -16,78 +15,78 @@ const {
 
 const login = async (req, res) => {
   try {
-
     const randomBannerImage = await getRandomBannerImage();
 
-    res.render('user/login', { msg: req.session.msg, randomBannerImage});
+    res.render('user/login', { msg: req.session.msg, randomBannerImage });
   } catch (error) {
     console.error('Error fetching images:', error.message);
     res.status(500).send('Internal Server Error-login page error');
   }
 };
+let isProfile;
 let isUrl;
 let islogout;
 let isCreateAccount;
-let  isCreateAccountUrl;
-const userBeforeLogin=async(req,res)=>{
+let isCreateAccountUrl;
+const userBeforeLogin = async (req, res) => {
+  if (req.session.isUser) {
+    return res.redirect('/homepage');
+  }
   try {
-     const randomBanner = await getRandomBannerImage();
-   const randomCategory = await categoryCollections.find();
-    isProfile='login';
-    isUrl='/login';
-    islogout="";
-    isCreateAccount="create account";
-    isCreateAccountUrl="/signup";
-  if(req.session.isUser){
-   return res.redirect('/homepage')
-  }
-  return res.render('user/userBeforeLogin', {randomBanner, randomCategory,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl});
-  } catch (error) {
-        console.error('Error fetching before login user:', error.message);
-   return res.status(500).send('hompagebefore login error ');
-  }
+    const randomBanner = await getRandomBannerImage();
+    const randomCategory = await categoryCollections.find();
+    isProfile = 'login';
+    isUrl = '/login';
+    islogout = 'help';
+    isCreateAccount = 'create account';
+    isCreateAccountUrl = '/signup';
 
-}
+    return res.render('user/userBeforeLogin', {
+      randomBanner,
+      randomCategory,
+      isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+    });
+  } catch (error) {
+    console.error('Error fetching before login user:', error.message);
+    return res.status(500).send('hompagebefore login error ');
+  }
+};
 
 //homepage will appear using this path
 
 const homepage = async (req, res) => {
   try {
     const randomBanner = await getRandomBannerImage();
-  const randomCategory = await categoryCollections.find();
-  const isProfile=req.session.profileName
-   islogout="log out";
-    isCreateAccount="Orders";
-    isCreateAccountUrl="/homepage"
-    isUrl='#'
-  if(isProfile===undefined){
-   
-   return res.redirect('/home')
-  }
-
-  //  console.log(isProfile);
-  //  let profile;
-  // req.session.isProfile?profile=isProfile:profile='';
-  // if(!req.session.isUser){
-  //   return res.redirect('/home')
-  // }
-
-    return res.render('user/home', {randomBanner, randomCategory,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl});
-   
-    
-
+    const randomCategory = await categoryCollections.find();
+    const isProfile = req.session.profileName;
+    islogout = 'log out';
+    isCreateAccount = 'Orders';
+    isCreateAccountUrl = '/homepage';
+    isUrl = '#';
+    return res.render('user/home', {
+      randomBanner,
+      randomCategory,
+      isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+    });
   } catch (error) {
     console.error('Error fetching images:', error.message);
-  return  res.status(500).send('hompage error');
+    return res.status(500).send('hompage error');
   }
 };
 
-
 // USER PROFILE DETAILS PAGE START HERE
 
-const userDetails=(req,res)=>{
-  res.render('user/userdetails')
-}
+const userDetails = (req, res) => {
+  res.render('user/userdetails');
+};
 
 // home page logout
 
@@ -114,7 +113,7 @@ const signup = async (req, res) => {
 const signupData = async (req, res) => {
   try {
     console.log(req.body);
-    const { username, email,number, password, confirmPassword } = req.body;
+    const { username, email, number, password, confirmPassword } = req.body;
 
     const checkingUser = await UserCollection.findOne({ email });
 
@@ -130,7 +129,7 @@ const signupData = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
       const otp = generateOTP(6);
-      req.session.UserSignUpOtP=otp;
+      req.session.UserSignUpOtP = otp;
       console.log('Generated OTP:', otp);
 
       const Email = {
@@ -181,7 +180,7 @@ const signupData = async (req, res) => {
 //login validation
 const loginPost = async (req, res) => {
   const { lEmail, lPassword } = req.body;
-let user;
+  let user;
 
   try {
     user = await UserCollection.findOne({ email: lEmail });
@@ -199,9 +198,9 @@ let user;
     console.error('Error during login:', error);
     return res.status(500).send('Error during login');
   }
-  
-req.session.isUser=true
-req.session.profileName=user.username
+
+  req.session.isUser = true;
+  req.session.profileName = user.username;
   res.redirect(`/homepage`);
 };
 // ?isProfile=${user.username}
@@ -209,17 +208,14 @@ req.session.profileName=user.username
 // OTP PAGE WILL DISPLAY IN THIS COMMAND==========================
 
 const otpPage = (req, res) => {
-
   res.render('user/otp');
 };
 
 const otpVerification = async (req, res) => {
-
   const { otpOne, otpTwo, otpThree, otpFour, otpFive, otpSix } = req.body;
   const fullOtp = otpOne + otpTwo + otpThree + otpFour + otpFive + otpSix;
   try {
-
-   const userWithOTP = await UserCollection.findOne({ otp: fullOtp });
+    const userWithOTP = await UserCollection.findOne({ otp: fullOtp });
 
     if (!userWithOTP) {
       return res.redirect('/otpVerfication');
@@ -228,8 +224,8 @@ const otpVerification = async (req, res) => {
     // Check if the OTP has expired
     const otpCreationTime = userWithOTP.otpCreatedAt;
     const otpExpirationTime = new Date(otpCreationTime);
-     // OTP expires in 60seconds
-    otpExpirationTime.setMinutes(otpExpirationTime.getMinutes() +1);  
+    // OTP expires in 60seconds
+    otpExpirationTime.setMinutes(otpExpirationTime.getMinutes() + 1);
 
     if (new Date() > otpExpirationTime) {
       console.log('expired');
@@ -237,8 +233,10 @@ const otpVerification = async (req, res) => {
       return res.redirect('/signup');
     }
     console.log('3');
-    await UserCollection.updateMany({_id:userWithOTP._id},{$unset:{otp:1,
-otpCreatedAt:1}})
+    await UserCollection.updateMany(
+      { _id: userWithOTP._id },
+      { $unset: { otp: 1, otpCreatedAt: 1 } },
+    );
 
     console.log('4');
 
@@ -249,118 +247,127 @@ otpCreatedAt:1}})
   }
 };
 
-// resend signup page 
+// resend signup page
 
-const resendSignup=async(req,res)=>{
-  const previousOtp=req.session.UserSignUpOtP
-  console.log("hello previous"+previousOtp)
-  const resendOtp=generateOTP(6)
-  console.log("resend"+resendOtp);
+const resendSignup = async (req, res) => {
+  const previousOtp = req.session.UserSignUpOtP;
+  console.log('hello previous' + previousOtp);
+  const resendOtp = generateOTP(6);
+  console.log('resend' + resendOtp);
 
-  const newResendTime= Date.now()
-   await UserCollection.updateMany({otp:previousOtp},{$set:{otp:resendOtp,otpCreatedAt:newResendTime}})
-  res.redirect('/otpVerfication')
-
-}
+  const newResendTime = Date.now();
+  await UserCollection.updateMany(
+    { otp: previousOtp },
+    { $set: { otp: resendOtp, otpCreatedAt: newResendTime } },
+  );
+  res.redirect('/otpVerfication');
+};
 //=================================================================================================================================================
-
-
 
 //login reset password of existing customers
 
-
-
-const forgotPassWordDisplay=async(req,res)=>{
-   try {
-     const randomBannerImage = await getRandomBannerImage();
-  res.render('user/resetPasswordForm',{ randomBannerImage })
-   } catch (error) {
-    console.log("error in display forgot page");
-    res.send("error in display forgot page")
-    
-   }
-}
-
-const validateForgotPasswordEmail=async(req,res)=>{
-  const {forgotEmail}=req.body
-   const verifyEmail= await UserCollection.findOne({email:forgotEmail})
-   if(!verifyEmail){
-    return res.redirect('/forgotPassWordDisplay')
-   }
-
-      const resetEmailOtp=generateOTP(6);
-       await UserCollection.updateMany({email:forgotEmail},{$set:{resetPass:resetEmailOtp}},{upsert:true})
-       const resetEmail={
-          body:{
-            name:forgotEmail,
-            intro:"welcome to my Watchie.com",
-            outro:`you otp  for reset password ${resetEmailOtp}`
-
-          }
-        }
-   const resetEmailTemplate=mailGenerator.generate(resetEmail)
-
-     const mailOptions = {
-        from: 'nithinjoji0756@gmail.com',
-        to: forgotEmail,
-        subject: 'Welcome to Mywatchie.com - reset password otp',
-        html:resetEmailTemplate,
-      };
-       await transporter.sendMail(mailOptions);
-
-       res.redirect('/forgotPassWordDisplay/forgotConfirmPageDisplay')
-     
-
-}
-
-const forgotConfirmPageDisplay=async(req,res)=>{
-       try {
-        const randomBannerImage = await getRandomBannerImage();
-        res.render('user/resetPasswordVerify',{randomBannerImage})
-       } catch (error) {
-        console.log("error in display forgot page");
-    res.send("error in display forgot page")
-       }
-}
-
-const forgotConfirmPageVerification=async(req,res)=>{
-  const {forgotOtp,fPassword,fConfirmPassword}=req.body
-   
- try {
-   const verifyResetOtp=await UserCollection.findOne({resetPass:forgotOtp});
-  if(!verifyResetOtp){
- return res.redirect('/forgotPassWordDisplay')
+const forgotPassWordDisplay = async (req, res) => {
+  try {
+    const randomBannerImage = await getRandomBannerImage();
+    res.render('user/resetPasswordForm', { randomBannerImage });
+  } catch (error) {
+    console.log('error in display forgot page');
+    res.send('error in display forgot page');
   }
-  if(fConfirmPassword!=fPassword){
-    return res.redirect('/forgotPassWordDisplay')
+};
+
+const validateForgotPasswordEmail = async (req, res) => {
+  const { forgotEmail } = req.body;
+  const verifyEmail = await UserCollection.findOne({ email: forgotEmail });
+  if (!verifyEmail) {
+    return res.redirect('/forgotPassWordDisplay');
   }
 
-  const saltRounds=10;
- const hashedResetPassword=await bcrypt.hash(fConfirmPassword,saltRounds)
-  await UserCollection.updateMany({resetPass:forgotOtp},{$set:{password:hashedResetPassword}},{upsert:true})
-  // deleting the reset otp
-      await UserCollection.updateMany({resetPass:forgotOtp},{$unset:{resetPass:1}})
-  res.redirect('/login')
-  
- } catch (error) {
-      console.error('Error during Ochanging forgot password please check once again:', error);
-    return res.status(500).send('Error during Ochanging forgot password please check once again');
- }
-}
+  const resetEmailOtp = generateOTP(6);
+  await UserCollection.updateMany(
+    { email: forgotEmail },
+    { $set: { resetPass: resetEmailOtp } },
+    { upsert: true },
+  );
+  const resetEmail = {
+    body: {
+      name: forgotEmail,
+      intro: 'welcome to my Watchie.com',
+      outro: `you otp  for reset password ${resetEmailOtp}`,
+    },
+  };
+  const resetEmailTemplate = mailGenerator.generate(resetEmail);
 
+  const mailOptions = {
+    from: 'nithinjoji0756@gmail.com',
+    to: forgotEmail,
+    subject: 'Welcome to Mywatchie.com - reset password otp',
+    html: resetEmailTemplate,
+  };
+  await transporter.sendMail(mailOptions);
 
-const twilioSms=(req,res)=>{
- try {
-   const num='+919645104620';
-  const message="welcome to get"
-   twiloGet(num,message)
-   res.redirect('/login')
- } catch (error) {
+  res.redirect('/forgotPassWordDisplay/forgotConfirmPageDisplay');
+};
+
+const forgotConfirmPageDisplay = async (req, res) => {
+  try {
+    const randomBannerImage = await getRandomBannerImage();
+    res.render('user/resetPasswordVerify', { randomBannerImage });
+  } catch (error) {
+    console.log('error in display forgot page');
+    res.send('error in display forgot page');
+  }
+};
+
+const forgotConfirmPageVerification = async (req, res) => {
+  const { forgotOtp, fPassword, fConfirmPassword } = req.body;
+
+  try {
+    const verifyResetOtp = await UserCollection.findOne({
+      resetPass: forgotOtp,
+    });
+    if (!verifyResetOtp) {
+      return res.redirect('/forgotPassWordDisplay');
+    }
+    if (fConfirmPassword != fPassword) {
+      return res.redirect('/forgotPassWordDisplay');
+    }
+
+    const saltRounds = 10;
+    const hashedResetPassword = await bcrypt.hash(fConfirmPassword, saltRounds);
+    await UserCollection.updateMany(
+      { resetPass: forgotOtp },
+      { $set: { password: hashedResetPassword } },
+      { upsert: true },
+    );
+    // deleting the reset otp
+    await UserCollection.updateMany(
+      { resetPass: forgotOtp },
+      { $unset: { resetPass: 1 } },
+    );
+    res.redirect('/login');
+  } catch (error) {
+    console.error(
+      'Error during Ochanging forgot password please check once again:',
+      error,
+    );
+    return res
+      .status(500)
+      .send('Error during Ochanging forgot password please check once again');
+  }
+};
+
+const twilioSms = (req, res) => {
+  try {
+    const num = '+919645104620';
+    const message = 'welcome to get';
+    twiloGet(num, message);
+    res.redirect('/login');
+  } catch (error) {
     console.error('twilio error:', error);
     return res.status(500).send('twilio error');
-  
- }
-}
+  }
+};
 
 module.exports = {
   login,
@@ -378,5 +385,5 @@ module.exports = {
   validateForgotPasswordEmail,
   forgotConfirmPageDisplay,
   forgotConfirmPageVerification,
-  twilioSms
+  twilioSms,
 };
