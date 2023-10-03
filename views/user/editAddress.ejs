@@ -1,0 +1,63 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  <main>
+     <section>
+        <div class="max-w-md mx-auto">
+          <h2 class="text-2xl font-semibold mb-4">Add Address</h2>
+          <form action="/userDetails/address/updateAddress/<%= verifyAddressId._id %>" method="post">
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Permanent Address
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text" placeholder="Permanent Address" value="<%= verifyAddressId.premanant_address %>" name="ePermananetAddress" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Postal Code
+              </label>
+              <input 
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text" value="<%= verifyAddressId.postalCode %>" placeholder="Postal Code" name="ePostalCode" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                City
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text" value="<%= verifyAddressId.city%>" placeholder="City" name="eCity" required>
+            </div>
+            <div class="mb-6">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Country 
+              </label>
+              <input 
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text" placeholder="Country" value="<%= verifyAddressId.country%>" name="eCountry" required>
+            </div>
+            <div class="mb-6">
+              <button type="submit"
+                class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+                Add Address
+              </button>
+            </div>
+          </form>
+        </div>
+
+     </section>
+  </main>
+</body>
+</html>

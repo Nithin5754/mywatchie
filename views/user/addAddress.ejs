@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping Addresses</title>
+  <!-- Include Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Custom CSS for styling -->
+  <style>
+    /* Add your custom styles here */
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <!-- Header -->
+  <header class="bg-blue-500 text-white py-4">
+    <div class="container mx-auto text-center">
+      <h1 class="text-3xl font-semibold">Shipping Addresses</h1>
+    </div>
+  </header>
+
+  <!-- Address Content -->
+  <div class="container mx-auto mt-8 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <!-- Address List -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Address List</h2>
+  <ul class="divide-y divide-gray-200">
+    <% usersMultipleAddress.forEach((userAddress, index)=> { %>
+      <!-- Address Item -->
+      <li class="py-4 sm:py-6 md:py-8">
+        <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+          <!-- Address Details -->
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-gray-800"><span>
+                <%= index + 1 %>
+              </span>  Street Address: <%= userAddress.premanant_address %>
+            </h3>
+            <p class="text-gray-600">City: <%= userAddress.city %>
+            </p>
+            <p class="text-gray-600">Country: <%= userAddress.country %>
+            </p>
+            <p class="text-gray-600">Postal Code: <%= userAddress.postalCode %>
+            </p>
+          </div>
+          <!-- Actions -->
+          <div class="flex space-x-2">
+            <!-- Edit Button -->
+            <form action="/userDetails/address/updateAddress/<%= userAddress._id %>" method="get">
+              <button
+                class="bg-blue-500 text-white hover:bg-blue-600 px-3 py-1 rounded-md transition duration-300 ease-in-out">Edit</button>
+            </form>
+            <!-- Delete Button -->
+            <form action="/userDetails/address/deleteAddress/<%= userAddress._id %>" method="post">
+              <button
+                class="bg-red-500 text-white hover:bg-red-600 px-3 py-1 rounded-md transition duration-300 ease-in-out">Delete</button>
+            </form>
+          </div>
+        </div>
+      </li>
+      <% }); %>
+        <!-- Add more address items here -->
+  </ul>
+
+      </div>
+
+      <!-- Add Address Form -->
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add Address</h2>
+        <form action="/userDetails/address" method="post">
+         
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="street" class="text-gray-600 text-lg">Street Address:</label>
+              <input type="text" id="street" name="aAdderess" class="w-full border border-gray-300 p-2 rounded-md">
+            </div>
+            <div>
+              <label for="city" class="text-gray-600 text-lg">City:</label>
+              <input type="text" id="city" name="aCity" class="w-full border border-gray-300 p-2 rounded-md">
+            </div>
+            <div>
+              <label for="country" class="text-gray-600 text-lg">Country:</label>
+              <input type="text" id="country" name="aCountry" class="w-full border border-gray-300 p-2 rounded-md">
+            </div>
+            <div>
+              <label for="postalCode" class="text-gray-600 text-lg">Postal Code:</label>
+              <input type="text" id="postalCode" name="aPincode" class="w-full border border-gray-300 p-2 rounded-md">
+            </div>
+          </div>
+          <button type="submit"
+            class="bg-blue-500 hover:bg-blue-600 text-white mt-6 py-2 px-4 rounded-md transition duration-300 ease-in-out">
+            Add Address
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

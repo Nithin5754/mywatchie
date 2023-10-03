@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>user details edit form</title>
+    <link rel="stylesheet" href="dist/output.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+<body>
+  <main>
+     <section>
+        <div class="w-full max-w-md mx-auto">
+          <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="/userDetails/detailsEdit" method="post">
+            <!-- Name Field -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                Name
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="name" type="text" name="pUsername"  value="<%= verifyEmail.username %>">
+            </div>
+        
+            <!-- Email Field -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="email" >
+                Email
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="email" type="email" name="pEmail" value="<%= verifyEmail.email%>" >
+            </div>
+        
+            <!-- Mobile Field -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="mobile">
+                Mobile
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="mobile" type="tel" name="pNumber" value="<%= verifyEmail.mobileNumber %>">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6">
+              <button
+                class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out w-full"
+                type="submit">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+
+     </section>
+  </main>
+</body>
+</html>

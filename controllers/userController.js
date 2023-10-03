@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
+const Address = require('../models/addressSchema');
 
 const {
   mailGenerator,
@@ -66,7 +67,7 @@ const homepage = async (req, res) => {
     islogout = 'log out';
     isCreateAccount = 'Orders';
     isCreateAccountUrl = '/homepage';
-    isUrl = '#';
+    isUrl = '/userDeatils';
     return res.render('user/home', {
       randomBanner,
       randomCategory,
@@ -84,9 +85,181 @@ const homepage = async (req, res) => {
 
 // USER PROFILE DETAILS PAGE START HERE
 
-const userDetails = (req, res) => {
-  res.render('user/userdetails');
+const userDetailspage = async (req, res) => {
+  const userEmail = req.session.userEmail;
+  const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+  const verifyAddress=await UserCollection.findOne({email:userEmail}).populate('address')
+  .exec();
+  if (!verifyUserEmail) {
+   return res.redirect('/homepage');
+  }
+  const userPrimaryAddress=verifyAddress.address;
+  res.render('user/userdetails', { verifyUserEmail ,userPrimaryAddress});
 };
+
+const userDetailsEditForm = async (req, res) => {
+  const userEmail = req.session.userEmail;
+  const verifyEmail = await UserCollection.findOne({ email: userEmail });
+
+  if (!verifyEmail) {
+    return res.redirect('/homepage');
+  }``
+
+  res.render('user/userDetailsEditForm', { verifyEmail });
+};
+
+
+
+const userDetailsEdit = async (req, res) => {
+  const { pUsername, pEmail, pNumber} =
+    req.body;
+  const userEmail = req.session.userEmail;
+  try {
+    const isThisEmailExisting = await UserCollection.findOne({ email: pEmail });
+    if (isThisEmailExisting && !pEmail) {
+      return res.redirect('/userDetails/detailsEdit');
+    }
+    const verifyEmail = await UserCollection.findOne({ email: userEmail });
+
+    const userDetailsId = verifyEmail._id;
+    if (!verifyEmail) {
+      return res.redirect('/userDetails/detailsEdit');
+    }
+
+    const existingUserUpdate = await UserCollection.findByIdAndUpdate(
+      userDetailsId,
+      {
+        email: pEmail,
+        username: pUsername,
+        mobileNumber: pNumber,
+      },
+      { new: true },
+    );
+
+    if (!existingUserUpdate) {
+      return res.status(500).send('error fetching:updating ');
+    }
+
+    // adding new address to the existing users
+
+   
+
+    return res.redirect('/homepage');
+  } catch (error) {
+    console.error(
+      'error in updating existing users and upating address' + error,
+    );
+    res
+      .status(500)
+      .send('error in updating existing users and upating address' + error);
+  }
+};
+
+// address section start here you cand add edit delete each address of a user
+
+const addAddressForm=async(req,res)=>{
+    const currentUserEmail=req.session.userEmail;
+ try {
+     const verifyEmail=await UserCollection.findOne({email:currentUserEmail}).populate('address')
+  .exec();
+        console.log(verifyEmail.address);
+    const usersMultipleAddress=verifyEmail.address
+
+
+  res.render('user/addAddress',{usersMultipleAddress})
+ } catch (error) {
+  res.send('error fetching rendering the add address page'+error)
+  console.log(error);
+ }
+}
+
+
+const addingNewAddressForm=async(req,res)=>{
+  const currentUserEmail=req.session.userEmail;
+  const {aAdderess,aPincode,aCity,aCountry}=req.body
+  try {
+    const verifyEmail=await UserCollection.findOne({email:currentUserEmail})
+   if(!verifyEmail){
+  return  res.redirect('/userDetails/detailsEdit')
+   }
+
+
+  const newAddress = new Address({
+    premanant_address: aAdderess,
+    postalCode:aPincode,
+    city: aCity,
+    country: aCountry
+    });
+     
+ 
+   await newAddress.save()
+
+   verifyEmail.address.push(newAddress)
+
+   await verifyEmail.save()
+
+ return   res.redirect('/userDetails/address')
+  } catch (error) {
+     console.error('Error during add address:', error);
+    return res.status(500).send('Error during adding new address');
+  }
+}
+
+const deleteAddress=async(req,res)=>{
+   const userDeleteAddressId=req.params.addressId;
+   try {
+  const deleteAddress=await Address.findByIdAndRemove(userDeleteAddressId);
+  if(!deleteAddress){
+    return res.send("error occur in delete address")
+  }
+
+  res.redirect('/userDetails/address')
+
+
+
+   } catch (error) {
+     console.error('Error during delete address:', error);
+    return res.status(500).send('Error during delete address');
+   }
+}
+
+
+const editAddress=async(req,res)=>{
+  const addressId=req.params.addressId
+  const verifyAddressId=await Address.findById(addressId)
+  res.render('user/editAddress',{verifyAddressId})
+}
+
+const editAddressPost=async(req,res)=>{
+   const addressId=req.params.addressId
+   const {eCountry,eCity,ePostalCode,ePermananetAddress}=req.body
+   console.log(eCountry,eCity,ePostalCode,ePermananetAddress+"bhgtehgruhguitrhgjbthgrhughurhu");
+   try {
+
+    const isUpdated=await Address.findByIdAndUpdate(addressId,{
+     premanant_address:ePermananetAddress,
+    postalCode:ePostalCode,
+    city:eCity,
+    country:eCountry
+    })
+
+    if(!isUpdated){
+     return  res.send("existing address is not able to edit please check again")
+    }
+
+    res.redirect('/userDetails/address')
+       
+   } catch (error) {
+     console.error('Error during updating address:', error);
+    return res.status(500).send('Error during updating address');
+   }
+}
+
+
+
+
+
+// END OF ADDRESS SECTION
 
 // home page logout
 
@@ -154,7 +327,7 @@ const signupData = async (req, res) => {
         const newUser = new UserCollection({
           username,
           email,
-          number,
+          mobileNumber: number,
           password: hashedPassword,
           otp,
         });
@@ -201,9 +374,10 @@ const loginPost = async (req, res) => {
 
   req.session.isUser = true;
   req.session.profileName = user.username;
+  req.session.userEmail = user.email;
+  console.log('my email is' + req.session.userEmail);
   res.redirect(`/homepage`);
 };
-// ?isProfile=${user.username}
 
 // OTP PAGE WILL DISPLAY IN THIS COMMAND==========================
 
@@ -374,8 +548,15 @@ module.exports = {
   signup,
   signupData,
   loginPost,
-  userDetails,
+  userDetailspage,
+  addAddressForm,
+  userDetailsEditForm,
+  userDetailsEdit,
+  deleteAddress,
+  editAddress,
+editAddressPost,
   userBeforeLogin,
+  addingNewAddressForm,
   resendSignup,
   logout,
   homepage,

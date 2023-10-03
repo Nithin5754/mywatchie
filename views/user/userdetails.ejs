@@ -54,41 +54,89 @@
         <!-- User Information -->
         <div class="w-full md:w-2/3 mt-6 md:mt-0">
           <div class="bg-gray-100 p-6 rounded-lg border border-gray-300">
-            <h1 class="text-3xl font-semibold text-gray-800 mb-4">John Doe</h1>
+            <h1 class="text-3xl font-semibold text-gray-800 mb-4"><% if (verifyUserEmail && verifyUserEmail.username) { %>
+            <%= verifyUserEmail.username %>
+                <% } %></h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Email -->
               <div>
                 <p class="text-gray-600 text-lg">Email:</p>
-                <p class="text-gray-800 text-lg font-semibold">johndoe@example.com</p>
+                <p class="text-gray-800 text-lg font-semibold"><%= verifyUserEmail.email %></p>
               </div>
 
               <!-- Phone -->
               <div>
                 <p class="text-gray-600 text-lg">Phone:</p>
-                <p class="text-gray-800 text-lg font-semibold">+1234567890</p>
+                <p class="text-gray-800 text-lg font-semibold"><%= verifyUserEmail.mobileNumber %></p>
               </div>
 
               <!-- Address -->
-              <div class="col-span-2">
-                <h2 class="text-2xl font-semibold text-gray-800 mt-4">Address</h2>
-                <div>
-                  <p class="text-gray-600 text-lg">Street:</p>
-                  <p class="text-gray-800 text-lg font-semibold">123 Main Street</p>
-                </div>
-                <div>
-                  <p class="text-gray-600 text-lg">City:</p>
-                  <p class="text-gray-800 text-lg font-semibold">City</p>
-                </div>
-                <div>
-                  <p class="text-gray-600 text-lg">Country:</p>
-                  <p class="text-gray-800 text-lg font-semibold">Country</p>
-                </div>
-              </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead>
+                <tr>
+                  <th class="text-left text-2xl font-semibold">Primary Address</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% userPrimaryAddress.forEach((primaryAddress, index)=> { %>
+                  <% if (index < 1) { %>
+                    <tr>
+                      <td class="py-4">
+                     
+                        <table class="mt-2 w-full">
+                          <tr>
+                            <td class="text-gray-600 text-lg font-semibold">Street:</td>
+                            <td class="text-gray-800 text-lg">
+                              <%= primaryAddress.premanant_address %>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="text-gray-600 text-lg font-semibold">City:</td>
+                            <td class="text-gray-800 text-lg">
+                              <%= primaryAddress.city %>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="text-gray-600 text-lg font-semibold">Postal Code:</td>
+                            <td class="text-gray-800 text-lg">
+                              <%= primaryAddress.postalCode %>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="text-gray-600 text-lg font-semibold">Country:</td>
+                            <td class="text-gray-800 text-lg">
+                              <%= primaryAddress.country %>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="py-4">
+                        <!-- Additional actions can go here -->
+                      </td>
+                    </tr>
+                    <% } %>
+                      <% }); %>
+              </tbody>
+            </table>
+          </div>
+
+  
+             
+                  <a href="/userDetails/address">
+                    <button
+                      class="bg-blue-500 hover:bg-emerald-700 text-white mt-6 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+                     Add Address
+                    </button>
+                  </a>
             </div>
+           <a href="/userDetails/detailsEdit">
             <button
               class="bg-blue-500 hover:bg-blue-600 text-white mt-6 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
               Edit Profile
             </button>
+           </a>
           </div>
         </div>
       </div>

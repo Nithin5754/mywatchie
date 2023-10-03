@@ -34,11 +34,16 @@ const UserSchema = new mongoose.Schema({
   },
   otp: {
     type: String,
-    required: [true, 'must provide otp'],
   },
   resetPass: {
     type: String,
   },
+  address: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address',
+    },
+  ],
 });
 
 UserCollection = mongoose.model('userCollection', UserSchema);
