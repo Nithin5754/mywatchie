@@ -1,10 +1,14 @@
 const UserCollection = require('../models/userSchema');
 const categoryCollections = require('../models/admin/categorySchema');
 const bcrypt = require('bcrypt');
+const path=require('path')
 
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
 const Address = require('../models/addressSchema');
+
+
+let userEmail;
 
 const {
   mailGenerator,
@@ -41,6 +45,7 @@ const userBeforeLogin = async (req, res) => {
     islogout = 'help';
     isCreateAccount = 'create account';
     isCreateAccountUrl = '/signup';
+    verifyUserEmail="profile"
 
     return res.render('user/userBeforeLogin', {
       randomBanner,
@@ -50,6 +55,7 @@ const userBeforeLogin = async (req, res) => {
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
+      verifyUserEmail
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -60,8 +66,13 @@ const userBeforeLogin = async (req, res) => {
 //homepage will appear using this path
 
 const homepage = async (req, res) => {
+   userEmail = req.session.userEmail;
   try {
     const randomBanner = await getRandomBannerImage();
+    const verifyUserEmail=await UserCollection.findOne({email:userEmail})
+          if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
     const randomCategory = await categoryCollections.find();
     const isProfile = req.session.profileName;
     islogout = 'log out';
@@ -71,6 +82,7 @@ const homepage = async (req, res) => {
     return res.render('user/home', {
       randomBanner,
       randomCategory,
+      verifyUserEmail,
       isProfile,
       isUrl,
       islogout,
@@ -85,81 +97,110 @@ const homepage = async (req, res) => {
 
 // USER PROFILE DETAILS PAGE START HERE
 
-const userProfileAddForm=(req,res)=>{
-   res.render('user/userProfileAddForm')
-}
+const userProfileAddForm = async(req, res) => {
+    res.render('user/userProfileAddForm');
+};
+
+
 
 const userProfileAdd=async(req,res)=>{
-  const {profileImage}=req.body
-  const userEmail = req.session.userEmail;
-  try {
-     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-     if(!verifyUserEmail){
-      return res.redirect('/userProfileAddForm')
-     }
-const userId=verifyUserEmail._id
-     const addingNewProfile= await UserCollection.findOne({ _id:userId },{ user_url_image:profileImage},{ new: true },);
-     if(!addingNewProfile){
-      return res.redirect('/userProfileAddForm')
-     }
-     return res.redirect('/userDetails/detailsEdit')
-    
-  } catch (error) {
-    console.log("user profile is not added into the db");
-    return res.send("user profile is not added into the db")
-    
-  }
+    userEmail = req.session.userEmail;
+    try {
+      const verifyUserEmail=await UserCollection.findOne({email:userEmail})
+        if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
+      let imageProfile = req.file.path;
+    console.log(imageProfile);
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+    }
+    console.log('imageProfile:', imageProfile);
+
+    if (imageProfile.includes('public\\')) {
+      imageProfile = imageProfile.replace('public\\', '');
+    } else if (imageProfile.includes('public/')) {
+      imageProfile = imageProfile.replace('public/', '');
+    }
+
+    const userImageAdding=await UserCollection.findOneAndUpdate({email:userEmail},{
+        user_image_url:imageProfile
+    },{new:true})
+
+    if(!userImageAdding){
+    return res.send("image is not save to db please check again")
+    }
+
+    return res.redirect('/userDeatils');
+
+    } catch (error) {
+      console.log(error);
+     return res.send("error occur in image uploading please check again")
+    }
 }
 
-const userDetailspage = async (req, res) => {
-  const userEmail = req.session.userEmail;
-    try {
-      const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-  // const verifyAddress = await UserCollection.findOne({ email: userEmail })
-  //   .populate('address')
-  //   .exec();
-  if (!verifyUserEmail) {
-    return res.redirect('/homepage');
-  }
-  const isUserPrimaryAddress = verifyUserEmail.isPrimaryAddress;
 
-  const userPrimaryAddress=await Address.findOne({_id:isUserPrimaryAddress})
-  if(!userPrimaryAddress){
-    return res.send("not found the primary address in address schema please check once again")
-  }
- return res.render('user/userdetails', { verifyUserEmail, userPrimaryAddress });
-    } catch (error) {
-       console.log("user details page error please check again");
-    return res.send("user details page error please check again")
+
+
+const userDetailspage = async (req, res) => {
+  userEmail = req.session.userEmail;
+  try {
+    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+
+    if (!verifyUserEmail) {
+      return res.redirect('/homepage');
     }
+   
+      //  const profileImage=verifyUserEmail.user_url_image
+      //  console.log(profileImage+"my profile image");
+
+    const isUserPrimaryAddress = verifyUserEmail.isPrimaryAddress;
+
+    const userPrimaryAddress = await Address.findOne({
+      _id: isUserPrimaryAddress,
+    });
+    if (!userPrimaryAddress) {
+      return res.send(
+        'not found the primary address in address schema please check once again',
+      );
+    }
+    return res.render('user/userdetails', {
+      verifyUserEmail,
+      userPrimaryAddress,
+      
+    });
+  } catch (error) {
+    console.log('user details page error please check again');
+    return res.send('user details page error please check again');
+  }
 };
 
 // EDIT USER DETAILS SELECT THE ADDRESS THE WHICH IS PRIMARY
 
 const userDetailsEditForm = async (req, res) => {
-  const userEmail = req.session.userEmail;
-
+  userEmail = req.session.userEmail;
 
   try {
     const verifyEmail = await UserCollection.findOne({ email: userEmail });
-  if (!verifyEmail) {
-    return res.redirect('/homepage');
-  }
-  const verifyEmailForAddress = await UserCollection.findOne({
+    if (!verifyEmail) {
+      return res.redirect('/homepage');
+    }
+    const verifyEmailForAddress = await UserCollection.findOne({
       email: userEmail,
     })
       .populate('address')
       .exec();
-    const UserAddress= verifyEmailForAddress.address;
-  
-  res.render('user/userDetailsEditForm', { verifyEmail,UserAddress});
+    const UserAddress = verifyEmailForAddress.address;
+
+    res.render('user/userDetailsEditForm', { verifyEmail, UserAddress });
   } catch (error) {
-       console.error('Error during userDetailsEditForm:', error);
+    console.error('Error during userDetailsEditForm:', error);
     return res.status(500).send('Error during userDetailsEditForm');
   }
 };
 
-const userDetailsEdit = async (req, res) => {
+ const userDetailsEdit = async (req, res) => {
+
   const { pUsername, pEmail, pNumber,addressSetId} = req.body;
 
   const userEmail = req.session.userEmail;
@@ -189,13 +230,16 @@ const userDetailsEdit = async (req, res) => {
       },
       { new: true },
     );
+
     if (!existingUserUpdate) {
       return res.status(500).send('error fetching:updating ');
     }
 
+    // adding new address to the existing users
 
  
 
+    
     return res.redirect('/userDeatils');
   } catch (error) {
     console.error(
@@ -206,6 +250,9 @@ const userDetailsEdit = async (req, res) => {
       .send('error in updating existing users and upating address' + error);
   }
 };
+
+
+
 
 // address section start here you cand add edit delete each address of a user
 
@@ -227,9 +274,18 @@ const addAddressForm = async (req, res) => {
 };
 
 const addingNewAddressForm = async (req, res) => {
-  console.log("1");
+  console.log('1');
   const currentUserEmail = req.session.userEmail;
-const { aUsername,aAdderess, aAdderessTwo, aPincode, aCity, aCountry, aDeliveryInfo,aTag } = req.body;
+  const {
+    aUsername,
+    aAdderess,
+    aAdderessTwo,
+    aPincode,
+    aCity,
+    aCountry,
+    aDeliveryInfo,
+    aTag,
+  } = req.body;
   console.log(aDeliveryInfo);
   console.log(aAdderessTwo);
 
@@ -241,17 +297,16 @@ const { aUsername,aAdderess, aAdderessTwo, aPincode, aCity, aCountry, aDeliveryI
       return res.redirect('/userDetails/detailsEdit');
     }
 
-   const newAddress = new Address({
-  address_username:aUsername,  
-    address_tag:aTag,
-  premanant_address: aAdderess,
-  address_two: aAdderessTwo,
-  postalCode: aPincode,
-  city: aCity,
-  country: aCountry,
-  delivery_info: aDeliveryInfo,
-});
-
+    const newAddress = new Address({
+      address_username: aUsername,
+      address_tag: aTag,
+      premanant_address: aAdderess,
+      address_two: aAdderessTwo,
+      postalCode: aPincode,
+      city: aCity,
+      country: aCountry,
+      delivery_info: aDeliveryInfo,
+    });
 
     await newAddress.save();
 
@@ -327,7 +382,7 @@ const logout = (req, res) => {
     if (err) {
       console.error('Error destroying session:', err);
     }
-    res.redirect('/login');
+    res.redirect('/');
   });
 };
 

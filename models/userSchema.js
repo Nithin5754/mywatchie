@@ -13,6 +13,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'must provide username'],
   },
+  user_image_url:{
+    type:String
+  },
   password: {
     type: String,
     required: [true, 'provide password'],
@@ -39,20 +42,18 @@ const UserSchema = new mongoose.Schema({
   resetPass: {
     type: String,
   },
-  user_url_image:
-    {
-      type:String,
-    },
-    isPrimaryAddress:{
-    type:String,
-    },
-      address: [
+  user_url_image: {
+    type: String,
+  },
+  isPrimaryAddress: {
+    type: String,
+  },
+  address: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Address',
     },
   ],
-  
 });
 
 UserCollection = mongoose.model('userCollection', UserSchema);

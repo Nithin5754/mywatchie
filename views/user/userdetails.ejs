@@ -30,23 +30,23 @@
       <div class="flex flex-col md:flex-row items-center md:space-x-6">
         <!-- User Profile Image -->
         <div class="w-full md:w-1/3 text-center md:text-left">
+         
           <!-- Edit Photo Button -->
-          <button
-            class="bg-blue-500 hover:bg-blue-600 text-white mt-4 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
-            Edit Photo
-          </button>
+          <a href="/userProfileAddForm">
+            <button
+              class="bg-blue-500 hover:bg-blue-600 text-white mt-4 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+              Edit Photo
+            </button>
+          </a>
 
           <!-- User Profile Picture -->
           <div
             class="relative inline-block group overflow-hidden rounded-full border-4 border-blue-500 hover:shadow-xl transition duration-300 ease-in-out mt-8">
-            <img src="/uploads/1695880015261-256889279-DeBethune-DB28-Skybridge-01.jpg" alt="User Profile"
+            <img src="<%= verifyUserEmail.user_image_url %>" alt="User Profile"
               class="w-64 h-64 mx-auto md:mx-0 object-cover object-center transform group-hover:scale-105 transition duration-300 ease-in-out">
             <div
               class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full transform translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition duration-300 ease-in-out">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
+            
             </div>
           </div>
         </div>
@@ -85,10 +85,11 @@
                       <td class="py-4">
                      
                         <table class="mt-2 w-full">
+                         
                           <tr>
-                            <td class="text-gray-600 text-lg font-semibold">Street:</td>
+                            <td class="text-gray-600 text-lg font-semibold">Address line-1:</td>
                             <td class="text-gray-800 text-lg">
-                              <%= userPrimaryAddress.premanant_address %>
+                              <h1 class="truncate w-80"><%= userPrimaryAddress.premanant_address %></h1>
                             </td>
                           </tr>
                           <tr>
@@ -118,14 +119,17 @@
                
               </tbody>
             </table>
-          </div>
-
-  
-             
+          </div>            
                   <a href="/userDetails/address">
                     <button
                       class="bg-blue-500 hover:bg-emerald-700 text-white mt-6 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
                      Add Address
+                    </button>
+                  </a>
+                  <a href= '/userDeatils/primaryAddress'>
+                    <button
+                      class="bg-blue-500 hover:bg-emerald-700 text-white mt-6 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+                      select primaryAddress
                     </button>
                   </a>
             </div>

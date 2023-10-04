@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const multer = require('multer');
 
 const {
   login,
@@ -10,10 +10,11 @@ const {
   loginPost,
   logout,
   userProfileAddForm,
-   userProfileAdd,
+  userProfileAdd,
   userDetailspage,
   addAddressForm,
   addingNewAddressForm,
+
   deleteAddress,
   editAddress,
   editAddressPost,
@@ -39,16 +40,19 @@ const {
 const userAuthentication = require('../middlewares/users/customeMiddle');
 
 
-
-
-
 // multer
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  },
+});
 
-
-
-
-
+const upload = multer({ storage: storage });
 
 router.route('/').get(userBeforeLogin);
 router.route('/login').get(login).post(loginPost);
@@ -58,12 +62,16 @@ router.route('/resendSignup').get(resendSignup);
 router.route('/homepage').get(userAuthentication, homepage);
 router.route('/logout').get(logout);
 
-router.route('/userProfileAddForm').get(userProfileAddForm).post( userProfileAdd)
+router
+  .route('/userProfileAddForm')
+  .get(userProfileAddForm)
+  .post(upload.single('image'),userProfileAdd);
 router.route('/userDeatils').get(userDetailspage);
 router
   .route('/userDetails/detailsEdit')
   .get(userDetailsEditForm)
   .post(userDetailsEdit);
+
 // add address secion path
 router
   .route('/userDetails/address')
