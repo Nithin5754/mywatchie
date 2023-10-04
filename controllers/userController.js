@@ -85,34 +85,83 @@ const homepage = async (req, res) => {
 
 // USER PROFILE DETAILS PAGE START HERE
 
+const userProfileAddForm=(req,res)=>{
+   res.render('user/userProfileAddForm')
+}
+
+const userProfileAdd=async(req,res)=>{
+  const {profileImage}=req.body
+  const userEmail = req.session.userEmail;
+  try {
+     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+     if(!verifyUserEmail){
+      return res.redirect('/userProfileAddForm')
+     }
+const userId=verifyUserEmail._id
+     const addingNewProfile= await UserCollection.findOne({ _id:userId },{ user_url_image:profileImage},{ new: true },);
+     if(!addingNewProfile){
+      return res.redirect('/userProfileAddForm')
+     }
+     return res.redirect('/userDetails/detailsEdit')
+    
+  } catch (error) {
+    console.log("user profile is not added into the db");
+    return res.send("user profile is not added into the db")
+    
+  }
+}
+
 const userDetailspage = async (req, res) => {
   const userEmail = req.session.userEmail;
-  const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-  const verifyAddress=await UserCollection.findOne({email:userEmail}).populate('address')
-  .exec();
+    try {
+      const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+  // const verifyAddress = await UserCollection.findOne({ email: userEmail })
+  //   .populate('address')
+  //   .exec();
   if (!verifyUserEmail) {
-   return res.redirect('/homepage');
+    return res.redirect('/homepage');
   }
-  const userPrimaryAddress=verifyAddress.address;
-  res.render('user/userdetails', { verifyUserEmail ,userPrimaryAddress});
+  const isUserPrimaryAddress = verifyUserEmail.isPrimaryAddress;
+
+  const userPrimaryAddress=await Address.findOne({_id:isUserPrimaryAddress})
+  if(!userPrimaryAddress){
+    return res.send("not found the primary address in address schema please check once again")
+  }
+ return res.render('user/userdetails', { verifyUserEmail, userPrimaryAddress });
+    } catch (error) {
+       console.log("user details page error please check again");
+    return res.send("user details page error please check again")
+    }
 };
+
+// EDIT USER DETAILS SELECT THE ADDRESS THE WHICH IS PRIMARY
 
 const userDetailsEditForm = async (req, res) => {
   const userEmail = req.session.userEmail;
-  const verifyEmail = await UserCollection.findOne({ email: userEmail });
 
+
+  try {
+    const verifyEmail = await UserCollection.findOne({ email: userEmail });
   if (!verifyEmail) {
     return res.redirect('/homepage');
-  }``
-
-  res.render('user/userDetailsEditForm', { verifyEmail });
+  }
+  const verifyEmailForAddress = await UserCollection.findOne({
+      email: userEmail,
+    })
+      .populate('address')
+      .exec();
+    const UserAddress= verifyEmailForAddress.address;
+  
+  res.render('user/userDetailsEditForm', { verifyEmail,UserAddress});
+  } catch (error) {
+       console.error('Error during userDetailsEditForm:', error);
+    return res.status(500).send('Error during userDetailsEditForm');
+  }
 };
 
-
-
 const userDetailsEdit = async (req, res) => {
-  const { pUsername, pEmail, pNumber} =
-    req.body;
+  const { pUsername, pEmail, pNumber,addressSetId} = req.body;
+
   const userEmail = req.session.userEmail;
   try {
     const isThisEmailExisting = await UserCollection.findOne({ email: pEmail });
@@ -125,6 +174,9 @@ const userDetailsEdit = async (req, res) => {
     if (!verifyEmail) {
       return res.redirect('/userDetails/detailsEdit');
     }
+// for setting primary address 
+    const isAddressEXisting=await Address.findOne({_id:addressSetId})
+    console.log((isAddressEXisting+"yes its their"));
 
     const existingUserUpdate = await UserCollection.findByIdAndUpdate(
       userDetailsId,
@@ -132,19 +184,19 @@ const userDetailsEdit = async (req, res) => {
         email: pEmail,
         username: pUsername,
         mobileNumber: pNumber,
+        isPrimaryAddress:isAddressEXisting._id
+       
       },
       { new: true },
     );
-
     if (!existingUserUpdate) {
       return res.status(500).send('error fetching:updating ');
     }
 
-    // adding new address to the existing users
 
-   
+ 
 
-    return res.redirect('/homepage');
+    return res.redirect('/userDeatils');
   } catch (error) {
     console.error(
       'error in updating existing users and upating address' + error,
@@ -157,107 +209,113 @@ const userDetailsEdit = async (req, res) => {
 
 // address section start here you cand add edit delete each address of a user
 
-const addAddressForm=async(req,res)=>{
-    const currentUserEmail=req.session.userEmail;
- try {
-     const verifyEmail=await UserCollection.findOne({email:currentUserEmail}).populate('address')
-  .exec();
-        console.log(verifyEmail.address);
-    const usersMultipleAddress=verifyEmail.address
-
-
-  res.render('user/addAddress',{usersMultipleAddress})
- } catch (error) {
-  res.send('error fetching rendering the add address page'+error)
-  console.log(error);
- }
-}
-
-
-const addingNewAddressForm=async(req,res)=>{
-  const currentUserEmail=req.session.userEmail;
-  const {aAdderess,aPincode,aCity,aCountry}=req.body
+const addAddressForm = async (req, res) => {
+  const currentUserEmail = req.session.userEmail;
   try {
-    const verifyEmail=await UserCollection.findOne({email:currentUserEmail})
-   if(!verifyEmail){
-  return  res.redirect('/userDetails/detailsEdit')
-   }
-
-
-  const newAddress = new Address({
-    premanant_address: aAdderess,
-    postalCode:aPincode,
-    city: aCity,
-    country: aCountry
-    });
-     
- 
-   await newAddress.save()
-
-   verifyEmail.address.push(newAddress)
-
-   await verifyEmail.save()
-
- return   res.redirect('/userDetails/address')
-  } catch (error) {
-     console.error('Error during add address:', error);
-    return res.status(500).send('Error during adding new address');
-  }
-}
-
-const deleteAddress=async(req,res)=>{
-   const userDeleteAddressId=req.params.addressId;
-   try {
-  const deleteAddress=await Address.findByIdAndRemove(userDeleteAddressId);
-  if(!deleteAddress){
-    return res.send("error occur in delete address")
-  }
-
-  res.redirect('/userDetails/address')
-
-
-
-   } catch (error) {
-     console.error('Error during delete address:', error);
-    return res.status(500).send('Error during delete address');
-   }
-}
-
-
-const editAddress=async(req,res)=>{
-  const addressId=req.params.addressId
-  const verifyAddressId=await Address.findById(addressId)
-  res.render('user/editAddress',{verifyAddressId})
-}
-
-const editAddressPost=async(req,res)=>{
-   const addressId=req.params.addressId
-   const {eCountry,eCity,ePostalCode,ePermananetAddress}=req.body
-   console.log(eCountry,eCity,ePostalCode,ePermananetAddress+"bhgtehgruhguitrhgjbthgrhughurhu");
-   try {
-
-    const isUpdated=await Address.findByIdAndUpdate(addressId,{
-     premanant_address:ePermananetAddress,
-    postalCode:ePostalCode,
-    city:eCity,
-    country:eCountry
+    const verifyEmail = await UserCollection.findOne({
+      email: currentUserEmail,
     })
+      .populate('address')
+      .exec();
+    const usersMultipleAddress = verifyEmail.address;
 
-    if(!isUpdated){
-     return  res.send("existing address is not able to edit please check again")
+    res.render('user/addAddress', { usersMultipleAddress });
+  } catch (error) {
+    res.send('error fetching rendering the add address page' + error);
+    console.log(error);
+  }
+};
+
+const addingNewAddressForm = async (req, res) => {
+  console.log("1");
+  const currentUserEmail = req.session.userEmail;
+const { aUsername,aAdderess, aAdderessTwo, aPincode, aCity, aCountry, aDeliveryInfo,aTag } = req.body;
+  console.log(aDeliveryInfo);
+  console.log(aAdderessTwo);
+
+  try {
+    const verifyEmail = await UserCollection.findOne({
+      email: currentUserEmail,
+    });
+    if (!verifyEmail) {
+      return res.redirect('/userDetails/detailsEdit');
     }
 
-    res.redirect('/userDetails/address')
-       
-   } catch (error) {
-     console.error('Error during updating address:', error);
+   const newAddress = new Address({
+  address_username:aUsername,  
+    address_tag:aTag,
+  premanant_address: aAdderess,
+  address_two: aAdderessTwo,
+  postalCode: aPincode,
+  city: aCity,
+  country: aCountry,
+  delivery_info: aDeliveryInfo,
+});
+
+
+    await newAddress.save();
+
+    verifyEmail.address.push(newAddress);
+
+    await verifyEmail.save();
+
+    return res.redirect('/userDetails/address');
+  } catch (error) {
+    console.error('Error during add address:', error);
+    return res.status(500).send('Error during adding new address');
+  }
+};
+
+const deleteAddress = async (req, res) => {
+  const userDeleteAddressId = req.params.addressId;
+  try {
+    const deleteAddress = await Address.findByIdAndRemove(userDeleteAddressId);
+    if (!deleteAddress) {
+      return res.send('error occur in delete address');
+    }
+
+    res.redirect('/userDetails/address');
+  } catch (error) {
+    console.error('Error during delete address:', error);
+    return res.status(500).send('Error during delete address');
+  }
+};
+
+const editAddress = async (req, res) => {
+  const addressId = req.params.addressId;
+  const verifyAddressId = await Address.findById(addressId);
+  res.render('user/editAddress', { verifyAddressId });
+};
+
+const editAddressPost = async (req, res) => {
+  const addressId = req.params.addressId;
+  const { eCountry, eCity, ePostalCode, ePermananetAddress } = req.body;
+  console.log(
+    eCountry,
+    eCity,
+    ePostalCode,
+    ePermananetAddress + 'bhgtehgruhguitrhgjbthgrhughurhu',
+  );
+  try {
+    const isUpdated = await Address.findByIdAndUpdate(addressId, {
+      premanant_address: ePermananetAddress,
+      postalCode: ePostalCode,
+      city: eCity,
+      country: eCountry,
+    });
+
+    if (!isUpdated) {
+      return res.send(
+        'existing address is not able to edit please check again',
+      );
+    }
+
+    res.redirect('/userDetails/address');
+  } catch (error) {
+    console.error('Error during updating address:', error);
     return res.status(500).send('Error during updating address');
-   }
-}
-
-
-
-
+  }
+};
 
 // END OF ADDRESS SECTION
 
@@ -548,13 +606,15 @@ module.exports = {
   signup,
   signupData,
   loginPost,
+  userProfileAddForm,
+  userProfileAdd,
   userDetailspage,
   addAddressForm,
   userDetailsEditForm,
   userDetailsEdit,
   deleteAddress,
   editAddress,
-editAddressPost,
+  editAddressPost,
   userBeforeLogin,
   addingNewAddressForm,
   resendSignup,

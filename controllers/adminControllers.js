@@ -5,6 +5,7 @@ const productCollection = require('../models/admin/productSchema');
 const categoryCollections = require('../models/admin/categorySchema');
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 
+
 const verifyAdmin = async (req, res) => {
   const { adminEmail, adminPassword } = req.body;
 
@@ -141,18 +142,25 @@ const createProduct = async (req, res) => {
   } = req.body;
 
   try {
-    let imagePath = req.file.path;
-    console.log(imagePath);
-    if (!req.file) {
-      return res.status(400).send('No file uploaded.');
+       if (!req.files || req.files.length === 0) {
+      return res.status(400).send('No files uploaded.');
     }
-    console.log('imagepath:', imagePath);
 
-    if (imagePath.includes('public\\')) {
+  
+
+
+    const imagePaths=req.files.map((file)=>{
+      let imagePath=file.path;
+
+         if (imagePath.includes('public\\')) {
       imagePath = imagePath.replace('public\\', '');
     } else if (imagePath.includes('public/')) {
       imagePath = imagePath.replace('public/', '');
     }
+     return imagePath
+    })
+
+ 
 
     const newProduct = new productCollection({
       product_name: productName,
@@ -161,10 +169,17 @@ const createProduct = async (req, res) => {
       product_discount: productDiscount,
       product_category: categoryProduct,
       product_qty: productQuantity,
-      product_image_url: imagePath,
+      product_image_url: imagePaths,
+      
     });
+    
+   
+    
     await newProduct.save();
+    
 
+
+  
     res.redirect('/adminProductManagement');
   } catch (error) {
     console.error('Error creating user:', error);

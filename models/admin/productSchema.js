@@ -19,9 +19,10 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  product_image_url: {
+  product_image_url: [{
     type: String,
-  },
+     default: Date.now,
+  }],
 
   product_discount: {
     type: Number,
@@ -32,7 +33,7 @@ const ProductSchema = new mongoose.Schema({
   product_publishDate: {
     type: Date,
     default: Date.now,
-  },
+  }
 });
 
 product = mongoose.model('product', ProductSchema);

@@ -28,6 +28,7 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+
   otpCreatedAt: {
     type: Date,
     default: Date.now,
@@ -38,12 +39,20 @@ const UserSchema = new mongoose.Schema({
   resetPass: {
     type: String,
   },
-  address: [
+  user_url_image:
+    {
+      type:String,
+    },
+    isPrimaryAddress:{
+    type:String,
+    },
+      address: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Address',
     },
   ],
+  
 });
 
 UserCollection = mongoose.model('userCollection', UserSchema);

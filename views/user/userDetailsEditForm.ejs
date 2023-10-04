@@ -1,60 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>user details edit form</title>
-    <link rel="stylesheet" href="dist/output.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
-
+  <title>User Details Edit Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <main>
-     <section>
-        <div class="w-full max-w-md mx-auto">
-          <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="/userDetails/detailsEdit" method="post">
-            <!-- Name Field -->
-            <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                Name
-              </label>
-              <input
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="name" type="text" name="pUsername"  value="<%= verifyEmail.username %>">
-            </div>
-        
-            <!-- Email Field -->
-            <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="email" >
-                Email
-              </label>
-              <input
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="email" type="email" name="pEmail" value="<%= verifyEmail.email%>" >
-            </div>
-        
-            <!-- Mobile Field -->
-            <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="mobile">
-                Mobile
-              </label>
-              <input
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="mobile" type="tel" name="pNumber" value="<%= verifyEmail.mobileNumber %>">
-            </div>
 
-            <!-- Submit Button -->
-            <div class="mt-6">
-              <button
-                class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out w-full"
-                type="submit">
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
+<body class="bg-gray-100">
+  <main class=" flex items-center justify-center">
+<section class="bg-gray-100">
+  <div class="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-4">
+    <form action="/userDetails/detailsEdit" method="post">
+      <!-- Name Field -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
+        <input
+          class="w-full px-3 py-2 placeholder-gray-400 border rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
+          id="name" type="text" name="pUsername" value="<%= verifyEmail.username %>">
+      </div>
 
-     </section>
+      <!-- Email Field -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
+        <input
+          class="w-full px-3 py-2 placeholder-gray-400 border rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
+          id="email" type="email" name="pEmail" value="<%= verifyEmail.email%>">
+      </div>
+
+      <!-- Mobile Field -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="mobile">Mobile</label>
+        <input
+          class="w-full px-3 py-2 placeholder-gray-400 border rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
+          id="mobile" type="tel" name="pNumber" value="<%= verifyEmail.mobileNumber %>">
+      </div>
+
+      <!-- Address Field -->
+      <div class="mb-4">
+        <fieldset class="border rounded-md p-4 mb-4">
+          <legend class="text-gray-700 text-lg font-semibold mb-2">Select an Address:</legend>
+          <div class="grid gap-4">
+            <% UserAddress.forEach((user, index)=> { %>
+              <label class="relative flex items-center justify-between gap-4 border rounded-md overflow-hidden p-2">
+                <input type="radio" id="address<%= index %>" name="addressSetId" value="<%= user._id %>"
+                  class="h-5 w-5 mr-2 cursor-pointer">
+                <div class="bg-purple-500 text-white py-2 px-4 rounded-md">
+                  <%= user.address_tag %>
+                </div>
+                <div class="text-gray-700 truncate w-96">
+                  <%= user.premanant_address %>
+                </div>
+              </label>
+              <% }); %>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="mt-6">
+        <button
+          class="w-full px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-md shadow-md transition duration-300 ease-in-out"
+          type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+
   </main>
 </body>
+
 </html>

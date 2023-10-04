@@ -80,8 +80,7 @@
                 </tr>
               </thead>
               <tbody>
-                <% userPrimaryAddress.forEach((primaryAddress, index)=> { %>
-                  <% if (index < 1) { %>
+               
                     <tr>
                       <td class="py-4">
                      
@@ -89,25 +88,25 @@
                           <tr>
                             <td class="text-gray-600 text-lg font-semibold">Street:</td>
                             <td class="text-gray-800 text-lg">
-                              <%= primaryAddress.premanant_address %>
+                              <%= userPrimaryAddress.premanant_address %>
                             </td>
                           </tr>
                           <tr>
                             <td class="text-gray-600 text-lg font-semibold">City:</td>
                             <td class="text-gray-800 text-lg">
-                              <%= primaryAddress.city %>
+                              <%= userPrimaryAddress.city %>
                             </td>
                           </tr>
                           <tr>
                             <td class="text-gray-600 text-lg font-semibold">Postal Code:</td>
                             <td class="text-gray-800 text-lg">
-                              <%= primaryAddress.postalCode %>
+                              <%= userPrimaryAddress.postalCode %>
                             </td>
                           </tr>
                           <tr>
                             <td class="text-gray-600 text-lg font-semibold">Country:</td>
                             <td class="text-gray-800 text-lg">
-                              <%= primaryAddress.country %>
+                              <%= userPrimaryAddress.country %>
                             </td>
                           </tr>
                         </table>
@@ -116,8 +115,7 @@
                         <!-- Additional actions can go here -->
                       </td>
                     </tr>
-                    <% } %>
-                      <% }); %>
+               
               </tbody>
             </table>
           </div>

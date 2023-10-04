@@ -53,7 +53,7 @@ router.route('/adminProductManagement').get(productManagement);
 router
   .route('/adminProductManagement/createProduct')
   .get(createProductDisplay)
-  .post(upload.single('image'), createProduct);
+  .post(upload.array('image',4), createProduct);
 
 //update product of exsiting product details
 router

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 const {
   login,
   userBeforeLogin,
@@ -8,12 +9,14 @@ const {
   signupData,
   loginPost,
   logout,
+  userProfileAddForm,
+   userProfileAdd,
   userDetailspage,
   addAddressForm,
   addingNewAddressForm,
- deleteAddress,
-editAddress,
-editAddressPost,
+  deleteAddress,
+  editAddress,
+  editAddressPost,
   userDetailsEditForm,
   userDetailsEdit,
   homepage,
@@ -28,13 +31,25 @@ editAddressPost,
 } = require('../controllers/userController');
 
 // productUsercontrollers
-
 const {
   productList,
   productDetails,
 } = require('../controllers/productUserControllers');
 
 const userAuthentication = require('../middlewares/users/customeMiddle');
+
+
+
+
+
+// multer
+
+
+
+
+
+
+
 router.route('/').get(userBeforeLogin);
 router.route('/login').get(login).post(loginPost);
 router.route('/signup').get(signup).post(signupData);
@@ -42,15 +57,25 @@ router.route('/resendSignup').get(resendSignup);
 
 router.route('/homepage').get(userAuthentication, homepage);
 router.route('/logout').get(logout);
+
+router.route('/userProfileAddForm').get(userProfileAddForm).post( userProfileAdd)
 router.route('/userDeatils').get(userDetailspage);
 router
   .route('/userDetails/detailsEdit')
   .get(userDetailsEditForm)
   .post(userDetailsEdit);
-  // add address secion path
-router.route('/userDetails/address').get(addAddressForm).post(addingNewAddressForm)
-router.route("/userDetails/address/deleteAddress/:addressId").post(deleteAddress)
-router.route("/userDetails/address/updateAddress/:addressId").get(editAddress).post(editAddressPost)
+// add address secion path
+router
+  .route('/userDetails/address')
+  .get(addAddressForm)
+  .post(addingNewAddressForm);
+router
+  .route('/userDetails/address/deleteAddress/:addressId')
+  .post(deleteAddress);
+router
+  .route('/userDetails/address/updateAddress/:addressId')
+  .get(editAddress)
+  .post(editAddressPost);
 // router.route("/userDetails/address/:updateAddress").get(editAddressFormDisplay)
 
 router.route('/otpVerfication').get(otpPage).post(otpVerification);
