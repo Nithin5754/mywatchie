@@ -1,6 +1,6 @@
 
 
-  <div class="flex flex-row justify-around items-center flex-wrap ">
+  <div class="flex flex-row justify-around items-center flex-wrap  gap-5">
   
 <%  randomCategory.forEach((element,index) => { %>
     <% if(index<4){ %>
@@ -9,8 +9,8 @@
     <div class="relative overflow-hidden bg-cover bg-no-repeat">
       <a href="/productList"><img class="rounded-t-lg w-48" src="<%= element.category_img_url %>" alt="" /></a>
     </div>
-    <div class="">
-      <h1 class="text-center font-extrabold text-black">
+    <div class="bg-white">
+      <h1 class="text-center font-extrabold  bg-white">
       <%= element.product_category%>
       </h1>
     </div>

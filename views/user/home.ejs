@@ -13,16 +13,16 @@
   <!-- googlr icons materials -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
-   
+  <link rel="stylesheet" href="/css/darkmode.css">
 </head>
-<body class=" scroll-smooth capitalize bg-slate-300 text-black">
+<body class=" scroll-smooth capitalize dark-mode ">
   <!-- Include Alpine.js -->
 <!-- header.ejs -->
     <%- include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail}) %>
 
  
     
-    <main style="margin-top:5rem">
+    <main style="margin-top:5rem " >
   
       <section class="relative mb-5">
         <%- include('./partials/banner.ejs',{randomBanner}) %>
@@ -41,6 +41,7 @@
   </main>
 
   <!-- Alpine.js and Swiper JS scripts -->
+  <script src="/js/darkmode.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" ></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>

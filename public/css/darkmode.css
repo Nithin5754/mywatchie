@@ -1,0 +1,34 @@
+ /* Dark Mode Styles */
+ .dark-mode {
+   background-color: #1a202c;
+   color: #e2e8f0;
+ }
+
+ .dark-mode .bg-gray-100 {
+   background-color: #2d3748;
+ }
+
+ .dark-mode .bg-white {
+   background-color: #2d3748;
+   color: #e2e8f0;
+ }
+
+ .dark-mode .text-gray-600 {
+   color: #a0aec0;
+ }
+
+ .dark-mode .text-gray-800 {
+   color: #e2e8f0;
+ }
+
+ .dark-mode .text-blue-500 {
+   color: #63b3ed;
+ }
+
+ .dark-mode .hover\:text-gray-800:hover {
+   color: #e2e8f0;
+ }
+
+ .dark-mode .hover\:text-blue-600:hover {
+   color: #63b3ed;
+ }

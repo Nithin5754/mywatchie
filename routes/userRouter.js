@@ -39,7 +39,6 @@ const {
 
 const userAuthentication = require('../middlewares/users/customeMiddle');
 
-
 // multer
 
 const storage = multer.diskStorage({
@@ -65,7 +64,7 @@ router.route('/logout').get(logout);
 router
   .route('/userProfileAddForm')
   .get(userProfileAddForm)
-  .post(upload.single('image'),userProfileAdd);
+  .post(upload.single('image'), userProfileAdd);
 router.route('/userDeatils').get(userDetailspage);
 router
   .route('/userDetails/detailsEdit')

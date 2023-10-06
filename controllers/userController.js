@@ -1,12 +1,11 @@
 const UserCollection = require('../models/userSchema');
 const categoryCollections = require('../models/admin/categorySchema');
 const bcrypt = require('bcrypt');
-const path=require('path')
+const path = require('path');
 
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
 const Address = require('../models/addressSchema');
-
 
 let userEmail;
 
@@ -45,7 +44,7 @@ const userBeforeLogin = async (req, res) => {
     islogout = 'help';
     isCreateAccount = 'create account';
     isCreateAccountUrl = '/signup';
-    verifyUserEmail="profile"
+    verifyUserEmail = 'profile';
 
     return res.render('user/userBeforeLogin', {
       randomBanner,
@@ -55,7 +54,7 @@ const userBeforeLogin = async (req, res) => {
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
-      verifyUserEmail
+      verifyUserEmail,
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -66,11 +65,11 @@ const userBeforeLogin = async (req, res) => {
 //homepage will appear using this path
 
 const homepage = async (req, res) => {
-   userEmail = req.session.userEmail;
+  userEmail = req.session.userEmail;
   try {
     const randomBanner = await getRandomBannerImage();
-    const verifyUserEmail=await UserCollection.findOne({email:userEmail})
-          if (!verifyUserEmail) {
+    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
     const randomCategory = await categoryCollections.find();
@@ -97,20 +96,18 @@ const homepage = async (req, res) => {
 
 // USER PROFILE DETAILS PAGE START HERE
 
-const userProfileAddForm = async(req, res) => {
-    res.render('user/userProfileAddForm');
+const userProfileAddForm = async (req, res) => {
+  res.render('user/userProfileAddForm');
 };
 
-
-
-const userProfileAdd=async(req,res)=>{
-    userEmail = req.session.userEmail;
-    try {
-      const verifyUserEmail=await UserCollection.findOne({email:userEmail})
-        if (!verifyUserEmail) {
+const userProfileAdd = async (req, res) => {
+  userEmail = req.session.userEmail;
+  try {
+    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
-      let imageProfile = req.file.path;
+    let imageProfile = req.file.path;
     console.log(imageProfile);
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
@@ -123,24 +120,24 @@ const userProfileAdd=async(req,res)=>{
       imageProfile = imageProfile.replace('public/', '');
     }
 
-    const userImageAdding=await UserCollection.findOneAndUpdate({email:userEmail},{
-        user_image_url:imageProfile
-    },{new:true})
+    const userImageAdding = await UserCollection.findOneAndUpdate(
+      { email: userEmail },
+      {
+        user_image_url: imageProfile,
+      },
+      { new: true },
+    );
 
-    if(!userImageAdding){
-    return res.send("image is not save to db please check again")
+    if (!userImageAdding) {
+      return res.send('image is not save to db please check again');
     }
 
     return res.redirect('/userDeatils');
-
-    } catch (error) {
-      console.log(error);
-     return res.send("error occur in image uploading please check again")
-    }
-}
-
-
-
+  } catch (error) {
+    console.log(error);
+    return res.send('error occur in image uploading please check again');
+  }
+};
 
 const userDetailspage = async (req, res) => {
   userEmail = req.session.userEmail;
@@ -150,24 +147,25 @@ const userDetailspage = async (req, res) => {
     if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
-   
-      //  const profileImage=verifyUserEmail.user_url_image
-      //  console.log(profileImage+"my profile image");
-
+    const temporaryAddress = 'add address';
     const isUserPrimaryAddress = verifyUserEmail.isPrimaryAddress;
 
     const userPrimaryAddress = await Address.findOne({
       _id: isUserPrimaryAddress,
     });
-    if (!userPrimaryAddress) {
-      return res.send(
-        'not found the primary address in address schema please check once again',
-      );
-    }
+
+    const isAddressTheir = userPrimaryAddress
+      ? userPrimaryAddress
+      : temporaryAddress;
+
+    // if (!userPrimaryAddress) {
+    //   return res.send(
+    //     'not found the primary address in address schema please check once again',
+    //   );
+    // }
     return res.render('user/userdetails', {
       verifyUserEmail,
-      userPrimaryAddress,
-      
+      isAddressTheir,
     });
   } catch (error) {
     console.log('user details page error please check again');
@@ -185,6 +183,7 @@ const userDetailsEditForm = async (req, res) => {
     if (!verifyEmail) {
       return res.redirect('/homepage');
     }
+
     const verifyEmailForAddress = await UserCollection.findOne({
       email: userEmail,
     })
@@ -199,60 +198,68 @@ const userDetailsEditForm = async (req, res) => {
   }
 };
 
- const userDetailsEdit = async (req, res) => {
-
-  const { pUsername, pEmail, pNumber,addressSetId} = req.body;
-
+const userDetailsEdit = async (req, res) => {
+  const { pUsername, pEmail, pNumber, addressSetId } = req.body;
   const userEmail = req.session.userEmail;
+
   try {
+    // Check if the provided email already exists and is not empty
     const isThisEmailExisting = await UserCollection.findOne({ email: pEmail });
-    if (isThisEmailExisting && !pEmail) {
+    if (isThisEmailExisting && pEmail !== userEmail) {
       return res.redirect('/userDetails/detailsEdit');
     }
+
+    // Find the user's document by their current email
     const verifyEmail = await UserCollection.findOne({ email: userEmail });
 
-    const userDetailsId = verifyEmail._id;
+    // Check if the user document exists
     if (!verifyEmail) {
       return res.redirect('/userDetails/detailsEdit');
     }
-// for setting primary address 
-    const isAddressEXisting=await Address.findOne({_id:addressSetId})
-    console.log((isAddressEXisting+"yes its their"));
 
+    // Find the user details ID
+    const userDetailsId = verifyEmail._id;
+
+    // Find the address by ID
+    const isAddressExisting = await Address.findOne({ _id: addressSetId });
+
+    if (!isAddressExisting) {
+      return res.redirect('/userDetails/detailsEdit');
+    }
+
+    // Update the user's information, including the primary address
     const existingUserUpdate = await UserCollection.findByIdAndUpdate(
       userDetailsId,
       {
         email: pEmail,
         username: pUsername,
         mobileNumber: pNumber,
-        isPrimaryAddress:isAddressEXisting._id
-       
+        isPrimaryAddress: isAddressExisting._id, // Set the primary address to the selected one
       },
       { new: true },
     );
 
     if (!existingUserUpdate) {
-      return res.status(500).send('error fetching:updating ');
+      return res
+        .status(500)
+        .send('Error fetching or updating user information');
     }
 
-    // adding new address to the existing users
+    // Update session information
+    req.session.userEmail = pEmail;
+    req.session.profileName = pUsername;
 
- 
-
-    
     return res.redirect('/userDeatils');
   } catch (error) {
     console.error(
-      'error in updating existing users and upating address' + error,
+      'Error in updating existing users and updating address',
+      error,
     );
-    res
+    return res
       .status(500)
-      .send('error in updating existing users and upating address' + error);
+      .send('Error in updating existing users and updating address');
   }
 };
-
-
-
 
 // address section start here you cand add edit delete each address of a user
 
@@ -345,12 +352,6 @@ const editAddress = async (req, res) => {
 const editAddressPost = async (req, res) => {
   const addressId = req.params.addressId;
   const { eCountry, eCity, ePostalCode, ePermananetAddress } = req.body;
-  console.log(
-    eCountry,
-    eCity,
-    ePostalCode,
-    ePermananetAddress + 'bhgtehgruhguitrhgjbthgrhughurhu',
-  );
   try {
     const isUpdated = await Address.findByIdAndUpdate(addressId, {
       premanant_address: ePermananetAddress,

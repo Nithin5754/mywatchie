@@ -12,7 +12,6 @@ const productList = async (req, res) => {
     isCreateAccountUrl = '/homepage';
     isUrl = '#';
     const productLists = await product.find();
-    console.log(productLists);
 
     res.render('user/productPage', {
       productLists,
@@ -37,9 +36,8 @@ const productDetails = async (req, res) => {
     isUrl = '#';
     const OneProduct = req.params.productId;
     const productLists = await product.findById(OneProduct);
-    console.log(typeof productLists);
+
     const imgUrl = productLists.product_image_url;
-    console.log(imgUrl);
 
     res.render('user/productDetailsPage', {
       productLists,

@@ -15,6 +15,8 @@ const userRoutes = require('./routes/userRouter');
 
 const adminRoutes = require('./routes/adminRoutes');
 
+const cartRoutes = require('./routes/cartRouter');
+
 // global midlleware
 
 app.use(express.json());
@@ -42,6 +44,7 @@ app.use(
 
 app.use('/', userRoutes);
 app.use('/', adminRoutes);
+app.use('/', cartRoutes);
 
 //server creation and connecting with cloud mongodb atlas with the help of mongoose
 
