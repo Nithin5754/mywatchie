@@ -29,7 +29,8 @@ const productList = async (req, res) => {
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
-      cartItems
+      cartItems,
+      verifyUserEmail
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -56,7 +57,12 @@ const productDetails = async (req, res) => {
 
      const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });//it will find the user logging cart 
 
-    const cartquantity = cartItems.items.map((item) => item.quantity);
+    const cartquantity = cartItems.items.filter((item) => item.product.toString()===OneProduct);
+  
+    console.log(cartquantity);
+    
+
+    
 
     
 
@@ -69,7 +75,6 @@ const productDetails = async (req, res) => {
       isProfile,
       isUrl,
       islogout,
-      cartquantity,
       isCreateAccount,
       isCreateAccountUrl,
       cartItems

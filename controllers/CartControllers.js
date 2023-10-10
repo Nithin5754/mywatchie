@@ -259,8 +259,52 @@ await userCart.save()
 
 
 
+const productDeleteFromTheCart=async(req,res)=>{
+  const userEmail = req.session.userEmail;
+  const deleteItem=req.params.productId;
+
+  try {
+         const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
+
+    
+    const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
+    if (!userCart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+const isproductInCart=userCart.items.find((item)=>item.product.toString()===deleteItem);
+console.log(isproductInCart.single_product_total_price+"dgfhrgfyugrfgyurghfgrh");
+
+
+const productIndex =userCart.items.findIndex(
+      (item) => item.product.toString() === deleteItem
+    );
+
+  console.log(productIndex+"fetching error");
+
+     userCart.items.splice(productIndex, 1);
+
+  userCart.total-=isproductInCart.single_product_total_price;
+  userCart.totalQuantity-=isproductInCart.quantity
+  
+
+    // console.log(isproductInCart);
+
+
+     userCart.save()
+
+      res.redirect("back")
+
+  } catch (error) {
+    console.log(error);
+    console.log(error);
+  }
+}
 
 
 
 
-module.exports = { cartDisplay, productSendToCart,productMinus,productAdd};
+module.exports = { cartDisplay, productSendToCart,productMinus,productAdd,productDeleteFromTheCart};

@@ -18,25 +18,30 @@ const CartSchema = new mongoose.Schema({
         required: true,
         default: 1,
         max:10,
+        min:1,
       },
       single_product_total_price:{
         type:Number,
         required:true,
-        default:0
+        default:0,
+        min:0,
       }
     },
   ],
   discount:{
     type:Number,
-    default:0
+    default:0,
+    min:0,
   },
   total: {
     type: Number,
     default: 0,
+    min:0,
   },
   totalQuantity:{
     type:Number,
-    default:0
+    default:0,
+    min:0,
   },
   
   createdAt: {
