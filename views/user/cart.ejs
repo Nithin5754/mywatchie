@@ -19,7 +19,7 @@
 <body   >
 
 <!-- header.ejs -->
-<%- include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail}) %>
+<%- include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems}) %>
 
 
   <main style="background-image: url('<%= randomBannerImage %>'); background-size: cover; background-position: center; background-repeat: no-repeat;">
@@ -30,7 +30,7 @@
                   <h1 class="text-5xl font-extrabold text-white">Your Cart</h1>
                 </div>
             
-                <div class="mx-auto  bg-white rounded-lg shadow-lg mt-8 p-4 max-w-8xl md:mt-12">
+                <div class="mx-auto  bg-white rounded-md shadow-lg mt-8 p-4 max-w-6xl md:mt-12">
                   <div class="">
                     <div class="px-4 py-6 sm:px-8 sm:py-10">
                       <div class="flow-root">
@@ -59,15 +59,15 @@
                   </p>
                   <div class="sm:order-1">
                     <div class="mx-auto flex h-8 items-stretch text-gray-600">
-                      <a href="/cart/quantityMinus/<%= item._id%>"
-                        class="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white " >-</a>
+                      <a href="#"
+                        class="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white minus-cart" data-minusid="<%= item._id%>">-</a>
                       <div
                         class="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition quantity-display"
-                         %>">
+                      >
                         <%= cartquantity[index] %>
                       </div>
-                      <a href="/cart/quantityAdd/<%= item._id%>"
-                        class="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white">+</a>
+                      <a href="#"
+                        class="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white Add-cart"  data-Addid="<%= item._id %>">+</a>
                     </div>
                   </div>
                 </div>
@@ -128,9 +128,7 @@
 
       </section>
   </main>
-    <script> 
-    
-    </script>
+  <script src="/js/addMinus.js"></script>
   <!-- Alpine.js and Swiper JS scripts -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
@@ -140,7 +138,6 @@
   <script src="/js/swiper.js"></script>
   <script src="/js/search.js"></script>
 
-  <script src="/js/addMinus.js"></script>
  
 
 </body>

@@ -14,20 +14,11 @@
               // You can include any data you need in the request body
               body: JSON.stringify({ productId }),
             })
-              .then((response) => response.json())
-              .then((data) => {
-             
-                console.log(data.message);
-                console.log(data.cart); 
-
-                const cartMessage = document.getElementById('cartMessage');
-                cartMessage.style.display = 'block';
-
-             
-                setTimeout(() => {
-                  cartMessage.style.display = 'none';
-                }, 1000);
-              })
+              .then((response) =>
+               response.json(),
+              window.location.reload()
+               )
+            
               .catch((error) => {
                 console.error('Error adding product to cart:', error);
               });

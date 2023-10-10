@@ -6,6 +6,7 @@ const path = require('path');
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
 const Address = require('../models/addressSchema');
+const Cart=require('../models/cartSchema')
 
 let userEmail;
 
@@ -45,6 +46,7 @@ const userBeforeLogin = async (req, res) => {
     isCreateAccount = 'create account';
     isCreateAccountUrl = '/signup';
     verifyUserEmail = 'profile';
+    cartItems="";
 
     return res.render('user/userBeforeLogin', {
       randomBanner,
@@ -55,6 +57,7 @@ const userBeforeLogin = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       verifyUserEmail,
+      cartItems
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -78,6 +81,10 @@ const homepage = async (req, res) => {
     isCreateAccount = 'Orders';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
+
+  const cartItems = await Cart.findOne({ userId: verifyUserEmail._id })
+
+
     return res.render('user/home', {
       randomBanner,
       randomCategory,
@@ -87,6 +94,7 @@ const homepage = async (req, res) => {
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
+      cartItems
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);

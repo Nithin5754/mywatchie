@@ -14,8 +14,8 @@ router.route('/cart').get(cartDisplay);
 
 router.route('/cart/product/:productId').post(productSendToCart);
 
-router.route('/cart/quantityMinus/:productId').get(productMinus)
-router.route('/cart/quantityAdd/:productId').get(productAdd)
+router.route('/cart/quantityMinus/:productId').post(productMinus)
+router.route('/cart/quantityAdd/:productId').post(productAdd)
 
 
 

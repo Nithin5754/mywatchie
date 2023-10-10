@@ -1,4 +1,5 @@
 const product = require('../models/admin/productSchema');
+const Cart=require('../models/cartSchema')
 
 let islogout;
 let isCreateAccount;
@@ -6,12 +7,20 @@ let isCreateAccountUrl;
 let isUrl;
 const productList = async (req, res) => {
   const isProfile = req.session.profileName;
+    userEmail = req.session.userEmail;
   try {
+     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
+
     islogout = 'log out';
     isCreateAccount = 'Orders';
     isCreateAccountUrl = '/homepage';
     isUrl = '#';
     const productLists = await product.find();
+
+  const cartItems = await Cart.findOne({ userId:verifyUserEmail._id })
 
     res.render('user/productPage', {
       productLists,
@@ -20,6 +29,7 @@ const productList = async (req, res) => {
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
+      cartItems
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -29,6 +39,7 @@ const productList = async (req, res) => {
 
 const productDetails = async (req, res) => {
   const isProfile = req.session.profileName;
+  const userEmail=req.session.userEmail;
   try {
     islogout = 'log out';
     isCreateAccount = 'Orders';
@@ -37,6 +48,20 @@ const productDetails = async (req, res) => {
     const OneProduct = req.params.productId;
     const productLists = await product.findById(OneProduct);
 
+      const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
+
+
+     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });//it will find the user logging cart 
+
+    const cartquantity = cartItems.items.map((item) => item.quantity);
+
+    
+
+
+
     const imgUrl = productLists.product_image_url;
 
     res.render('user/productDetailsPage', {
@@ -44,8 +69,11 @@ const productDetails = async (req, res) => {
       isProfile,
       isUrl,
       islogout,
+      cartquantity,
       isCreateAccount,
       isCreateAccountUrl,
+      cartItems
+
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);

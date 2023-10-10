@@ -103,14 +103,10 @@
               <div
                 class="text-center left-0 pt-2 right-0 absolute block text-xs uppercase text-gray-400 tracking-wide font-semibold">
                 Qty</div>
-              <select
-                class="cursor-pointer appearance-none rounded-xl border border-gray-200 pl-4 pr-8 h-14 flex items-end pb-1">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-              </select>
+              <s
+                class=" appearance-none rounded-xl border border-gray-200 pl-4 pr-8 h-14 flex items-end pb-1">
+     <!--  -->
+              </s>
 
               <svg class="w-5 h-5 text-gray-400 absolute right-0 bottom-0 mb-2 mr-2" xmlns="http://www.w3.org/2000/svg"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -118,10 +114,10 @@
               </svg>
             </div>
 
-            <button type="button"
-              class="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white">
+            <a href="#" type="button"
+              class="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white  add-to-cart-btn" data-productid="<%=productLists._id %>">
               Add to Cart
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -134,7 +130,7 @@
      </main>
    
 
-
+<script src="/public/js/cart.js"></script>
     <!-- Alpine.js and Swiper JS scripts -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>

@@ -11,6 +11,7 @@ let isUrl;
 let isProfile;
 
 
+
 const cartDisplay = async (req, res) => {
   // HEADER SECTION DETAILS
   islogout = 'log out';
@@ -90,22 +91,38 @@ const productSendToCart = async (req, res) => {
         userId: verifyUserEmail._id,
         items: [{ product: productId, quantity: 1 ,single_product_total_price:productPrice.product_price}],
         total:productPrice.product_price,
+         totalQuantity:1 
+        
       });
 
       await userCart.save();
     } else {
-      const isProductInCart = userCart.items.find(
+      const isProductInCart =await userCart.items.find(
         item => item.product.toString() === productId,
       );
       if (isProductInCart) {
         isProductInCart.quantity += 1;
         isProductInCart.single_product_total_price+=productPrice.product_price
         userCart.total+=productPrice.product_price
+        userCart.totalQuantity+=1
+     
+        
+      
+     
+       
+      
 
       } else {
-        userCart.items.push({ product: productId, quantity: 1,  single_product_total_price:productPrice.product_price });
+        userCart.items.push({ product: productId, quantity: 1,single_product_total_price:productPrice.product_price });
         userCart.total+=productPrice.product_price;
+         userCart.totalQuantity+=1
+          
+    
+        
       }
+     
+
+
       await userCart.save();
     }
 
@@ -136,38 +153,45 @@ try {
     }
 
 
-   const isProductInCart = userCart.items.find(
+   const isProductInCart =await userCart.items.find(
         item => item.product.toString() === productId,
       );
 
    
+   const qtyMinus = isProductInCart.quantity - 1;//deducting one product from each time
+  //  for avatar notification
+   userCart.totalQuantity-=1;
 
- 
-   const qtyMinus = isProductInCart.quantity - 1;
-
+   
 if (qtyMinus <= 0) {
- 
-  const itemIndex = userCart.items.findIndex(
+
+      const itemTotalPrice = isProductInCart.single_product_total_price;
+
+      userCart.total -= itemTotalPrice;
+
+  const itemIndex =await userCart.items.findIndex(
     (item) => item.product.toString() === productId
   );
+  
   if (itemIndex !== -1) {
     userCart.items.splice(itemIndex, 1);
+   
   }
 } else {
-    //  single_product_total_price and each product
+
     const productPrice=await product.findOne({_id:productId})
   // Update the quantity and total price otherwise
   const singleTotal = productPrice.product_price*qtyMinus;
   isProductInCart.quantity = qtyMinus;
+  
   isProductInCart.single_product_total_price =singleTotal;
-  const  isTotal=userCart.total-productPrice.product_price
-    userCart.total=isTotal;
+  
+  userCart.total -= productPrice.product_price;
 }
 
 await userCart.save();
 
 
-      console.log(isProductInCart+"heejiorhiewo jerifrheuirr eurwhe urh");
 
     res.redirect('back')
     // Save the updated cart
@@ -195,33 +219,36 @@ if(!userCart){
   return res.send("cart not found")
 } 
 
-const isproductInCart=userCart.items.find((item)=>item.product.toString()===productId);
+const isproductInCart=await userCart.items.find((item)=>item.product.toString()===productId);
 
 if(!isproductInCart){
   return res.send("poroduct not found in the cart")
 }
 
-qtyAdd=isproductInCart.quantity+1;
+qtyAdd=isproductInCart.quantity+1;// for adding one product for qty for each time
+ //  for avatar notification
+
+ userCart.totalQuantity+=1;
 
 
 
 if(qtyAdd>10){
+
 return res.redirect('back')
 }else{
      const productPrice=await product.findOne({_id:productId})
-
      const singleTotal=qtyAdd*productPrice.product_price;
+    
      isproductInCart.quantity=qtyAdd;
-
      isproductInCart.single_product_total_price=singleTotal
 
-   const isTotal=userCart.total-productPrice.product_price
+   const isTotal=userCart.total+productPrice.product_price;
     userCart.total=isTotal;
 
 }
 
 await userCart.save()
-    res.redirect('back')
+  return res.redirect('back')
 
 } catch (error) {
   console.log("fetching error : adding quantity",error);
