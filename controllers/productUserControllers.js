@@ -55,29 +55,32 @@ const productDetails = async (req, res) => {
     }
 
 
-     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });//it will find the user logging cart 
+     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });//it will find the user logging cart
+     
+     
+          const productQty = cartItems.items.find(
+      (item) => item.product.toString() === OneProduct
+    );
+            let prodQty = 0; 
 
-    const cartquantity = cartItems.items.filter((item) => item.product.toString()===OneProduct);
-  
-    console.log(cartquantity);
-    
-
-    
-
-    
-
+            if (productQty && productQty.quantity !== undefined) {
+            
+              prodQty = productQty.quantity;
+            }
 
 
     const imgUrl = productLists.product_image_url;
 
     res.render('user/productDetailsPage', {
+      verifyUserEmail,
       productLists,
       isProfile,
       isUrl,
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
-      cartItems
+      cartItems,
+      prodQty
 
     });
   } catch (error) {
