@@ -6,12 +6,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
     lowercase: true,
-    // unique: [true, 'Email is already exits'],
-    required: [true, 'Email address is required'],
+    unique: [true, 'Email is already exits'],
+   
   },
   username: {
     type: String,
-    required: [true, 'must provide username'],
+   
   },
   user_image_url: {
     type: String,

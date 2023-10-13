@@ -6,7 +6,8 @@ const path = require('path');
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
 const Address = require('../models/addressSchema');
-const Cart=require('../models/cartSchema')
+const Cart = require('../models/cartSchema');
+const UserOrder=require('../models/orderSchema')
 
 let userEmail;
 
@@ -18,11 +19,21 @@ const {
 
 //loginpage
 
+
+
 const login = async (req, res) => {
   try {
     const randomBannerImage = await getRandomBannerImage();
 
-    res.render('user/login', { msg: req.session.msg, randomBannerImage });
+    if(req.session.invalid){
+      req.session.invalid=false
+          res.render('user/login', { msg: req.session.errorMessage, randomBannerImage, prevEnter:req.session.previousEnterEmail||'' });
+    }else{
+       req.session.invalid=false
+   res.render('user/login', { msg:'', randomBannerImage });
+    }
+
+
   } catch (error) {
     console.error('Error fetching images:', error.message);
     res.status(500).send('Internal Server Error-login page error');
@@ -46,7 +57,7 @@ const userBeforeLogin = async (req, res) => {
     isCreateAccount = 'create account';
     isCreateAccountUrl = '/signup';
     verifyUserEmail = 'profile';
-    cartItems="";
+    cartItems = '';
 
     return res.render('user/userBeforeLogin', {
       randomBanner,
@@ -57,7 +68,7 @@ const userBeforeLogin = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       verifyUserEmail,
-      cartItems
+      cartItems,
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -78,12 +89,11 @@ const homepage = async (req, res) => {
     const randomCategory = await categoryCollections.find();
     const isProfile = req.session.profileName;
     islogout = 'log out';
-    isCreateAccount = 'Orders';
+    isCreateAccount = 'contact us';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
 
-  const cartItems = await Cart.findOne({ userId: verifyUserEmail._id })
-
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
     return res.render('user/home', {
       randomBanner,
@@ -94,7 +104,7 @@ const homepage = async (req, res) => {
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
-      cartItems
+      cartItems,
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -148,6 +158,7 @@ const userProfileAdd = async (req, res) => {
 };
 
 const userDetailspage = async (req, res) => {
+  req.session.isUserDetaileSession = true;
   userEmail = req.session.userEmail;
   try {
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
@@ -166,17 +177,21 @@ const userDetailspage = async (req, res) => {
       ? userPrimaryAddress
       : temporaryAddress;
 
-    // if (!userPrimaryAddress) {
-    //   return res.send(
-    //     'not found the primary address in address schema please check once again',
-    //   );
-    // }
+    const isOrder=await UserOrder.find({email:userEmail}).populate("items.product").exec();
+
+
+     
+
+ 
+    
+
     return res.render('user/userdetails', {
+      isOrder,
       verifyUserEmail,
       isAddressTheir,
     });
   } catch (error) {
-    console.log('user details page error please check again');
+    console.log('user details page error please check again',error);
     return res.send('user details page error please check again');
   }
 };
@@ -211,38 +226,37 @@ const userDetailsEdit = async (req, res) => {
   const userEmail = req.session.userEmail;
 
   try {
-    // Check if the provided email already exists and is not empty
+   
     const isThisEmailExisting = await UserCollection.findOne({ email: pEmail });
     if (isThisEmailExisting && pEmail !== userEmail) {
       return res.redirect('/userDetails/detailsEdit');
     }
 
-    // Find the user's document by their current email
+  
     const verifyEmail = await UserCollection.findOne({ email: userEmail });
 
-    // Check if the user document exists
+
     if (!verifyEmail) {
       return res.redirect('/userDetails/detailsEdit');
     }
 
-    // Find the user details ID
+ 
     const userDetailsId = verifyEmail._id;
 
-    // Find the address by ID
     const isAddressExisting = await Address.findOne({ _id: addressSetId });
 
     if (!isAddressExisting) {
       return res.redirect('/userDetails/detailsEdit');
     }
 
-    // Update the user's information, including the primary address
+
     const existingUserUpdate = await UserCollection.findByIdAndUpdate(
       userDetailsId,
       {
         email: pEmail,
         username: pUsername,
         mobileNumber: pNumber,
-        isPrimaryAddress: isAddressExisting._id, // Set the primary address to the selected one
+        isPrimaryAddress: isAddressExisting._id, 
       },
       { new: true },
     );
@@ -257,7 +271,11 @@ const userDetailsEdit = async (req, res) => {
     req.session.userEmail = pEmail;
     req.session.profileName = pUsername;
 
-    return res.redirect('/userDeatils');
+    if (req.session.isUserDetaileSession) {
+      return res.redirect('/userDeatils');
+    } else {
+      return res.redirect('/orderManagement');
+    }
   } catch (error) {
     console.error(
       'Error in updating existing users and updating address',
@@ -268,6 +286,34 @@ const userDetailsEdit = async (req, res) => {
       .send('Error in updating existing users and updating address');
   }
 };
+
+
+const  userOrderCancel=async(req,res)=>{
+ const cancelOrderNumber=req.params.cancelOrderId;
+
+try {
+
+const userOrderItem=await UserOrder.findOne({orderNumber:cancelOrderNumber});
+
+
+
+      if(userOrderItem.status==="pending"){
+         const cancelOrder=await UserOrder.findOneAndRemove({orderNumber:cancelOrderNumber})
+          if(!cancelOrder){
+       return res.redirect("/userDetails")
+   }
+      }
+         
+      
+  return  res.redirect("back") 
+} catch (error) {
+  console.log("cancel order item something error"+error);
+  return res.send("cancelling order item is not completed please check again")
+  
+} 
+
+
+}
 
 // address section start here you cand add edit delete each address of a user
 
@@ -475,31 +521,49 @@ const signupData = async (req, res) => {
 //login validation
 const loginPost = async (req, res) => {
   const { lEmail, lPassword } = req.body;
-  let user;
+
+  req.session.previousEnterEmail=lEmail
+
+         if (lEmail.trim() === '' && lPassword.trim() === '') {
+      req.session.invalid = true;
+      req.session.errorMessage = 'Email and password must be filled';
+      return res.redirect('/login'); 
+    }
+
+
 
   try {
-    user = await UserCollection.findOne({ email: lEmail });
 
-    if (!user && !passwordMatch) {
-      return res.render('user/login', { msg: 'Invalid username && Password' });
+
+    // Check if a user with the provided email exists
+    const user = await UserCollection.findOne({ email: lEmail });
+ 
+
+    if(!user){
+        req.session.invalid = true;
+      req.session.errorMessage = 'not found';
+      return res.redirect('/login'); 
     }
-    // Compare the provided plain-text password with the stored hashed password
-    const passwordMatch = await bcrypt.compare(lPassword, user.password);
-
+  const passwordMatch = await bcrypt.compare(lPassword, user.password);
     if (!passwordMatch) {
-      return res.render('user/login', { msg: 'Invalid Password' });
+      req.session.invalid = true;
+      req.session.errorMessage = 'Incorrect password entered';
+      return res.redirect('/login'); 
     }
+  
+  
+  req.session.invalid = false;
+    req.session.isUser = true;
+    req.session.profileName = user.username;
+    req.session.userEmail = user.email;
+    console.log('My email is ' + req.session.userEmail);
+    res.redirect(`/homepage`);
   } catch (error) {
     console.error('Error during login:', error);
     return res.status(500).send('Error during login');
   }
-
-  req.session.isUser = true;
-  req.session.profileName = user.username;
-  req.session.userEmail = user.email;
-  console.log('my email is' + req.session.userEmail);
-  res.redirect(`/homepage`);
 };
+
 
 // OTP PAGE WILL DISPLAY IN THIS COMMAND==========================
 
@@ -676,6 +740,7 @@ module.exports = {
   addAddressForm,
   userDetailsEditForm,
   userDetailsEdit,
+  userOrderCancel,
   deleteAddress,
   editAddress,
   editAddressPost,

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>order management</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <%- include('./partials/adminNav.ejs',{SideBarSection}) %>
+
+    <%- include('./partials/adminSideBar.ejs') %>
+
+  <main>
+    <section class="flex justify-center items-center">
+      <div class="container ">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div class="flex items-center justify-between py-4 bg-white dark:bg-gray-800 p-4">
+            <div class="flex items-center justify-between">
+        
+            </div>
+            <label for="table-search" class="sr-only">Search</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 " aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+              </div>
+              <input id="userSearch"
+                class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search for users">
+            </div>
+          </div>
+        <div class="w-full overflow-x-auto">
+          <table class="min-w-full">
+   
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border rounded shadow-lg">
+          <thead class="bg-gray-800 text-white">
+            <tr>
+              <th class="py-3 px-6 text-left">ID</th>
+              <th class="py-3 px-6 text-left">Order Number</th>
+              <th class="py-3 px-6 text-left">Products</th>
+              <th class="py-3 px-6 text-left">total price</th>
+              <th class="py-3 px-6 text-left">Customer</th>
+              <th class="py-3 px-6 text-left">Payment Method</th>
+              <th class="py-3 px-6 text-left">Order Date</th>
+              <th class="py-3 px-6 text-left">phone Number</th>
+              <th class="py-3 px-6 text-center">Actions</th>
+            </tr>
+          </thead>
+        <tbody>
+          <% isOrder.forEach((item, index)=> { %>
+            <tr class="hover:bg-gray-100 transition">
+              <td class="py-3 px-6">
+                <%= index + 1 %>
+              </td>
+              <td class="py-3 px-6">
+                <%= item.orderNumber %>
+              </td>
+    <td class="py-3 px-6 relative" x-data="{ isOpen: false }">
+      <button @click="isOpen = true" class="focus:outline-none text-black-500 hover:underline cursor-pointer">
+        Show Products
+      </button>
+    
+      <div x-show="isOpen" @click.away="isOpen = false"
+        class="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-gray-800 bg-opacity-70"     >
+        <div @click.away="isOpen = false" class="bg-white rounded-lg shadow-lg p-4 w-80 ">
+          <button @click="isOpen = false"
+            class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          <div class="">
+            <!-- Product Details -->
+            <% item.items.forEach((item)=> { %>
+              <div class="mb-4">
+                <div class="text-xl font-semibold text-gray-900">
+                  <%= item.product.product_name %>
+                </div>
+                <div class="text-sm text-gray-500">Quantity: <%= item.quantity %>
+                  <div class="text-sm text-gray-500">Quantity: <%= item.orderPrice %>
+                </div>
+                <!-- Add your product image here -->
+                <img src="/<%= item.product.product_image_url %>" alt="Product Image" class="w-48 h-48 mt-4 mx-auto">
+              </div>
+              <% }) %>
+          </div>
+        </div>
+      </div>
+    
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </div>
+    </td>
+
+                  <td class="py-3 px-6">
+                    <%= item.totalPrice %>
+                  </td>
+              <td class="py-3 px-6">
+                <div class="font-semibold">
+                  <%= item.shippingAddress.username %>
+                </div>
+                <div class="text-sm text-gray-500">
+                  <%= item.shippingAddress.city %>
+                </div>
+                <div class="text-sm text-gray-500">
+                  <%= item.shippingAddress.state %>
+                </div>
+                <div class="text-sm text-gray-500">
+                  <%= item.shippingAddress.postalCode %>
+                </div>
+                <div class="text-sm text-gray-500">
+                  <%= item.shippingAddress.address_tag %>
+                </div>
+              </td>
+              <td class="py-3 px-6">
+                cash on delivery
+              </td>
+              <td class="py-3 px-6">
+                <%= item.orderDate %>
+              </td>
+              <td class="py-3 px-6">
+                <%= item.phoneNumber %>
+              </td>
+      <td class="py-3 px-6 relative">
+<form action="/adminOrderManagement/<%= item.orderNumber%>" method="post">
+  <div class="relative">
+    <select name="statusDisplay">
+      <option value="pending" <% if (item.status==='pending' ) { %> selected <% } %>>Pending</option>
+      <option value="delivered" <% if (item.status==='delivered' ) { %> selected <% } %>>Delivered</option>
+      <option value="cancelled" <% if (item.status==='cancelled' ) { %> selected <% } %>>Cancelled</option>
+    </select>
+  </div>
+  <button type="submit">Update</button>
+</form>
+
+
+    
+      </td>
+
+            </tr>
+            <% }); %>
+        </tbody>
+
+        </table>
+      </div>
+
+          </table>
+        </div>
+
+  
+  
+        </div>
+  
+      </div>
+    </section>
+  
+  
+  </main>
+
+    
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@2.x.x/dist/alpine.js" defer></script>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
+      <!-- font-awesome -->
+      <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
+
+      <script src="/js/search.js"></script>
+      <script src="/js/orderStatus.js"></script>
+
+ 
+</body>
+</body>
+
+</html>

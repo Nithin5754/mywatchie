@@ -3,6 +3,7 @@ const adminCollection = require('../models/admin/adminSchema');
 const UserCollection = require('../models/userSchema');
 const productCollection = require('../models/admin/productSchema');
 const categoryCollections = require('../models/admin/categorySchema');
+const userOrder = require('../models/orderSchema');
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 
 const verifyAdmin = async (req, res) => {
@@ -13,7 +14,7 @@ const verifyAdmin = async (req, res) => {
     console.log(admin);
 
     if (!admin || admin.aPassword != adminPassword) {
-      res.redirect('/adminLogin');
+      res.redirect('/adminLogin');  
     } else {
       req.session.adminData = adminEmail;
       res.redirect('/adminUserManagement');
@@ -376,6 +377,60 @@ const categoryRemove = async (req, res) => {
   res.redirect('/adminCategoryManagement');
 };
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++ORDER MANAGEMENT++++++++++++++++++++++++++++++++++++++++++++++++++
+
+const orderManagement = async (req, res) => {
+  try {
+    if (req.session.adminData) {
+      const isOrder = await userOrder.find().populate("items.product").exec();
+
+
+      return res.render('admin/adminOrderManagement', {
+        isOrder,
+        SideBarSection: 'Order Management',
+      });
+    } else {
+      res.redirect('/adminLogin');
+    }
+  } catch (error) {
+    console.error('Error blocking user:', error);
+    res.status(500).send('display product error in admin page');
+  }
+};
+
+const orderManagementPost=async(req,res)=>{
+  const {statusDisplay}=req.body
+
+  const orderId=req.params.orderId;
+
+try {
+   const hasThisOrderValid=await userOrder.findOne({orderNumber:orderId});
+   if(!hasThisOrderValid){
+    return res.send("the order number is invalid")
+   }
+  
+      
+   const isUpdateOrderStatus=await userOrder.updateOne({orderNumber:orderId},{ status:statusDisplay})
+
+   if(!isUpdateOrderStatus){
+    return res.send("oredr status update error")
+   }
+
+
+
+
+   console.log(hasThisOrderValid+"order number is verified");
+
+   res.redirect("back")
+
+} catch (error) {
+  
+}
+  
+
+
+  
+}
 module.exports = {
   adminUserManagement,
   userblock,
@@ -395,4 +450,6 @@ module.exports = {
   adminLogin,
   verifyAdmin,
   adminLogout,
+  orderManagement,
+  orderManagementPost,
 };

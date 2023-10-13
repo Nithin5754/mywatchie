@@ -1,7 +1,7 @@
 // app.js
 const { getRandomImages } = require('./unsplash_api');
 
-const query = 'watches'; // i want all the random watches
+const query = 'watch'; // i want all the random watches
 
 async function getRandomBannerImage() {
   try {

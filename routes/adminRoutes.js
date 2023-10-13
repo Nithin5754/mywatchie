@@ -22,6 +22,9 @@ const {
   categoryRemove,
   verifyAdmin,
   adminLogout,
+
+  orderManagement,
+  orderManagementPost,
 } = require('../controllers/adminControllers');
 
 // multer
@@ -86,6 +89,12 @@ router
 router
   .route('/adminProductManagement/deleteCategory/:categoryId')
   .get(categoryRemove);
+
+// order managemnet
+
+router.route('/adminOrderManagement').get(orderManagement);
+
+router.route('/adminOrderManagement/:orderId').post(orderManagementPost)
 
 router.route('/userblock/:userId').get(userblock);
 router.route('/userunblock/:userId').get(userunblock);

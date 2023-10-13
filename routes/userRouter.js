@@ -20,6 +20,7 @@ const {
   editAddressPost,
   userDetailsEditForm,
   userDetailsEdit,
+  userOrderCancel,
   homepage,
   otpVerification,
   otpPage,
@@ -83,6 +84,8 @@ router
   .route('/userDetails/address/updateAddress/:addressId')
   .get(editAddress)
   .post(editAddressPost);
+
+  router.route("/userOrder/:cancelOrderId").get(userOrderCancel)
 // router.route("/userDetails/address/:updateAddress").get(editAddressFormDisplay)
 
 router.route('/otpVerfication').get(otpPage).post(otpVerification);

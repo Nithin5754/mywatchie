@@ -4,9 +4,9 @@ const router = express.Router();
 const {
   cartDisplay,
   productSendToCart,
- productMinus,
- productAdd,
- productDeleteFromTheCart
+  productMinus,
+  productAdd,
+  productDeleteFromTheCart,
 } = require('../controllers/CartControllers');
 
 router.route('/cart').get(cartDisplay);
@@ -15,10 +15,8 @@ router.route('/cart').get(cartDisplay);
 
 router.route('/cart/product/:productId').post(productSendToCart);
 
-router.route('/cart/quantityMinus/:productId').post(productMinus)
-router.route('/cart/quantityAdd/:productId').post(productAdd)
-router.route('/cart/produc/todelete/:productId').get(productDeleteFromTheCart)
-
-
+router.route('/cart/quantityMinus/:productId').post(productMinus);
+router.route('/cart/quantityAdd/:productId').post(productAdd);
+router.route('/cart/produc/todelete/:productId').get(productDeleteFromTheCart);
 
 module.exports = router;
