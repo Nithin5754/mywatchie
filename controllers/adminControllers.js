@@ -14,7 +14,7 @@ const verifyAdmin = async (req, res) => {
     console.log(admin);
 
     if (!admin || admin.aPassword != adminPassword) {
-      res.redirect('/adminLogin');  
+      res.redirect('/adminLogin');
     } else {
       req.session.adminData = adminEmail;
       res.redirect('/adminUserManagement');
@@ -382,8 +382,7 @@ const categoryRemove = async (req, res) => {
 const orderManagement = async (req, res) => {
   try {
     if (req.session.adminData) {
-      const isOrder = await userOrder.find().populate("items.product").exec();
-
+      const isOrder = await userOrder.find().populate('items.product').exec();
 
       return res.render('admin/adminOrderManagement', {
         isOrder,
@@ -398,39 +397,31 @@ const orderManagement = async (req, res) => {
   }
 };
 
-const orderManagementPost=async(req,res)=>{
-  const {statusDisplay}=req.body
+const orderManagementPost = async (req, res) => {
+  const { statusDisplay } = req.body;
 
-  const orderId=req.params.orderId;
+  const orderId = req.params.orderId;
 
-try {
-   const hasThisOrderValid=await userOrder.findOne({orderNumber:orderId});
-   if(!hasThisOrderValid){
-    return res.send("the order number is invalid")
-   }
-  
-      
-   const isUpdateOrderStatus=await userOrder.updateOne({orderNumber:orderId},{ status:statusDisplay})
+  try {
+    const hasThisOrderValid = await userOrder.findOne({ orderNumber: orderId });
+    if (!hasThisOrderValid) {
+      return res.send('the order number is invalid');
+    }
 
-   if(!isUpdateOrderStatus){
-    return res.send("oredr status update error")
-   }
+    const isUpdateOrderStatus = await userOrder.updateOne(
+      { orderNumber: orderId },
+      { status: statusDisplay },
+    );
 
+    if (!isUpdateOrderStatus) {
+      return res.send('oredr status update error');
+    }
 
+    console.log(hasThisOrderValid + 'order number is verified');
 
-
-   console.log(hasThisOrderValid+"order number is verified");
-
-   res.redirect("back")
-
-} catch (error) {
-  
-}
-  
-
-
-  
-}
+    res.redirect('back');
+  } catch (error) {}
+};
 module.exports = {
   adminUserManagement,
   userblock,

@@ -1,52 +1,8 @@
-<!-- Your HTML code -->
-<% isOrder.forEach(item => { %>
-  <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
-    <!-- ... (other order information) -->
-    <button class="text-blue-500 hover:underline mt-2 block" data-order-id="<%= item.orderNumber %>">Cancel Order</button>
-  </div>
-<% }) %>
 
-<script src="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.2/popup.min.js"></script>
-
-<script>
-  // Function to send an AJAX request to the controller
-  function sendCancelRequest(orderId) {
-    const url = `/your-controller-url/${orderId}`;
-
-    fetch(url, {
-      method: 'POST', // Adjust this based on your server-side setup
-      headers: {
-        'Content-Type': 'application/json', // Adjust this header based on your server requirements
-      },
-      body: JSON.stringify({ orderId: orderId }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the response from the server, e.g., show a success message
-        console.log(data);
-      })
-      .catch(error => {
-        // Handle any errors, e.g., display an error message
-        console.error(error);
-      });
-  }
-
-  const btns = document.querySelectorAll('[data-order-id]');
-  const myPopup = new Popup({
-    id: "my-popup",
-    title: "Are you sure you want to cancel the order?",
-    content: "This is a confirmation popup.",
-  });
-
-  btns.forEach(item => {
-    item.addEventListener('click', () => {
-      const orderId = item.getAttribute('data-order-id');
-      myPopup.show();
-
-      // When the user confirms the cancellation, send the request
-      myPopup.onConfirm(() => {
-        sendCancelRequest(orderId);
-      });
-    });
-  });
-</script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"></script>
+      <script>
+        $(document).ready(function () {
+          $("#zoom_04").ezPlus();
+        });
+      </script>

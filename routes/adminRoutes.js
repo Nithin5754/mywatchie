@@ -94,7 +94,7 @@ router
 
 router.route('/adminOrderManagement').get(orderManagement);
 
-router.route('/adminOrderManagement/:orderId').post(orderManagementPost)
+router.route('/adminOrderManagement/:orderId').post(orderManagementPost);
 
 router.route('/userblock/:userId').get(userblock);
 router.route('/userunblock/:userId').get(userunblock);

@@ -7,11 +7,9 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: [true, 'Email is already exits'],
-   
   },
   username: {
     type: String,
-   
   },
   user_image_url: {
     type: String,

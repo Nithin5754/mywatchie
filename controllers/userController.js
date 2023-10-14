@@ -7,7 +7,7 @@ const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
 const Address = require('../models/addressSchema');
 const Cart = require('../models/cartSchema');
-const UserOrder=require('../models/orderSchema')
+const UserOrder = require('../models/orderSchema');
 
 let userEmail;
 
@@ -18,22 +18,23 @@ const {
 } = require('../utilities/emailUtils/emailUtils');
 
 //loginpage
-
-
-
+                         
 const login = async (req, res) => {
+
   try {
     const randomBannerImage = await getRandomBannerImage();
 
-    if(req.session.invalid){
-      req.session.invalid=false
-          res.render('user/login', { msg: req.session.errorMessage, randomBannerImage, prevEnter:req.session.previousEnterEmail||'' });
-    }else{
-       req.session.invalid=false
-   res.render('user/login', { msg:'', randomBannerImage });
+    if (req.session.invalid) {
+      req.session.invalid = false;
+      res.render('user/login', {
+        msg: req.session.errorMessage,
+        randomBannerImage,
+        prevEnter: req.session.previousEnterEmail || '',
+      });
+    } else {
+      req.session.invalid = false;
+      res.render('user/login', { msg: '', randomBannerImage });
     }
-
-
   } catch (error) {
     console.error('Error fetching images:', error.message);
     res.status(500).send('Internal Server Error-login page error');
@@ -92,6 +93,8 @@ const homepage = async (req, res) => {
     isCreateAccount = 'contact us';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
+
+
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
@@ -177,13 +180,9 @@ const userDetailspage = async (req, res) => {
       ? userPrimaryAddress
       : temporaryAddress;
 
-    const isOrder=await UserOrder.find({email:userEmail}).populate("items.product").exec();
-
-
-     
-
- 
-    
+    const isOrder = await UserOrder.find({ email: userEmail })
+      .populate('items.product')
+      .exec();
 
     return res.render('user/userdetails', {
       isOrder,
@@ -191,7 +190,7 @@ const userDetailspage = async (req, res) => {
       isAddressTheir,
     });
   } catch (error) {
-    console.log('user details page error please check again',error);
+    console.log('user details page error please check again', error);
     return res.send('user details page error please check again');
   }
 };
@@ -226,21 +225,17 @@ const userDetailsEdit = async (req, res) => {
   const userEmail = req.session.userEmail;
 
   try {
-   
     const isThisEmailExisting = await UserCollection.findOne({ email: pEmail });
     if (isThisEmailExisting && pEmail !== userEmail) {
       return res.redirect('/userDetails/detailsEdit');
     }
 
-  
     const verifyEmail = await UserCollection.findOne({ email: userEmail });
-
 
     if (!verifyEmail) {
       return res.redirect('/userDetails/detailsEdit');
     }
 
- 
     const userDetailsId = verifyEmail._id;
 
     const isAddressExisting = await Address.findOne({ _id: addressSetId });
@@ -249,14 +244,13 @@ const userDetailsEdit = async (req, res) => {
       return res.redirect('/userDetails/detailsEdit');
     }
 
-
     const existingUserUpdate = await UserCollection.findByIdAndUpdate(
       userDetailsId,
       {
         email: pEmail,
         username: pUsername,
         mobileNumber: pNumber,
-        isPrimaryAddress: isAddressExisting._id, 
+        isPrimaryAddress: isAddressExisting._id,
       },
       { new: true },
     );
@@ -287,33 +281,31 @@ const userDetailsEdit = async (req, res) => {
   }
 };
 
+const userOrderCancel = async (req, res) => {
+  const cancelOrderNumber = req.params.cancelOrderId;
 
-const  userOrderCancel=async(req,res)=>{
- const cancelOrderNumber=req.params.cancelOrderId;
+  try {
+    const userOrderItem = await UserOrder.findOne({
+      orderNumber: cancelOrderNumber,
+    });
 
-try {
-
-const userOrderItem=await UserOrder.findOne({orderNumber:cancelOrderNumber});
-
-
-
-      if(userOrderItem.status==="pending"){
-         const cancelOrder=await UserOrder.findOneAndRemove({orderNumber:cancelOrderNumber})
-          if(!cancelOrder){
-       return res.redirect("/userDetails")
-   }
+    if (userOrderItem.status === 'pending') {
+      const cancelOrder = await UserOrder.findOneAndRemove({
+        orderNumber: cancelOrderNumber,
+      });
+      if (!cancelOrder) {
+        return res.redirect('/userDetails');
       }
-         
-      
-  return  res.redirect("back") 
-} catch (error) {
-  console.log("cancel order item something error"+error);
-  return res.send("cancelling order item is not completed please check again")
-  
-} 
+    }
 
-
-}
+    return res.redirect('back');
+  } catch (error) {
+    console.log('cancel order item something error' + error);
+    return res.send(
+      'cancelling order item is not completed please check again',
+    );
+  }
+};
 
 // address section start here you cand add edit delete each address of a user
 
@@ -522,37 +514,37 @@ const signupData = async (req, res) => {
 const loginPost = async (req, res) => {
   const { lEmail, lPassword } = req.body;
 
-  req.session.previousEnterEmail=lEmail
+  req.session.previousEnterEmail = lEmail;
 
-         if (lEmail.trim() === '' && lPassword.trim() === '') {
-      req.session.invalid = true;
-      req.session.errorMessage = 'Email and password must be filled';
-      return res.redirect('/login'); 
-    }
-
-
+  if (lEmail.trim() === ''|| lPassword.trim() === '') {
+    req.session.invalid = true;
+    req.session.errorMessage = 'Email and password must be filled';
+    return res.redirect('/login');
+  }
 
   try {
-
-
     // Check if a user with the provided email exists
     const user = await UserCollection.findOne({ email: lEmail });
- 
 
-    if(!user){
+    if(user.isBlocked===true){
         req.session.invalid = true;
-      req.session.errorMessage = 'not found';
-      return res.redirect('/login'); 
+      req.session.errorMessage = 'user blocked';
+      return res.redirect('/login');
     }
-  const passwordMatch = await bcrypt.compare(lPassword, user.password);
+
+    if (!user) {
+      req.session.invalid = true;
+      req.session.errorMessage = 'not found';
+      return res.redirect('/login');
+    }
+    const passwordMatch = await bcrypt.compare(lPassword, user.password);
     if (!passwordMatch) {
       req.session.invalid = true;
       req.session.errorMessage = 'Incorrect password entered';
-      return res.redirect('/login'); 
+      return res.redirect('/login');
     }
-  
-  
-  req.session.invalid = false;
+
+    req.session.invalid = false;
     req.session.isUser = true;
     req.session.profileName = user.username;
     req.session.userEmail = user.email;
@@ -563,7 +555,6 @@ const loginPost = async (req, res) => {
     return res.status(500).send('Error during login');
   }
 };
-
 
 // OTP PAGE WILL DISPLAY IN THIS COMMAND==========================
 

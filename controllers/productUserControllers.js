@@ -33,7 +33,7 @@ const productList = async (req, res) => {
       verifyUserEmail,
     });
   } catch (error) {
-    console.error('Error fetching images:', error.message);
+    console.error('Error fetching images helo:', error.message);
     res.status(500).send('Internal Server Error-login page error');
   }
 };
@@ -45,27 +45,34 @@ const productDetails = async (req, res) => {
     islogout = 'log out';
     isCreateAccount = 'Orders';
     isCreateAccountUrl = '/homepage';
-    isUrl = '#';
+    isUrl = '/userDeatils';
     const OneProduct = req.params.productId;
     const productLists = await product.findById(OneProduct);
+
+    console.log(productLists + 'dfjhhsdgf');
 
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
 
-    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id }); //it will find the user logging cart
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
+    if (!cartItems) {
+      console.error('Cart not found for user: ' + verifyUserEmail._id);
+      // Handle this case, e.g., redirect the user or display a message.
+      return res.redirect('/homepage');
+    }
 
     const productQty = cartItems.items.find(
       item => item.product.toString() === OneProduct,
     );
+
     let prodQty = 0;
 
     if (productQty && productQty.quantity !== undefined) {
       prodQty = productQty.quantity;
     }
-
-    const imgUrl = productLists.product_image_url;
 
     res.render('user/productDetailsPage', {
       verifyUserEmail,
@@ -80,7 +87,7 @@ const productDetails = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
-    res.status(500).send('Internal Server Error-login page error');
+    res.status(500).send(error.message);
   }
 };
 

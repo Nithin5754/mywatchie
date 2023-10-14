@@ -8,8 +8,7 @@
   <link rel="stylesheet" href="dist/output.css">
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 
-  <!-- Link Swiper's CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
 
   <!-- googlr icons materials -->
@@ -36,8 +35,8 @@
               class="swiper-slide relative m-2 md:m-4 lg:m-10 flex w-full h-auto max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
               <a class="relative mx-2 mt-2 md:mx-3 md:mt-3 lg:mx-4 lg:mt-4 h-28 md:h-52   overflow-hidden rounded-xl flex flex-col justify-between"
                 href="/productList/details/<%= element._id %>">
-                <img id="image" class="object-contain object-center w-full sm:h-48 md:h-52 lg:h-60 " src="<%= element.product_image_url[0] %>"
-                  alt="<%= element.product_image_url[0] %>" />
+                <img id="image" class="object-contain object-center w-full sm:h-48 md:h-52 lg:h-60 " src="/<%= element.product_image_url[0] %>"
+                  alt="<%=element.product_image_url[0] %>" />
                 <span
                   class="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-xs md:text-sm lg: font-medium text-white">
                   <%= element.product_discount %>%
@@ -242,16 +241,7 @@
 
 
    
-<script>
-  let scrollPosition = [
-    self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-    self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-  ];
 
-  window.onload = function () {
-    window.scrollTo(scrollPosition[0], scrollPosition[1]);
-  };
-</script>
 
 
 </body>

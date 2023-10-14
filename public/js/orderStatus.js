@@ -1,15 +1,12 @@
-const statusBtn =document.querySelectorAll('#order-status')
+const statusBtn = document.querySelectorAll('#order-status');
 
-
-statusBtn.forEach((statusButton) => {
+statusBtn.forEach(statusButton => {
   // statusButton.innerText="pending"
-  statusButton.addEventListener('click',()=>{
-    if( statusButton.innerText==="pending"){
-       statusButton.innerText="delivered"
+  statusButton.addEventListener('click', () => {
+    if (statusButton.innerText === 'pending') {
+      statusButton.innerText = 'delivered';
+    } else if ((statusButton.innerText = 'deliverd')) {
+      statusButton.innerText = 'cancelled';
     }
-   else if(statusButton.innerText="deliverd"){
-    statusButton.innerText="cancelled"
-   }
-  })
-  
+  });
 });

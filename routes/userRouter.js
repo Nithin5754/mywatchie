@@ -85,7 +85,7 @@ router
   .get(editAddress)
   .post(editAddressPost);
 
-  router.route("/userOrder/:cancelOrderId").get(userOrderCancel)
+router.route('/userOrder/:cancelOrderId').get(userOrderCancel);
 // router.route("/userDetails/address/:updateAddress").get(editAddressFormDisplay)
 
 router.route('/otpVerfication').get(otpPage).post(otpVerification);

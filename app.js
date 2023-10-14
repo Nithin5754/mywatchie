@@ -51,6 +51,12 @@ app.use('/', cartRoutes);
 app.use('/', checkOutRoutes);
 app.use('/', confirmRoutes);
 
+
+
+app.get('*', (req, res) => {
+  res.status(404).render('404page');
+});
+
 //server creation and connecting with cloud mongodb atlas with the help of mongoose
 
 const port = process.env.Port || 4000;

@@ -55,9 +55,8 @@ const confirmPage = async (req, res) => {
         city: isPrimarytheir.city,
         postalCode: isPrimarytheir.postalCode,
         address_tag: isPrimarytheir.address_tag,
-        
       },
-      email:userEmail,
+      email: userEmail,
       phoneNumber: verifyUserEmail.mobileNumber,
       status: 'pending',
     });

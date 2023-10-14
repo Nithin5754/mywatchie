@@ -36,11 +36,11 @@ const UserOrderSchema = new mongoose.Schema({
     address_tag: String,
   },
   phoneNumber: String,
-  email:String,
+  email: String,
   paymentMethod: String,
   status: {
-    type:String,
-  default:"pending"
+    type: String,
+    default: 'pending',
   },
 });
 
