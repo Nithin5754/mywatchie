@@ -58,13 +58,9 @@ const productDetails = async (req, res) => {
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
-    if (!cartItems) {
-      console.error('Cart not found for user: ' + verifyUserEmail._id);
-      // Handle this case, e.g., redirect the user or display a message.
-      return res.redirect('/homepage');
-    }
+  
 
-    const productQty = cartItems.items.find(
+    const productQty =cartItems&&cartItems.items.find(
       item => item.product.toString() === OneProduct,
     );
 
@@ -83,11 +79,12 @@ const productDetails = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
-      prodQty,
+      prodQty 
+ 
     });
   } catch (error) {
-    console.error('Error fetching images:', error.message);
-    res.status(500).send(error.message);
+    console.error('Error fetching product details:', error);
+    res.status(500).send(error);
   }
 };
 

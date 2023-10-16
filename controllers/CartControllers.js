@@ -30,16 +30,16 @@ const cartDisplay = async (req, res) => {
       .populate('items.product')
       .exec();
 
-    const cartProducts = isCart.items.map(item => item.product); //it will fetch all the products available in the cart
+    const cartProducts = isCart.items.map(item => item.product); 
     console.log(cartProducts);
 
-    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id }); //it will find the user logging cart
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
-    const cartquantity = cartItems.items.map(item => item.quantity); //to get quantity of each product
+    const cartquantity = cartItems.items.map(item => item.quantity);
 
     const cartProductPrice = cartItems.items.map(
       item => item.single_product_total_price,
-    ); //to get total price of each product
+    ); 
 
     return res.render('user/cart', {
       randomBannerImage,
@@ -69,7 +69,7 @@ const productSendToCart = async (req, res) => {
       return res.redirect('/homepage');
     }
 
-    //  single_product_total_price and each product
+
     const productPrice = await product.findOne({ _id: productId });
 
     userCart = await Cart.findOne({ userId: verifyUserEmail._id });
@@ -93,137 +93,125 @@ const productSendToCart = async (req, res) => {
       const isProductInCart = await userCart.items.find(
         item => item.product.toString() === productId,
       );
-      if (isProductInCart) {
-        isProductInCart.quantity += 1;
-        isProductInCart.single_product_total_price +=
-          productPrice.product_price;
-        userCart.total += productPrice.product_price;
-        userCart.totalQuantity += 1;
-      } else {
-        userCart.items.push({
+
+      if (!isProductInCart) {
+             userCart.items.push({
           product: productId,
           quantity: 1,
           single_product_total_price: productPrice.product_price,
         });
         userCart.total += productPrice.product_price;
         userCart.totalQuantity += 1;
+        
       }
-
-      await userCart.save();
+      
     }
+    await userCart.save();
 
-    return res.redirect('back');
+
+   res.redirect('/');
+
+
   } catch (error) {
     console.error('Error adding product to cart:', error);
     return res.status(500).send('Internal Server Error');
   }
 };
 
-const productMinus = async (req, res) => {
-  const productId = req.params.productId;
-  const userEmail = req.session.userEmail;
+// const updateCartQuantity = async (req, res) => {
+//   try {
+//     const productId = req.params.productId;
+//     const change = parseInt(req.params.change); // -1 for decrement, 1 for increment
 
-  try {
+//     // Validate the change parameter if needed
+
+//     // Perform the update in your database
+//     const userEmail = req.session.userEmail;
+//     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+
+//     if (!verifyUserEmail) {
+//       return res.status(401).json({ message: 'User not authorized' });
+//     }
+
+//     const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
+
+//     if (!userCart) {
+//       return res.status(404).json({ message: 'Cart not found' });
+//     }
+
+//     const isProductInCart = userCart.items.find(item => item.product.toString() === productId);
+
+//     if (!isProductInCart) {
+//       return res.status(404).json({ message: 'Product not found in the cart' });
+//     }
+
+//     const qty = isProductInCart.quantity + change;
+
+//     if (qty < 1 || qty > 10) {
+//       return res.status(400).json({ message: 'Invalid quantity' });
+//     }
+
+//     // Update the quantity
+//     isProductInCart.quantity = qty;
+
+//     const productPrice = await product.findOne({ _id: productId });
+//     const singleTotal = qty * productPrice.product_price;
+
+//     isProductInCart.single_product_total_price = singleTotal;
+
+//     // Update the cart's total and total quantity
+//     userCart.totalQuantity += change;
+//     userCart.total += productPrice.product_price * change;
+
+//     await userCart.save();
+
+//     return res.status(200).json({ message: 'Quantity updated successfully' });
+//   } catch (error) {
+//     console.error('Error updating product quantity:', error);
+//     return res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
+
+
+const updateCart=async(req,res)=>{
+  const productId=req.params.productId;
+  const {quantity,productPrice,newSingleProductTotal,total}=req.body
+
+  console.log(productId);
+  console.log(quantity);
+  console.log(productPrice);
+  console.log( newSingleProductTotal);
+  console.log(total);
+
+
+  const userEmail = req.session.userEmail;
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
-      return res.redirect('/homepage');
+      return res.status(401).json({ message: 'User not authorized' });
     }
 
     const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
+
     if (!userCart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
-    const isProductInCart = await userCart.items.find(
-      item => item.product.toString() === productId,
-    );
+    const isProductInCart = userCart.items.find(item => item.product.toString() === productId);
 
-    const qtyMinus = isProductInCart.quantity - 1; //deducting one product from each time
-    //  for avatar notification
-    userCart.totalQuantity -= 1;
-
-    if (qtyMinus <= 0) {
-      const itemTotalPrice = isProductInCart.single_product_total_price;
-
-      userCart.total -= itemTotalPrice;
-
-      const itemIndex = await userCart.items.findIndex(
-        item => item.product.toString() === productId,
-      );
-
-      if (itemIndex !== -1) {
-        userCart.items.splice(itemIndex, 1);
-      }
-    } else {
-      const productPrice = await product.findOne({ _id: productId });
-      // Update the quantity and total price otherwise
-      const singleTotal = productPrice.product_price * qtyMinus;
-      isProductInCart.quantity = qtyMinus;
-
-      isProductInCart.single_product_total_price = singleTotal;
-
-      userCart.total -= productPrice.product_price;
+    if (!isProductInCart) {
+      return res.status(404).json({ message: 'Product not found in the cart' });
     }
 
-    await userCart.save();
+      isProductInCart.quantity=quantity
+      isProductInCart.single_product_total_price=newSingleProductTotal
+      userCart.total=total
 
-    res.redirect('back');
-    // Save the updated cart
-  } catch (error) {
-    console.error('Error decrementing product quantity:', error);
-    return res.status(500).send(error);
-  }
-};
+      await userCart.save();
 
-const productAdd = async (req, res) => {
-  const productId = req.params.productId;
-  const userEmail = req.session.userEmail;
+  res.redirect('back')
+}
 
-  try {
-    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-
-    if (!verifyUserEmail) {
-      return res.redirect('/homepage');
-    }
-
-    const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
-    if (!userCart) {
-      return res.send('cart not found');
-    }
-
-    const isproductInCart = await userCart.items.find(
-      item => item.product.toString() === productId,
-    );
-
-    if (!isproductInCart) {
-      return res.send('poroduct not found in the cart');
-    }
-
-    qtyAdd = isproductInCart.quantity + 1; // for adding one product for qty for each time
-    //  for avatar notification
-
-    userCart.totalQuantity += 1;
-
-    if (qtyAdd > 10) {
-      return res.redirect('back');
-    } else {
-      const productPrice = await product.findOne({ _id: productId });
-      const singleTotal = qtyAdd * productPrice.product_price;
-
-      isproductInCart.quantity = qtyAdd;
-      isproductInCart.single_product_total_price = singleTotal;
-
-      const isTotal = userCart.total + productPrice.product_price;
-      userCart.total = isTotal;
-    }
-
-    await userCart.save();
-    return res.redirect('back');
-  } catch (error) {
-    console.log('fetching error : adding quantity', error);
-    return res.status(401).send(error);
-  }
-};
 
 const productDeleteFromTheCart = async (req, res) => {
   const userEmail = req.session.userEmail;
@@ -243,15 +231,13 @@ const productDeleteFromTheCart = async (req, res) => {
     const isproductInCart = userCart.items.find(
       item => item.product.toString() === deleteItem,
     );
-    console.log(
-      isproductInCart.single_product_total_price + 'dgfhrgfyugrfgyurghfgrh',
-    );
+
 
     const productIndex = userCart.items.findIndex(
       item => item.product.toString() === deleteItem,
     );
 
-    console.log(productIndex + 'fetching error');
+
 
     userCart.items.splice(productIndex, 1);
 
@@ -272,7 +258,7 @@ const productDeleteFromTheCart = async (req, res) => {
 module.exports = {
   cartDisplay,
   productSendToCart,
-  productMinus,
-  productAdd,
+// updateCartQuantity,
+updateCart,
   productDeleteFromTheCart,
 };

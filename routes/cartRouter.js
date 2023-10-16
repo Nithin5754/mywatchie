@@ -4,19 +4,18 @@ const router = express.Router();
 const {
   cartDisplay,
   productSendToCart,
-  productMinus,
-  productAdd,
+  updateCart,
+// updateCartQuantity,
   productDeleteFromTheCart,
 } = require('../controllers/CartControllers');
 
 router.route('/cart').get(cartDisplay);
 
-// i use a tag thats why we create GET method otherwise it should post method; I use a tag for fetching id from .ejs to cart controller
-
+// Change these routes from GET to POST
 router.route('/cart/product/:productId').post(productSendToCart);
+// router.route('/cart/updateQuantity/:productId/:change').post(updateCartQuantity);
+router.route('/cart/updateQuantity/:productId').post(updateCart)
 
-router.route('/cart/quantityMinus/:productId').post(productMinus);
-router.route('/cart/quantityAdd/:productId').post(productAdd);
 router.route('/cart/produc/todelete/:productId').get(productDeleteFromTheCart);
 
 module.exports = router;
