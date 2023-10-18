@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/darkmode.css">
+</head>
+<body class="bg-gray-100 dark-mode">
+
+  <%-
+    include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems})
+    %>
+
+
+  <!-- Address Field -->
+<form action="/checkoutConfirm/selectingPrimary" method="post">
+  <div class="mb-10 mt-28">
+    <fieldset class="border rounded-md p-4 mb-4">
+      <legend class="text-white text-lg font-semibold mb-4">Select a primary address</legend>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <% UserAddress.forEach((user, index)=> { %>
+        <label
+          class="relative border rounded-lg overflow-hidden p-4 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-400">
+          <input type="radio" id="address<%= index %>" name="addressSetId" value="<%= user._id %>" class="sr-only">
+          <div
+            class="bg-gradient-to-br from-purple-600 to-purple-400 text-white py-2 px-4 rounded-md text-center font-semibold">
+            <%= user.address_tag %>
+          </div>
+          <div class="text-gray-700 mt-2 text-lg font-semibold">
+            <%= user.premanant_address %>
+          </div>
+          <div class="text-gray-700 text-lg">
+            <%= user.city %>
+          </div>
+          <div class="text-gray-700 text-lg">
+            <%= user.state %>
+          </div>
+          <div class="text-gray-700 text-lg">
+            <%= user.postalCode %>
+          </div>
+          <div class="text-gray-700 text-lg">
+            <%= user.country %>
+          </div>
+          <div class="absolute top-4 right-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" class="">
+              </path>
+            </svg>
+          </div>
+        </label>
+        <% }); %>
+
+      </div>
+    </fieldset>
+  </div>
+  <div class="mt-6">
+    <button
+      class="w-full px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-md shadow-md transition duration-300 ease-in-out"
+      type="submit">Submit</button>
+  </div>
+</form>
+
+
+
+
+     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" ></script>
+      <script src="/js/darkmode.js"></script>
+</body>
+</html>

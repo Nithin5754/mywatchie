@@ -77,20 +77,29 @@
                                   </div>
                                 </div> -->
                               <!-- Replace plus and minus buttons with dropdown -->
-                              <div class="sm:order-1">
-                                <div class="mx-auto flex h-8 items-stretch text-gray-600">
-                            
-                                      <select name="quantity" class="bg-gray-100 rounded-l-md text-xs uppercase px-4 transition quantity-display"
-                                        data-product-id="<%= item._id %>" id="qty">
-                                        <% for (let i=1; i <=10; i++) { %>
-                                          <option value="<%= i %>" <%=i===cartquantity[index] ? 'selected' : '' %> >
-                                            <%= i %>
-                                          </option>
-                                          <% } %>
-                                      </select>
-                       
-                                </div>
-                              </div>
+                  <div class="sm:order-1">
+                    <div class="mx-auto relative w-24">
+                      <select name="quantity"
+                        class="block appearance-none w-full rounded-lg bg-gray-100 border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-l-md text-xs uppercase transition quantity-display"
+                        data-product-id="<%= item._id %>" id="qty">
+                        <% for (let i=1; i <=10; i++) { %>
+                          <option value="<%= i %>" <%=i===cartquantity[index] ? 'selected' : '' %>
+                            class="text-gray-700">
+                            <%= i %>
+                          </option>
+                          <% } %>
+                      </select>
+                      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-600">
+                        <!-- Add a dropdown arrow icon -->
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4z"
+                            clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
 
                               </div>
 
@@ -126,13 +135,13 @@
                     </div>
                     <div class="flex items-center justify-between">
                       <p class="text-sm text-gray-400">Shipping</p>
-                      <p class="text-lg font-semibold text-gray-900">$8.00</p>
+                      <p class="text-lg font-semibold text-gray-900" >$8.00</p>
                     </div>
                   </div>
                   <div class="mt-6 flex items-center justify-between">
                     <p class="text-sm font-medium text-gray-900">Total</p>
-                    <p class="text-2xl font-semibold text-gray-900"><span
-                        class="text-xs font-normal text-gray-400">USD</span>
+                    <p class="text-2xl font-semibold text-gray-900" data-totalafterTax="<%= cartItems.total+8.00 %>" id="afterShipping"><span
+                        class="text-xs font-normal text-gray-400" >USD</span>
                       <%= cartItems.total+8.00 %>
                     </p>
                   </div>

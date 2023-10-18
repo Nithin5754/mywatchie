@@ -11,22 +11,14 @@
 </head>
 
 <body class="bg-gray-100 dark-mode">
-  <!-- Navigation Bar -->
-  <nav class="bg-white p-4 shadow-md">
-    <div class="container mx-auto flex justify-between items-center">
-      <a href="/" class="text-2xl font-bold text-gray-800">my Watchie.com</a>
-      <ul class="flex space-x-4">
-        <li><a href="/" class="text-gray-600 hover:text-gray-800">Home</a></li>
-        <li><a href="/productList" class="text-gray-600 hover:text-gray-800">Products</a></li>
-      
-        <li><a href="/logout" class="text-gray-600 hover:text-gray-800">Logout</a></li>
-      </ul>
-    </div>
-  </nav>
+<!-- header.ejs -->
+<%-
+  include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems})
+  %>
 
   <!-- User Details -->
-  <main>
-    <section class="bg-gray-100">
+  <main >
+    <section class="bg-gray-100 mt-14">
       <div class="container mx-auto py-12 px-4">
         <div class="bg-white rounded-lg shadow-md p-6">
           <div class="flex flex-col md:flex-row items-center md:space-x-6">
@@ -48,94 +40,68 @@
               </div>
             </div>
 
-            <!-- User Information -->
-            <div class="w-full md:w-2/3 mt-6 md:mt-0">
-              <div class="bg-gray-100 p-6 rounded-lg border border-gray-300">
-                <h1 class="text-3xl font-semibold text-gray-800 mb-4">
-                  <% if (verifyUserEmail && verifyUserEmail.username) { %>
-                    <%= verifyUserEmail.username %>
-                      <% } %>
-                </h1>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <!-- Email -->
-                  <div>
-                    <p class="text-gray-600 text-lg">Email:</p>
-                    <p class="text-gray-800 text-lg font-semibold">
-                      <%= verifyUserEmail.email %>
-                    </p>
-                  </div>
-
-                  <!-- Phone -->
-                  <div>
-                    <p class="text-gray-600 text-lg">Phone:</p>
-                    <p class="text-gray-800 text-lg font-semibold">
-                      <%= verifyUserEmail.mobileNumber %>
-                    </p>
-                  </div>
-
-                  <!-- Address -->
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full">
-                      <thead>
-                        <tr>
-                          <th class="text-left text-2xl font-semibold">Primary Address</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="py-4">
-                            <table class="mt-2 w-full">
-                              <tr>
-                                <td class="text-gray-600 text-lg font-semibold">Address
-                                  line-1:</td>
-                                <td class="text-gray-800 text-lg">
-                                  <h1 class="truncate w-80">
-                                    <%= isAddressTheir.premanant_address %>
-                                  </h1>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="text-gray-600 text-lg font-semibold">City:</td>
-                                <td class="text-gray-800 text-lg">
-                                  <%= isAddressTheir.city %>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="text-gray-600 text-lg font-semibold">Postal
-                                  Code:</td>
-                                <td class="text-gray-800 text-lg">
-                                  <%= isAddressTheir.postalCode %>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="text-gray-600 text-lg font-semibold">Country:</td>
-                                <td class="text-gray-800 text-lg">
-                                  <%= isAddressTheir.country %>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <a href="/userDetails/address">
-                    <button
-                      class="bg-blue-500 hover:bg-emerald-700 text-white mt-6 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
-                      Add Address
-                    </button>
-                  </a>
-               
-                </div>
-                <a href="/userDetails/detailsEdit">
-                  <button
-                    class="bg-blue-500 hover:bg-blue-600 text-white mt-6 py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
-                    Edit Profile
-                  </button>
-                </a>
-              </div>
+    <div class="w-full md:w-2/3 mt-6 md:mt-0">
+      <div class="bg-gray-100 p-6 rounded-lg border border-gray-300">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-4">
+          <% if (verifyUserEmail && verifyUserEmail.username) { %>
+            <%= verifyUserEmail.username %>
+              <% } %>
+        </h1>
+    
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Email -->
+          <div>
+            <div class="text-gray-600 text-lg mb-1">Email:</div>
+            <div class="text-gray-800 text-lg font-semibold">
+              <%= verifyUserEmail.email %>
             </div>
+          </div>
+    
+          <!-- Phone -->
+          <div>
+            <div class="text-gray-600 text-lg mb-1">Phone:</div>
+            <div class="text-gray-800 text-lg font-semibold">
+              <%= verifyUserEmail.mobileNumber %>
+            </div>
+          </div>
+    
+          <!-- Address -->
+          <div class="col-span-2">
+            <h2 class="text-2xl font-semibold mb-2">Primary Address</h2>
+            <div class="text-gray-600 text-lg font-semibold mb-1">Address line-1:</div>
+            <div class="text-gray-800 text-lg truncate w-80">
+              <%= isAddressTheir.premanant_address %>
+            </div>
+            <div class="text-gray-600 text-lg font-semibold mb-1">City:</div>
+            <div class="text-gray-800 text-lg">
+              <%= isAddressTheir.city %>
+            </div>
+            <div class="text-gray-600 text-lg font-semibold mb-1">Postal Code:</div>
+            <div class="text-gray-800 text-lg">
+              <%= isAddressTheir.postalCode %>
+            </div>
+            <div class="text-gray-600 text-lg font-semibold mb-1">Country:</div>
+            <div class="text-gray-800 text-lg">
+              <%= isAddressTheir.country %>
+            </div>
+          </div>
+        </div>
+    
+        <a href="/userDetails/address" class="block mt-6">
+          <button
+            class="bg-blue-500 hover:bg-emerald-700 text-white py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+            Add Address
+          </button>
+        </a>
+        <a href="/userDetails/detailsEdit" class="block mt-6">
+          <button
+            class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
+            Edit Profile
+          </button>
+        </a>
+      </div>
+    </div>
+
           </div>
 
           <!-- Order History -->
@@ -178,6 +144,8 @@
   </main>
     <script src="/js/darkmode.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.2/popup.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+      <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 
 
  

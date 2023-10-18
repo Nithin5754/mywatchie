@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
+
+
 const {
   login,
   userBeforeLogin,
@@ -36,6 +38,7 @@ const {
 const {
   productList,
   productDetails,
+    // productSort,
 } = require('../controllers/productUserControllers');
 
 const userAuthentication = require('../middlewares/users/customeMiddle');
@@ -101,7 +104,9 @@ router
 
 router.route('/sms').get(twilioSms);
 
-router.route('/productList').get(productList);
+
+router.route('/productList/:categoryName').get(productList)
 router.route('/productList/details/:productId').get(productDetails);
+
 
 module.exports = router;

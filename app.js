@@ -51,8 +51,6 @@ app.use('/', cartRoutes);
 app.use('/', checkOutRoutes);
 app.use('/', confirmRoutes);
 
-
-
 app.get('*', (req, res) => {
   res.status(404).render('404page');
 });

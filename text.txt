@@ -171,3 +171,35 @@ const productAdd = async (req, res) => {
     return res.status(500).send(error);
   }
 };
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////
+
+///////////////////////////////////////             //////////////////////////// ///////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        //  if (sortContent === 'price-low-to-high') {
+//   console.log("low-high");
+//   isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: 1 });
+//     console.log("product filter",isProductListFilter);
+// } else if (sortContent === 'price-high-to-low') {
+//   console.log("high-low");
+//   isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: -1 });
+//   console.log("product filter",isProductListFilter);
+// } else {
+//   console.log("relevance");
+//   isProductListFilter = await product.find({ product_category: categoryName });
+// }

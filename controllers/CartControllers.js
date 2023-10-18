@@ -30,7 +30,7 @@ const cartDisplay = async (req, res) => {
       .populate('items.product')
       .exec();
 
-    const cartProducts = isCart.items.map(item => item.product); 
+    const cartProducts = isCart.items.map(item => item.product);
     console.log(cartProducts);
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
@@ -39,7 +39,7 @@ const cartDisplay = async (req, res) => {
 
     const cartProductPrice = cartItems.items.map(
       item => item.single_product_total_price,
-    ); 
+    );
 
     return res.render('user/cart', {
       randomBannerImage,
@@ -69,7 +69,6 @@ const productSendToCart = async (req, res) => {
       return res.redirect('/homepage');
     }
 
-
     const productPrice = await product.findOne({ _id: productId });
 
     userCart = await Cart.findOne({ userId: verifyUserEmail._id });
@@ -95,123 +94,69 @@ const productSendToCart = async (req, res) => {
       );
 
       if (!isProductInCart) {
-             userCart.items.push({
+        userCart.items.push({
           product: productId,
           quantity: 1,
           single_product_total_price: productPrice.product_price,
         });
         userCart.total += productPrice.product_price;
         userCart.totalQuantity += 1;
-        
       }
-      
     }
     await userCart.save();
 
-
-   res.redirect('/');
-
-
+    res.redirect('/');
   } catch (error) {
     console.error('Error adding product to cart:', error);
     return res.status(500).send('Internal Server Error');
   }
 };
 
-// const updateCartQuantity = async (req, res) => {
-//   try {
-//     const productId = req.params.productId;
-//     const change = parseInt(req.params.change); // -1 for decrement, 1 for increment
-
-//     // Validate the change parameter if needed
-
-//     // Perform the update in your database
-//     const userEmail = req.session.userEmail;
-//     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-
-//     if (!verifyUserEmail) {
-//       return res.status(401).json({ message: 'User not authorized' });
-//     }
-
-//     const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
-
-//     if (!userCart) {
-//       return res.status(404).json({ message: 'Cart not found' });
-//     }
-
-//     const isProductInCart = userCart.items.find(item => item.product.toString() === productId);
-
-//     if (!isProductInCart) {
-//       return res.status(404).json({ message: 'Product not found in the cart' });
-//     }
-
-//     const qty = isProductInCart.quantity + change;
-
-//     if (qty < 1 || qty > 10) {
-//       return res.status(400).json({ message: 'Invalid quantity' });
-//     }
-
-//     // Update the quantity
-//     isProductInCart.quantity = qty;
-
-//     const productPrice = await product.findOne({ _id: productId });
-//     const singleTotal = qty * productPrice.product_price;
-
-//     isProductInCart.single_product_total_price = singleTotal;
-
-//     // Update the cart's total and total quantity
-//     userCart.totalQuantity += change;
-//     userCart.total += productPrice.product_price * change;
-
-//     await userCart.save();
-
-//     return res.status(200).json({ message: 'Quantity updated successfully' });
-//   } catch (error) {
-//     console.error('Error updating product quantity:', error);
-//     return res.status(500).json({ message: 'Internal server error' });
-//   }
-// };
-
-
-
-const updateCart=async(req,res)=>{
-  const productId=req.params.productId;
-  const {quantity,productPrice,newSingleProductTotal,total}=req.body
+const updateCart = async (req, res) => {
+  const productId = req.params.productId;
+  const {
+    quantity,
+    productPrice,
+    newSingleProductTotal,
+    total,
+    afterShipTotal,
+  } = req.body;
 
   console.log(productId);
   console.log(quantity);
   console.log(productPrice);
-  console.log( newSingleProductTotal);
+  console.log(newSingleProductTotal);
   console.log(total);
-
+  console.log(afterShipTotal);
 
   const userEmail = req.session.userEmail;
-    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-    if (!verifyUserEmail) {
-      return res.status(401).json({ message: 'User not authorized' });
-    }
+  const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+  if (!verifyUserEmail) {
+    return res.status(401).json({ message: 'User not authorized' });
+  }
 
-    const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
+  const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
 
-    if (!userCart) {
-      return res.status(404).json({ message: 'Cart not found' });
-    }
+  if (!userCart) {
+    return res.status(404).json({ message: 'Cart not found' });
+  }
 
-    const isProductInCart = userCart.items.find(item => item.product.toString() === productId);
+  const isProductInCart = userCart.items.find(
+    item => item.product.toString() === productId,
+  );
 
-    if (!isProductInCart) {
-      return res.status(404).json({ message: 'Product not found in the cart' });
-    }
+  if (!isProductInCart) {
+    return res.status(404).json({ message: 'Product not found in the cart' });
+  }
 
-      isProductInCart.quantity=quantity
-      isProductInCart.single_product_total_price=newSingleProductTotal
-      userCart.total=total
+  isProductInCart.quantity = quantity;
+  isProductInCart.single_product_total_price = newSingleProductTotal;
+  userCart.total = total;
 
-      await userCart.save();
+  await userCart.save();
 
-  res.redirect('back')
-}
-
+  res.redirect('back');
+};
 
 const productDeleteFromTheCart = async (req, res) => {
   const userEmail = req.session.userEmail;
@@ -232,12 +177,9 @@ const productDeleteFromTheCart = async (req, res) => {
       item => item.product.toString() === deleteItem,
     );
 
-
     const productIndex = userCart.items.findIndex(
       item => item.product.toString() === deleteItem,
     );
-
-
 
     userCart.items.splice(productIndex, 1);
 
@@ -258,7 +200,7 @@ const productDeleteFromTheCart = async (req, res) => {
 module.exports = {
   cartDisplay,
   productSendToCart,
-// updateCartQuantity,
-updateCart,
+  // updateCartQuantity,
+  updateCart,
   productDeleteFromTheCart,
 };

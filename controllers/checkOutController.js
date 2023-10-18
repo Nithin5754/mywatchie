@@ -71,4 +71,70 @@ const orderManagement = async (req, res) => {
   }
 };
 
-module.exports = { orderManagement };
+const selectingPrimaryAddress = async (req, res) => {
+  isProfile = req.session.profileName;
+  const userEmail = req.session.userEmail;
+  islogout = 'log out';
+  isCreateAccount = 'Orders';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
+
+  try {
+    let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
+      return res.redirect('/ordermanagement');
+    }
+
+    const verifyEmailForAddress = await UserCollection.findOne({
+      email: userEmail,
+    })
+      .populate('address')
+      .exec();
+    const UserAddress = verifyEmailForAddress.address;
+
+    res.render('user/primaryAddressSelection', {
+      islogout,
+      isProfile,
+      isUrl,
+      UserAddress,
+      isCreateAccount,
+      isCreateAccountUrl,
+      verifyUserEmail,
+    });
+  } catch (error) {
+    res.send('adding primary address fetching error', error);
+  }
+};
+
+const updatePrimary = async (req, res) => {
+  const { addressSetId } = req.body;
+
+  let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+  if (!verifyUserEmail) {
+    return res.redirect('/ordermanagement');
+  }
+
+  userDetailsId = verifyUserEmail._id;
+
+  const isAddressExisting = await Address.findOne({ _id: addressSetId });
+
+  if (!isAddressExisting) {
+    return res.redirect('/userDetails/detailsEdit');
+  }
+
+  const existingUserUpdate = await UserCollection.findByIdAndUpdate(
+    userDetailsId,
+    {
+      isPrimaryAddress: isAddressExisting._id,
+    },
+    { new: true },
+  );
+
+  if (!existingUserUpdate) {
+    return res.status(500).send('Error fetching or updating user information');
+  }
+
+  res.redirect('/orderManagement');
+};
+
+module.exports = { orderManagement, selectingPrimaryAddress, updatePrimary };

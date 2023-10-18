@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateCartQuantity(productId, change) {
-  const quantityDisplay = document.querySelector(`[data-product-id="${productId}"]`);
+  const quantityDisplay = document.querySelector(
+    `[data-product-id="${productId}"]`,
+  );
   let quantity = parseInt(quantityDisplay.textContent);
 
   // Update the quantity (add logic to limit the maximum and minimum quantity if needed)

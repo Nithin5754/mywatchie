@@ -8,6 +8,12 @@ let isUrl;
 const productList = async (req, res) => {
   const isProfile = req.session.profileName;
   userEmail = req.session.userEmail;
+  const categoryName = req.params.categoryName;
+     const { sortContent } = req.query;
+
+     req.session.isSort=sortContent?sortContent:"relevance" ;
+     console.log(req.session.isSort,"current sort");
+  
   try {
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
@@ -18,12 +24,39 @@ const productList = async (req, res) => {
     isCreateAccount = 'contact us';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
-    const productLists = await product.find();
+let isProductListFilter='';
+
+
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
+
+
+
+
+switch (sortContent) {
+  case 'price-low-to-high':
+    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: 1 });
+    console.log("price-low-to-high", isProductListFilter[0]);
+    break;
+  case 'price-high-to-low':
+    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: -1 });
+    console.log("price-high-to-low", isProductListFilter[0]);
+    break;
+  default:
+    console.log("relevance");
+    isProductListFilter = await product.find({ product_category: categoryName }).sort({product_name:-1});
+    break;
+}
+
+
+
+
+
+
+
     res.render('user/productPage', {
-      productLists,
+      isProductListFilter,
       isProfile,
       isUrl,
       islogout,
@@ -31,6 +64,12 @@ const productList = async (req, res) => {
       isCreateAccountUrl,
       cartItems,
       verifyUserEmail,
+      categoryName,
+      isSort:req.session.isSort
+  
+     
+    
+   
     });
   } catch (error) {
     console.error('Error fetching images helo:', error.message);
@@ -38,9 +77,25 @@ const productList = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const productDetails = async (req, res) => {
   const isProfile = req.session.profileName;
   const userEmail = req.session.userEmail;
+
   try {
     islogout = 'log out';
     isCreateAccount = 'Orders';
@@ -58,17 +113,19 @@ const productDetails = async (req, res) => {
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
-  
-
-    const productQty =cartItems&&cartItems.items.find(
-      item => item.product.toString() === OneProduct,
-    );
+    const productQty =
+      cartItems &&
+      cartItems.items.find(item => item.product.toString() === OneProduct);
 
     let prodQty = 0;
 
     if (productQty && productQty.quantity !== undefined) {
       prodQty = productQty.quantity;
     }
+
+
+
+   
 
     res.render('user/productDetailsPage', {
       verifyUserEmail,
@@ -79,8 +136,7 @@ const productDetails = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
-      prodQty 
- 
+      prodQty,
     });
   } catch (error) {
     console.error('Error fetching product details:', error);
@@ -88,7 +144,17 @@ const productDetails = async (req, res) => {
   }
 };
 
+
+//  const productSort=(req,res)=>{
+//  const categoryName = req.params.categoryName;
+//       const {data}=req.body;
+//       console.log(" sort by:",data);
+//       console.log("my category",categoryName);
+
+//     }
+
 module.exports = {
   productList,
   productDetails,
+  // productSort,
 };

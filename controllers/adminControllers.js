@@ -137,6 +137,7 @@ const createProduct = async (req, res) => {
     productDescription,
     productPrice,
     productDiscount,
+    productBrand,
     productQuantity,
     categoryProduct,
   } = req.body;
@@ -165,6 +166,7 @@ const createProduct = async (req, res) => {
       product_category: categoryProduct,
       product_qty: productQuantity,
       product_image_url: imagePaths,
+      brand:productBrand
     });
 
     await newProduct.save();
@@ -247,7 +249,9 @@ const productDelete = async (req, res) => {
 const adminCategoryDisplay = async (req, res) => {
   try {
     if (req.session.adminData) {
-      const displayCategory = await categoryCollections.find();
+      const displayCategory = await categoryCollections
+        .find()
+        .sort({ category_publishDate: -1 });
       return res.render('admin/adminCategoryManagement', {
         displayCategory,
         SideBarSection: 'Category Management',

@@ -3,8 +3,6 @@ const Cart = require('../models/cartSchema');
 const UserCollection = require('../models/userSchema');
 const Address = require('../models/addressSchema');
 
-
-
 let islogout;
 let isCreateAccount;
 let isCreateAccountUrl;
@@ -18,13 +16,13 @@ const generateOrderNumber = () => {
 };
 
 const confirmPage = async (req, res) => {
-    const isProfile = req.session.profileName;
+  const isProfile = req.session.profileName;
   const userEmail = req.session.userEmail;
 
-      islogout = 'log out';
-    isCreateAccount = 'contact us';
-    isCreateAccountUrl = '/homepage';
-    isUrl = '/userDeatils';
+  islogout = 'log out';
+  isCreateAccount = 'contact us';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
   try {
     let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
@@ -93,11 +91,15 @@ const confirmPage = async (req, res) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = originalDate.toLocaleDateString('en-US', options);
 
-    return res.render('user/sucessfullyPage', { orderConfirm, formattedDate ,isProfile,
+    return res.render('user/sucessfullyPage', {
+      orderConfirm,
+      formattedDate,
+      isProfile,
       isUrl,
       islogout,
       isCreateAccount,
-      isCreateAccountUrl,});
+      isCreateAccountUrl,
+    });
   } catch (error) {
     console.log(error);
   }

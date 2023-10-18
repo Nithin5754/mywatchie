@@ -18,9 +18,8 @@ const {
 } = require('../utilities/emailUtils/emailUtils');
 
 //loginpage
-                         
-const login = async (req, res) => {
 
+const login = async (req, res) => {
   try {
     const randomBannerImage = await getRandomBannerImage();
 
@@ -51,7 +50,7 @@ const userBeforeLogin = async (req, res) => {
   }
   try {
     const randomBanner = await getRandomBannerImage();
-    const randomCategory = await categoryCollections.find();
+    const randomCategory = await categoryCollections.find().limit(4).sort({product_category:-1});
     isProfile = 'login';
     isUrl = '/login';
     islogout = 'help';
@@ -87,14 +86,15 @@ const homepage = async (req, res) => {
     if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
-    const randomCategory = await categoryCollections.find();
+    const randomCategory = await categoryCollections
+      .find()
+      .sort({ category_publishDate: -1 })
+      .limit(4);
     const isProfile = req.session.profileName;
     islogout = 'log out';
     isCreateAccount = 'contact us';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
-
-
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
@@ -163,6 +163,12 @@ const userProfileAdd = async (req, res) => {
 const userDetailspage = async (req, res) => {
   req.session.isUserDetaileSession = true;
   userEmail = req.session.userEmail;
+  const isProfile = req.session.profileName;
+
+  islogout = 'log out';
+  isCreateAccount = 'contact us';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
   try {
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
 
@@ -188,6 +194,12 @@ const userDetailspage = async (req, res) => {
       isOrder,
       verifyUserEmail,
       isAddressTheir,
+      isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+      cartItems,
     });
   } catch (error) {
     console.log('user details page error please check again', error);
@@ -516,7 +528,7 @@ const loginPost = async (req, res) => {
 
   req.session.previousEnterEmail = lEmail;
 
-  if (lEmail.trim() === ''|| lPassword.trim() === '') {
+  if (lEmail.trim() === '' || lPassword.trim() === '') {
     req.session.invalid = true;
     req.session.errorMessage = 'Email and password must be filled';
     return res.redirect('/login');
@@ -526,8 +538,8 @@ const loginPost = async (req, res) => {
     // Check if a user with the provided email exists
     const user = await UserCollection.findOne({ email: lEmail });
 
-    if(user.isBlocked===true){
-        req.session.invalid = true;
+    if (user.isBlocked === true) {
+      req.session.invalid = true;
       req.session.errorMessage = 'user blocked';
       return res.redirect('/login');
     }
