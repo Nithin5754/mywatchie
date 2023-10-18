@@ -1,17 +1,6 @@
 <aside class="bg-gray-800 text-white w-52 p-4 pt-9 flex flex-col justify-start sticky top-0 left-0 h-screen">
   <h2 class="text-xl font-bold mb-4">Filter and Sort</h2>
 
-<!-- Filter by Price Range -->
-<div class="mb-4">
-  <h3 class="text-lg font-semibold">Price Range</h3>
-  <div class="mt-2 flex items-center">
-    <input type="range" min="100" max="9999" step="10" class="w-full rounded-md bg-gray-700 text-white" id="priceRange">
-  </div>
-  <div class="mt-2 flex justify-between">
-
-    <span class="text-sm text-gray-400">Max: $<span id="maxPrice">9999</span></span>
-  </div>
-</div>
 
 
   <!-- Filter by Brand -->
@@ -19,7 +8,8 @@
     <h3 class="text-lg font-semibold">Brand</h3>
 <select class="w-full py-1 px-2 rounded-md bg-gray-700 text-white" name="brandSort" id="brandSort"
   data-category="<%= categoryName %>">
-  <% const uniqueBrands=Array.from(new Set(isProductListFilter.map(item=> item.brand))) %>
+
+  <% const uniqueBrands=Array.from(new Set( isAvailableBrands.map(item=> item.brand))) %>
     <% uniqueBrands.forEach((brand, i)=> { %>
       <option value="<%= brand %>" <%=i===0 ? 'selected' : '' %>><%= brand %>
       </option>

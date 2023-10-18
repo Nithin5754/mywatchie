@@ -26,7 +26,7 @@
 
 <div class="flex">
 
-<%- include('./partials/sidebar.ejs',{categoryName,isSort,isProductListFilter}) %>
+<%- include('./partials/sidebar.ejs',{categoryName,isSort,isProductListFilter,isAvailableBrands}) %>
 
 
 <main style="margin-top:5rem  w-4/5 p-4 ">
@@ -136,20 +136,9 @@
 
   </script>
 
-<script>
-  const priceRange = document.getElementById('priceRange');
 
-  const maxPrice = document.getElementById('maxPrice');
-
-
-
-  priceRange.addEventListener('change', function () {
-    maxPrice.innerText = priceRange.value;
-  });
-
-  
-</script>
 <script src="/js/sortby.js"></script>
+<script src="/js/brandSort.js"></script>
 
 
    

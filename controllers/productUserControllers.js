@@ -9,7 +9,12 @@ const productList = async (req, res) => {
   const isProfile = req.session.profileName;
   userEmail = req.session.userEmail;
   const categoryName = req.params.categoryName;
-     const { sortContent } = req.query;
+     const { sortContent,brandContent,rangeContent} = req.query;
+
+     console.log(typeof(rangeContent),"price range");
+   
+
+     
 
      req.session.isSort=sortContent?sortContent:"relevance" ;
      console.log(req.session.isSort,"current sort");
@@ -31,27 +36,50 @@ let isProductListFilter='';
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
 
+isAvailableBrands=await product.find({ product_category: categoryName })
 
+
+// if(rangeContent===5000){
+//     isProductListFilter = await product.find({
+//   product_category: categoryName,
+//   product_price: { $lt: 5000 } 
+// });
+// }
 
 
 switch (sortContent) {
   case 'price-low-to-high':
     isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: 1 });
-    console.log("price-low-to-high", isProductListFilter[0]);
+    console.log("hello");
+  
     break;
   case 'price-high-to-low':
     isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: -1 });
-    console.log("price-high-to-low", isProductListFilter[0]);
+   console.log("hai");
     break;
   default:
-    console.log("relevance");
+ console.log("nithin");
     isProductListFilter = await product.find({ product_category: categoryName }).sort({product_name:-1});
     break;
 }
 
 
 
+if(brandContent==='RM'){
+  
+         isProductListFilter = await product.find({ product_category: categoryName,brand:brandContent })
+}else if(brandContent==='TITAN'){
+ isProductListFilter = await product.find({ product_category: categoryName,brand:brandContent })
+}else if(brandContent==='ALL'){
+   isProductListFilter = await product.find({ product_category: categoryName})
+}
 
+
+
+//   isProductListFilter = await product.find({
+//   product_category: categoryName,
+//   product_price: { $gt: 9000 } 
+// });
 
 
 
@@ -65,7 +93,9 @@ switch (sortContent) {
       cartItems,
       verifyUserEmail,
       categoryName,
-      isSort:req.session.isSort
+      isSort:req.session.isSort,
+      isAvailableBrands,
+      rangeContent,
   
      
     
@@ -76,19 +106,6 @@ switch (sortContent) {
     res.status(500).send('Internal Server Error-login page error');
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -145,13 +162,6 @@ const productDetails = async (req, res) => {
 };
 
 
-//  const productSort=(req,res)=>{
-//  const categoryName = req.params.categoryName;
-//       const {data}=req.body;
-//       console.log(" sort by:",data);
-//       console.log("my category",categoryName);
-
-//     }
 
 module.exports = {
   productList,
