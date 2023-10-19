@@ -44,82 +44,162 @@ let isProductListFilter='';
 
 isAvailableBrands=await product.find({ product_category: categoryName })
 
-
-// if(rangeContent===5000){
-//     isProductListFilter = await product.find({
-//   product_category: categoryName,
-//   product_price: { $lt: 5000 } 
-// });
-// }
-
-
+   const page = parseInt(req.query.page)||1
+      const limit = 10;
+      const startIndex = (page - 1) * limit;
+       const totalProducts = await product.countDocuments({ product_category: categoryName });
+     
+    
+    
+      const maxPage = Math.ceil(totalProducts / limit);
+        if (page > maxPage) {
+        return res.redirect(`/adminProductManagement?page=${maxPage}`);
+      }
 switch (sortContent) {
   case 'price-low-to-high':
-    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: 1 });
+     
+    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: 1 })
+        .limit(limit)
+       .skip(startIndex)
+       .exec();
     console.log("hello");
   
     break;
   case 'price-high-to-low':
-    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: -1 });
+ 
+    
+ 
+    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: -1 })
+          .limit(limit)
+       .skip(startIndex)
+       .exec();
    console.log("hai");
     break;
   default:
  console.log("nithin");
-    isProductListFilter = await product.find({ product_category: categoryName }).sort({product_name:-1});
+  
+    
+ 
+    isProductListFilter = await product.find({ product_category: categoryName }).sort({product_name:-1})
+           .limit(limit)
+       .skip(startIndex)
+       .exec();
     break;
 }
 
 
 
 if(brandContent==='RM'){
+    
+    
+ 
   
          isProductListFilter = await product.find({ product_category: categoryName,brand:brandContent })
+                .limit(limit)
+       .skip(startIndex)
+       .exec();
 }else if(brandContent==='TITAN'){
+    
+    
+ 
  isProductListFilter = await product.find({ product_category: categoryName,brand:brandContent })
+               .limit(limit)
+       .skip(startIndex)
+       .exec();
 }else if(brandContent==='ALL'){
+      
+    
+ 
    isProductListFilter = await product.find({ product_category: categoryName})
+                 .limit(limit)
+       .skip(startIndex)
+       .exec();
 }
 
 
 
 if(discount==='90'){
+   
+    
+ 
   
   isProductListFilter = await product.find({
   product_category: categoryName,
   product_discount: { $gt: 90 } 
-});
+})
+        .limit(limit)
+       .skip(startIndex)
+       .exec();
   console.log(discount,"my discount");
 }else if(discount==='70'){
+  
+    
+ 
   isProductListFilter = await product.find({
   product_category: categoryName,
   product_discount: { $gt: 70 } 
-});
+})
+    .limit(limit)
+       .skip(startIndex)
+       .exec();
 
   console.log(discount,"my discount");
 }else if(discount==='50'){
+    
+    
+ 
     isProductListFilter = await product.find({
   product_category: categoryName,
   product_discount: { $gt: 50 } 
-});
+})
+.limit(limit)
+       .skip(startIndex)
+       .exec();
+
 }else if(discount==='30'){
+   
+    
+ 
     isProductListFilter = await product.find({
   product_category: categoryName,
   product_discount: { $gt: 30 } 
-});
+})
+.limit(limit)
+       .skip(startIndex)
+       .exec();
+
 }else if(discount==='10'){
+ 
+    
+ 
     isProductListFilter = await product.find({
   product_category: categoryName,
   product_discount: { $gt: 10 } 
-});
+})
+.limit(limit)
+       .skip(startIndex)
+       .exec();
 }else if(discount==='5'){
+   
+    
+ 
     isProductListFilter = await product.find({
   product_category: categoryName,
   product_discount: { $gt: 5 } 
-});
+})
+.limit(limit)
+       .skip(startIndex)
+       .exec();
 }else if(discount==='all'){
+     
+    
+ 
      isProductListFilter = await product.find({
   product_category: categoryName
-});
+})
+.limit(limit)
+       .skip(startIndex)
+       .exec();
 }
 
 
@@ -132,6 +212,7 @@ if(rate==='5'){
 
 
     res.render('user/productPage', {
+      
       isProductListFilter,
       isProfile,
       isUrl,
@@ -146,6 +227,8 @@ if(rate==='5'){
       isDiscount:req.session.isDiscount,
       isStar:req.session.israte,
       isAvailableBrands,
+      page,
+      maxPage,
     });
   } catch (error) {
     console.error('Error fetching images helo:', error.message);

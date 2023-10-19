@@ -46,8 +46,16 @@ const adminLogout = (req, res) => {
 const adminUserManagement = async (req, res) => {
   if (req.session.adminData) {
       const page = parseInt(req.query.page)||1
-      const limit = 5;
+      const limit = 10;
       const startIndex = (page - 1) * limit;
+       const totalProducts = await UserCollection.countDocuments();
+    
+    
+      const maxPage = Math.ceil(totalProducts / limit);
+   
+        if (page > maxPage) {
+        return res.redirect(`/adminUserManagement?page=${maxPage}`);
+      }
     const user = await UserCollection.find()
         .limit(limit)
         .skip(startIndex)
@@ -57,6 +65,8 @@ const adminUserManagement = async (req, res) => {
     res.render('admin/adminUserManagement', {
       user,
       SideBarSection: 'User Management',
+      page,
+      maxPage,
     });
   } else {
     res.redirect('/adminLogin');
@@ -102,21 +112,35 @@ const userunblock = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-
+ 
 const productManagement = async (req, res) => {
+    req.session.isDisable=false;
   try {
+
     if (req.session.adminData) {
       const page = parseInt(req.query.page)||1
-      const limit = 5;
+      const limit = 7;
       const startIndex = (page - 1) * limit;
+       const totalProducts = await productCollection.countDocuments();
+    
+    
+      const maxPage = Math.ceil(totalProducts / limit);
+        if (page > maxPage) {
+        return res.redirect(`/adminProductManagement?page=${maxPage}`);
+      }
+       console.log(totalProducts,"hello my products");
       const displayProduct = await productCollection.find()
        .limit(limit)
         .skip(startIndex)
-        .exec();
+        .exec()
+     
 
       return res.render('admin/adminProductManagement', {
         displayProduct,
         SideBarSection: 'Product Management',
+        page ,
+        maxPage,
+       
       });
     } else {
       res.redirect('/adminLogin');
@@ -126,6 +150,10 @@ const productManagement = async (req, res) => {
     res.status(500).send('display product error in admin page');
   }
 };
+
+
+
+
 // dispaly adding product
 const createProductDisplay = async (req, res) => {
   try {
@@ -261,12 +289,29 @@ const productDelete = async (req, res) => {
 const adminCategoryDisplay = async (req, res) => {
   try {
     if (req.session.adminData) {
+          const page = parseInt(req.query.page)||1
+      const limit = 7;
+      const startIndex = (page - 1) * limit;
+       const totalProducts = await ategoryCollections.countDocuments();
+    
+    
+      const maxPage = Math.ceil(totalProducts / limit);
+        if (page > maxPage) {
+        return res.redirect(`/adminCategoryManagement?page=${maxPage}`);
+      }
+      
       const displayCategory = await categoryCollections
         .find()
-        .sort({ category_publishDate: -1 });
+        .sort({ category_publishDate: -1 })
+        .limit(limit)
+        .skip(startIndex)
+        .exec()
       return res.render('admin/adminCategoryManagement', {
         displayCategory,
         SideBarSection: 'Category Management',
+           page ,
+        maxPage,
+       
       });
     } else {
       res.redirect('/adminLogin');
@@ -410,9 +455,16 @@ const categoryRemove = async (req, res) => {
 const orderManagement = async (req, res) => {
   try {
     if (req.session.adminData) {
-      const page = parseInt(req.query.page)||1
-      const limit = 8;
+         const page = parseInt(req.query.page)||1
+      const limit = 7;
       const startIndex = (page - 1) * limit;
+       const totalProducts = await userOrder.countDocuments();
+    
+    
+      const maxPage = Math.ceil(totalProducts / limit);
+        if (page > maxPage) {
+        return res.redirect(`/adminCategoryManagement?page=${maxPage}`);
+      }
       const isOrder = await userOrder.find().sort({ orderDate:-1}).populate('items.product')
       .limit(limit)
        .skip(startIndex)
@@ -422,6 +474,8 @@ const orderManagement = async (req, res) => {
       return res.render('admin/adminOrderManagement', {
         isOrder,
         SideBarSection: 'Order Management',
+        page,
+        maxPage,
       });
     } else {
       res.redirect('/adminLogin');

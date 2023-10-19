@@ -228,9 +228,23 @@ const orderHistory=async(req,res)=>{
       return res.redirect('/homepage');
     }
 
+       const page = parseInt(req.query.page)||1
+      const limit = 7;
+      const startIndex = (page - 1) * limit;
+       const totalProducts = await UserOrder.countDocuments();
+    
+    
+      const maxPage = Math.ceil(totalProducts / limit);
+        if (page > maxPage) {
+        return res.redirect(`/orderHistory?page=${maxPage}`);
+      }
+
     const isOrder = await UserOrder.find({ email: userEmail })
       .populate('items.product')
-      .exec();
+       .limit(limit)
+        .skip(startIndex)
+        .exec()
+     
 
   res.render('user/orderStatus', { verifyUserEmail,
     isOrder,
@@ -240,7 +254,10 @@ const orderHistory=async(req,res)=>{
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
-      orderUrl})
+      orderUrl,
+      page,
+      maxPage
+    })
      } catch (error) {
       res.send("orderHistory fetching:",error)
      }
