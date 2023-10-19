@@ -25,6 +25,8 @@ const {
 
   orderManagement,
   orderManagementPost,
+  oderProductDispay,
+  orderProductUserAddress,
 } = require('../controllers/adminControllers');
 
 // multer
@@ -95,6 +97,10 @@ router
 router.route('/adminOrderManagement').get(orderManagement);
 
 router.route('/adminOrderManagement/:orderId').post(orderManagementPost);
+
+
+router.route('/adminOrdermanagement/orderProductDisplay/:orderId').get(oderProductDispay)
+router.route('/adminOrdermanagement/orderUserDetails/:orderId').get(orderProductUserAddress)
 
 router.route('/userblock/:userId').get(userblock);
 router.route('/userunblock/:userId').get(userunblock);

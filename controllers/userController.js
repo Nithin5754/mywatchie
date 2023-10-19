@@ -39,6 +39,7 @@ const login = async (req, res) => {
     res.status(500).send('Internal Server Error-login page error');
   }
 };
+let orderUrl;
 let isProfile;
 let isUrl;
 let islogout;
@@ -58,6 +59,7 @@ const userBeforeLogin = async (req, res) => {
     isCreateAccountUrl = '/signup';
     verifyUserEmail = 'profile';
     cartItems = '';
+    orderUrl='#'
 
     return res.render('user/userBeforeLogin', {
       randomBanner,
@@ -69,6 +71,7 @@ const userBeforeLogin = async (req, res) => {
       isCreateAccountUrl,
       verifyUserEmail,
       cartItems,
+      orderUrl
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -95,6 +98,7 @@ const homepage = async (req, res) => {
     isCreateAccount = 'contact us';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
+    orderUrl='/orderHistory'
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
@@ -108,6 +112,7 @@ const homepage = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
+      orderUrl
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -186,12 +191,10 @@ const userDetailspage = async (req, res) => {
       ? userPrimaryAddress
       : temporaryAddress;
 
-    const isOrder = await UserOrder.find({ email: userEmail })
-      .populate('items.product')
-      .exec();
+
 
     return res.render('user/userdetails', {
-      isOrder,
+  
       verifyUserEmail,
       isAddressTheir,
       isProfile,
@@ -207,10 +210,47 @@ const userDetailspage = async (req, res) => {
   }
 };
 
+
+const orderHistory=async(req,res)=>{
+
+    userEmail = req.session.userEmail;
+      const isProfile = req.session.profileName;
+    islogout = 'log out';
+    isCreateAccount = 'contact us';
+    isCreateAccountUrl = '/homepage';
+    isUrl = '/userDeatils';
+    orderUrl='/orderHistory'
+
+     try {
+       const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+
+    if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
+
+    const isOrder = await UserOrder.find({ email: userEmail })
+      .populate('items.product')
+      .exec();
+
+  res.render('user/orderStatus', { verifyUserEmail,
+    isOrder,
+      isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+      cartItems,
+      orderUrl})
+     } catch (error) {
+      res.send("orderHistory fetching:",error)
+     }
+}
+
 // EDIT USER DETAILS SELECT THE ADDRESS THE WHICH IS PRIMARY
 
 const userDetailsEditForm = async (req, res) => {
   userEmail = req.session.userEmail;
+
 
   try {
     const verifyEmail = await UserCollection.findOne({ email: userEmail });
@@ -301,13 +341,24 @@ const userOrderCancel = async (req, res) => {
       orderNumber: cancelOrderNumber,
     });
 
-    if (userOrderItem.status === 'pending') {
-      const cancelOrder = await UserOrder.findOneAndRemove({
-        orderNumber: cancelOrderNumber,
-      });
+
+  if (userOrderItem.status === 'pending') {
+      const cancelOrder = await UserOrder.findOneAndUpdate({
+        orderNumber: cancelOrderNumber
+      },{status:"userCancelled"});
       if (!cancelOrder) {
+        console.log("error in cancelling order");
         return res.redirect('/userDetails');
       }
+
+
+    // if (userOrderItem.status === 'pending') {
+    //   const cancelOrder = await UserOrder.findOneAndRemove({
+    //     orderNumber: cancelOrderNumber,
+    //   });
+      // if (!cancelOrder) {
+      //   return res.redirect('/userDetails');
+      // }
     }
 
     return res.redirect('back');
@@ -740,6 +791,7 @@ module.exports = {
   userProfileAddForm,
   userProfileAdd,
   userDetailspage,
+  orderHistory,
   addAddressForm,
   userDetailsEditForm,
   userDetailsEdit,

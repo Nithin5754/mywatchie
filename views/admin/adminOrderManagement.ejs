@@ -47,13 +47,14 @@
             <tr>
               <th class="py-3 px-6 text-left">ID</th>
               <th class="py-3 px-6 text-left">Order Number</th>
-              <th class="py-3 px-6 text-left">Products</th>
+         
               <th class="py-3 px-6 text-left">total price</th>
               <th class="py-3 px-6 text-left">Customer</th>
               <th class="py-3 px-6 text-left">Payment Method</th>
               <th class="py-3 px-6 text-left">Order Date</th>
               <th class="py-3 px-6 text-left">phone Number</th>
               <th class="py-3 px-6 text-center">Actions</th>
+                  <th class="py-3 px-6 text-left">Products</th>
             </tr>
           </thead>
         <tbody>
@@ -65,90 +66,68 @@
               <td class="py-3 px-6">
                 <%= item.orderNumber %>
               </td>
-    <td class="py-3 px-6 relative" x-data="{ isOpen: false }">
-      <button @click="isOpen = true" class="focus:outline-none text-black-500 hover:underline cursor-pointer">
-        Show Products
-      </button>
-    
-      <div x-show="isOpen" @click.away="isOpen = false"
-        class="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-gray-800 bg-opacity-70"     >
-        <div @click.away="isOpen = false" class="bg-white rounded-lg shadow-lg p-4 w-80 ">
-          <button @click="isOpen = false"
-            class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-          <div class="">
-            <!-- Product Details -->
-            <% item.items.forEach((item)=> { %>
-              <div class="mb-4">
-                <div class="text-xl font-semibold text-gray-900">
-                  <%= item.product.product_name %>
-                </div>
-                <div class="text-sm text-gray-500">Quantity: <%= item.quantity %>
-                  <div class="text-sm text-gray-500">Quantity: <%= item.orderPrice %>
-                </div>
-                <!-- Add your product image here -->
-                <img src="/<%= item.product.product_image_url %>" alt="Product Image" class="w-48 h-48 mt-4 mx-auto">
-              </div>
-              <% }) %>
-          </div>
-        </div>
-      </div>
-    
-      <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </div>
-    </td>
 
+           
                   <td class="py-3 px-6">
-                    <%= item.totalPrice %>
+                   $<%= item.totalPrice %>
                   </td>
+    
               <td class="py-3 px-6">
                 <div class="font-semibold">
-                  <%= item.shippingAddress.username %>
+                  <a href="/adminOrdermanagement/orderUserDetails/<%= item.orderNumber%>"><%= item.shippingAddress.username %></a>  
                 </div>
-                <div class="text-sm text-gray-500">
-                  <%= item.shippingAddress.city %>
-                </div>
-                <div class="text-sm text-gray-500">
-                  <%= item.shippingAddress.state %>
-                </div>
-                <div class="text-sm text-gray-500">
-                  <%= item.shippingAddress.postalCode %>
-                </div>
-                <div class="text-sm text-gray-500">
-                  <%= item.shippingAddress.address_tag %>
-                </div>
+             
               </td>
               <td class="py-3 px-6">
                 cash on delivery
               </td>
               <td class="py-3 px-6">
-                <%= item.orderDate %>
+                <%= formatOrderDate(item.orderDate) %>
               </td>
+
+                <!-- Function to format the order date -->
+                <% function formatOrderDate(dateString) { %>
+                  <% const options={ year: 'numeric' , month: 'long' , day: 'numeric' , hour: 'numeric' , minute: 'numeric' }; %>
+                    <% const formattedDate=new Date(dateString).toLocaleString('en-US', options); %>
+                      <%= formattedDate %>
+                        <% } %>
               <td class="py-3 px-6">
                 <%= item.phoneNumber %>
               </td>
       <td class="py-3 px-6 relative">
-<form action="/adminOrderManagement/<%= item.orderNumber%>" method="post">
-  <div class="relative">
-    <select name="statusDisplay">
-      <option value="pending" <% if (item.status==='pending' ) { %> selected <% } %>>Pending</option>
-      <option value="delivered" <% if (item.status==='delivered' ) { %> selected <% } %>>Delivered</option>
-      <option value="cancelled" <% if (item.status==='cancelled' ) { %> selected <% } %>>Cancelled</option>
-    </select>
-  </div>
-  <button type="submit">Update</button>
+<div class="relative">
+<% if(item.status==='userCancelled') { %>
+      <p class="text-gray-800 font-bold">userCancelled</p>
+<%}else{ %>
+  <select name="statusDisplay" class="status-select" id="status_id" data-statusId="<%= item.orderNumber %>">
+    <option value="pending" <% if (item.status==='pending' ) { %> selected <% } %>>Pending</option>
+    <option value="delivered" <% if (item.status==='delivered' ) { %> selected <% } %>>Delivered</option>
+    <option value="cancelled" <% if (item.status==='cancelled' ) { %> selected <% } %>>Cancelled</option>
+  </select>
+<%} %>
+
+
+</div>
+
+  <!-- <button type="submit">Update</button> -->
 </form>
 
 
     
       </td>
+          <td class="py-3 px-6 relative">
+            <button class="focus:outline-none text-black-500 hover:underline cursor-pointer">
+              <a href="/adminOrdermanagement/orderProductDisplay/<%= item.orderNumber %>">Show Products</a>
+            </button>
+          
+          
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </td>
 
             </tr>
             <% }); %>
@@ -167,10 +146,15 @@
       </div>
     </section>
   
-  
+    <section>
+      <div class="pagination  flex justify-center gap-4">
+        <a href="?page=<%= paginate.page - 1 %>">Previous</a>
+        <a href="?page=<%= paginate.page + 1 %>">Next</a>
+      </div>
+    </section>
   </main>
 
-    
+ 
 
 
 
@@ -183,6 +167,42 @@
 
       <script src="/js/search.js"></script>
       <script src="/js/orderStatus.js"></script>
+
+
+   <script>
+      const selectOrder=document.querySelectorAll('#status_id')
+
+
+     const selectOrders = document.querySelectorAll('.status-select');
+
+      selectOrders.forEach((order) => {
+        order.addEventListener('change', (event) => {
+          const orderId = order.getAttribute('data-statusId');
+          const orderContent = event.target.value;
+
+          fetch(`/adminOrderManagement/${orderId}`, {
+            method: 'POST',
+            body: JSON.stringify({ data: orderContent }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((response) => response.json())
+            .catch((error) => {
+              console.error('Error updating order status:', error);
+            });
+        });
+      });
+
+
+
+
+      
+
+
+
+
+   </script>   
 
  
 </body>

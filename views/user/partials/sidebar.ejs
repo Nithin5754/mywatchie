@@ -1,6 +1,19 @@
 <aside class="bg-gray-800 text-white w-52 p-4 pt-9 flex flex-col justify-start sticky top-0 left-0 h-screen">
   <h2 class="text-xl font-bold mb-4">Filter and Sort</h2>
-
+  <div>
+    <h3 class="text-lg font-semibold">Discount</h3>
+    <select class="w-full py-1 px-2 rounded-md bg-gray-700 text-white" name="discountSort" id="discountSort"
+      data-category="<%= categoryName %>">
+      <option value="all" <%=isDiscount==='all' ?'selected':'' %>>All</option>
+      <option value='90' <%=isDiscount==='90' ?'selected':'' %> >90% and more</option>
+      <option value="70" <%=isDiscount==='70' ?'selected':'' %>>70% and more</option>
+        <option value="50" <%=isDiscount==='50' ?'selected':'' %>>50% and more</option>
+          <option value="30" <%=isDiscount==='30' ?'selected':'' %>>30% and more</option>
+            <option value="10" <%=isDiscount==='10' ?'selected':'' %>>10% and more</option>
+              <option value="5" <%=isDiscount==='5' ?'selected':'' %>>5% and more</option>
+      <!-- Add more sorting options here -->
+    </select>
+  </div>
 
 
   <!-- Filter by Brand -->
@@ -20,13 +33,18 @@
 
   </div>
 
-  <!-- Filter by Dial Color -->
-  <div class="mb-4">
-    <h3 class="text-lg font-semibold">Dial Color</h3>
-    <select class="w-full py-1 px-2 rounded-md bg-gray-700 text-white">
-      <option value="color1">Color 1</option>
-      <option value="color2">Color 2</option>
-      <!-- Add more color options here -->
+  <div>
+    <h3 class="text-lg font-semibold">star rating</h3>
+    <select class="w-full py-1 px-2 rounded-md bg-gray-700 text-white" name="ratingSort" id="ratingSort"
+      data-category="<%= categoryName %>">
+      <option value="all" <%=isStar==='all' ?'selected':'' %>>All</option>
+      <option value='5' <%=isStar==='5' ?'selected':'' %> >5 and more<span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span></option>
+      <option value="4" <%=isStar==='4' ?'selected':'' %>>4<span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span></option>
+      <option value="3" <%=isStar==='3' ?'selected':'' %>>3<span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span></option>
+      <option value="2" <%=isStar==='2' ?'selected':'' %>>2 <span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span></option>
+      <option value="1" <%=isStar==='1' ?'selected':'' %>>below 1 <span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span></option>
+    
+      <!-- Add more sorting options here -->
     </select>
   </div>
 

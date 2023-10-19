@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>order History</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/darkmode.css">
+</head>
+<body class="dark-mode">
+
+<%-
+  include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
+  %>
+
+
+
+<main class="mt-28">
+<div class="ml-5 ">
+  <h1 class="items-start text-white "><a href="/" class="flex flex-row items-center gap-2"><i
+        class="fa-solid fa-arrow-left text-white"></i>
+      <h2 class="italic text-white font-bold">back</h2>
+    </a></h1>
+</div>
+
+    <section class=" p-6 flex justify-center">
+      <div class="mt-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Order History</h2>
+    
+        <!-- Order Entries -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Order Entry 1 -->
+    
+          <% isOrder.forEach(item=> { %>
+            <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
+              <div class="flex justify-between items-center mb-2">
+                <p class="text-lg font-semibold text-gray-800">Order ID:<%=item.orderNumber %>
+                </p>
+                <p class="text-gray-600">Date: <%=item.orderDate %>
+                </p>
+              </div>
+              <p class="text-gray-600">Total: $<%=item.totalPrice%>
+              </p>
+              <p class="text-gray-600">status:<%=item.status %>
+              </p>
+    
+              <% if(item.status=='cancelled' ||item.status==='userCancelled' ) {%>
+                <h4 class="border p-2 bg-slate-600 text-white font-bold rounded-md text-center">cancelled</h4>
+                <% }else if(item.status==='delivered' ){ %>
+    
+                  <h1 class="text-gray-900 font-bold text-xl">cannot cancel order</h1>
+    
+                  <% }else {%>
+                    <a href="/userOrder/<%= item.orderNumber %>" class="text-blue-500 hover:underline mt-2 block">cancel
+                      order</a>
+                    <% } %>
+            </div>
+    
+            <% }) %>
+    
+    
+    
+              <!-- Order Entry 2 -->
+    
+              <!-- Add more order entries as needed -->
+        </div>
+      </div>
+    </section>
+</main>
+  
+  <!-- Order History -->
+
+
+    <script src="/js/darkmode.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+      <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+</body>
+</html>

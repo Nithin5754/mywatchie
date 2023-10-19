@@ -7,6 +7,7 @@ let islogout;
 let isCreateAccount;
 let isCreateAccountUrl;
 let isUrl;
+let orderUrl;
 
 const generateOrderNumber = () => {
   const getTimeStamp = Date.now();
@@ -23,6 +24,7 @@ const confirmPage = async (req, res) => {
   isCreateAccount = 'contact us';
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
+   orderUrl='/orderHistory';
   try {
     let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
@@ -92,10 +94,12 @@ const confirmPage = async (req, res) => {
     const formattedDate = originalDate.toLocaleDateString('en-US', options);
 
     return res.render('user/sucessfullyPage', {
+       verifyUserEmail ,
       orderConfirm,
       formattedDate,
       isProfile,
       isUrl,
+       orderUrl,
       islogout,
       isCreateAccount,
       isCreateAccountUrl,

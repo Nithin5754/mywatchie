@@ -203,3 +203,21 @@ const productAdd = async (req, res) => {
 //   console.log("relevance");
 //   isProductListFilter = await product.find({ product_category: categoryName });
 // }
+
+
+
+
+
+///////////////////////////////////////
+/////////////////////
+///////////
+///////
+///
+//
+/
+
+
+<!-- <form action="/adminOrderManagement/<%= item.orderNumber%>" method="post">
+
+
+

@@ -21,13 +21,16 @@
 <body class="bg-gray-100 text-white  dark-mode scroll-smooth">
 
 
-<%- include('./partials/header.ejs',isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,cartItems) %>
+<%- include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,cartItems, verifyUserEmail}) %>
 
 
 <div class="flex">
 
-<%- include('./partials/sidebar.ejs',{categoryName,isSort,isProductListFilter,isAvailableBrands}) %>
+<%- include('./partials/sidebar.ejs',{categoryName,isSort,isProductListFilter,isAvailableBrands,isStar,isDiscount}) %>
 
+ 
+   
+ 
 
 <main style="margin-top:5rem  w-4/5 p-4 ">
 
@@ -139,6 +142,8 @@
 
 <script src="/js/sortby.js"></script>
 <script src="/js/brandSort.js"></script>
+<script src="/js/discount.js"></script>
+<script src="/js/rating.js"></script>
 
 
    

@@ -5,6 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const { v4: uuid4 } = require('uuid');
 const nocache = require('nocache');
+const paginate = require('express-paginate');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 // mongodb config folder import here
@@ -44,7 +45,7 @@ app.use(
     },
   }),
 );
-
+app.use(paginate.middleware(10, 50));
 app.use('/', userRoutes);
 app.use('/', adminRoutes);
 app.use('/', cartRoutes);

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Ordered Products</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- Admin Nav Bar -->
+  <nav class="bg-blue-500 text-white p-4">
+    <!-- Your admin navigation content here -->
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-6">
+<div class="sticky ">
+  <h1 class="items-start "><a href="/adminOrderManagement" class="flex flex-row items-center gap-2"><i
+        class="fa-solid fa-arrow-left"></i>
+      <h2 class="italic font-bold">back</h2>
+    </a></h1>
+</div>
+    <!-- Page Heading -->
+    <h1 class="text-3xl font-semibold mb-4">Ordered Products</h1>
+
+    <!-- Ordered Products Table -->
+    <div class="overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="min-w-full bg-white border rounded-lg shadow-lg">
+        <thead class="bg-gray-800 text-white">
+          <tr>
+            <th class="py-3 px-6 text-left">ID</th>
+            <th class="py-3 px-6 text-left">Product Name</th>
+            <th class="py-3 px-6 text-left">Quantity</th>
+            <th class="py-3 px-6 text-left">Price</th>
+            <th class="py-3 px-6 text-left">Image</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loop through ordered products and display them here -->
+<% isOrder.forEach((product, productIndex)=> { %>
+  <% product.items.forEach((item, itemIndex)=> { %>
+    <tr class="hover:bg-gray-100 transition">
+      <td class="py-3 px-6">
+        <%= itemIndex + 1 %>
+      </td>
+      <td class="py-3 px-6">
+        <%= item.product.product_name %>
+      </td>
+      <td class="py-3 px-6">
+        <%= item.quantity %>
+      </td>
+      <td class="py-3 px-6">$<%= item.orderPrice %>
+      </td>
+      <td class="py-3 px-6">
+        <img src="/<%= item.product.product_image_url[0] %>" alt="Product Image" class="w-20 h-20">
+      </td>
+    </tr>
+    <% }) %>
+      <% }) %>
+
+          <!-- Repeat the above row structure for each product -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+  <!-- font awesome script link -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"></script>
+
+</body>
+
+</html>

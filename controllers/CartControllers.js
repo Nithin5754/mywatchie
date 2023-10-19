@@ -8,6 +8,7 @@ let isCreateAccount;
 let isCreateAccountUrl;
 let isUrl;
 let isProfile;
+let orderUrl;
 
 const cartDisplay = async (req, res) => {
   // HEADER SECTION DETAILS
@@ -15,6 +16,7 @@ const cartDisplay = async (req, res) => {
   isCreateAccount = 'Orders';
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
+   orderUrl='/orderHistory'
   // HEADER SECTION DETAILS END HERE
 
   let userEmail = req.session.userEmail;
@@ -46,6 +48,7 @@ const cartDisplay = async (req, res) => {
       isProfile,
       isUrl,
       islogout,
+      orderUrl,
       isCreateAccount,
       isCreateAccountUrl,
       verifyUserEmail,

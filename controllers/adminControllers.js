@@ -45,7 +45,13 @@ const adminLogout = (req, res) => {
 // ADMIN HOMEPAGE SECTION================
 const adminUserManagement = async (req, res) => {
   if (req.session.adminData) {
-    const user = await UserCollection.find();
+      const page = parseInt(req.query.page)||1
+      const limit = 5;
+      const startIndex = (page - 1) * limit;
+    const user = await UserCollection.find()
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
     console.log(user);
 
     res.render('admin/adminUserManagement', {
@@ -100,7 +106,13 @@ const userunblock = async (req, res) => {
 const productManagement = async (req, res) => {
   try {
     if (req.session.adminData) {
-      const displayProduct = await productCollection.find();
+      const page = parseInt(req.query.page)||1
+      const limit = 5;
+      const startIndex = (page - 1) * limit;
+      const displayProduct = await productCollection.find()
+       .limit(limit)
+        .skip(startIndex)
+        .exec();
 
       return res.render('admin/adminProductManagement', {
         displayProduct,
@@ -300,6 +312,11 @@ const createCategory = async (req, res) => {
     }
     // adding new category
 
+    const isCategoryExist= await categoryCollections.findOne({ product_category:categoryName})
+    if(isCategoryExist){
+      return res.redirect('/adminCategoryManagement/createCategory')
+    }
+
     const newProduct = new categoryCollections({
       product_category: categoryName,
       category_description: categoryDescription,
@@ -348,6 +365,13 @@ const adminEditCategory = async (req, res) => {
       categoryQuantity,
     } = req.body;
 
+
+    const isCategoryExist= await categoryCollections.findOne({ product_category:categoryName})
+    if(isCategoryExist){
+      return res.redirect('/adminCategoryManagement/createCategory')
+    }
+
+
     const isCategoryUpdated = await categoryCollections.findByIdAndUpdate(
       categoryId,
       {
@@ -386,7 +410,14 @@ const categoryRemove = async (req, res) => {
 const orderManagement = async (req, res) => {
   try {
     if (req.session.adminData) {
-      const isOrder = await userOrder.find().populate('items.product').exec();
+      const page = parseInt(req.query.page)||1
+      const limit = 8;
+      const startIndex = (page - 1) * limit;
+      const isOrder = await userOrder.find().sort({ orderDate:-1}).populate('items.product')
+      .limit(limit)
+       .skip(startIndex)
+       .exec();
+    
 
       return res.render('admin/adminOrderManagement', {
         isOrder,
@@ -402,9 +433,12 @@ const orderManagement = async (req, res) => {
 };
 
 const orderManagementPost = async (req, res) => {
-  const { statusDisplay } = req.body;
+  const { data } = req.body;
+  console.log("data",data);
 
   const orderId = req.params.orderId;
+
+  console.log(orderId,"yeah my order");
 
   try {
     const hasThisOrderValid = await userOrder.findOne({ orderNumber: orderId });
@@ -414,18 +448,47 @@ const orderManagementPost = async (req, res) => {
 
     const isUpdateOrderStatus = await userOrder.updateOne(
       { orderNumber: orderId },
-      { status: statusDisplay },
+      { status: data },
     );
 
     if (!isUpdateOrderStatus) {
       return res.send('oredr status update error');
-    }
-
+    } 
     console.log(hasThisOrderValid + 'order number is verified');
-
     res.redirect('back');
-  } catch (error) {}
+  } catch (error) {
+    console.log("fetching order management post controller",error);
+  }
 };
+
+
+const oderProductDispay=async(req,res)=>{
+
+  const orderId=req.params.orderId
+
+
+    try {
+        const isOrder = await userOrder.find({ orderNumber:orderId}).populate('items.product').exec();
+        
+  res.render('admin/orderProductDisplay',{isOrder})
+
+    } catch (error) {
+      console.log(error,"error fetching order product in admin side");
+    }
+}
+
+const orderProductUserAddress=async(req,res)=>{
+    const orderId=req.params.orderId
+
+   try {
+      const isOrder = await userOrder.find({ orderNumber:orderId}).populate('items.product').exec();
+
+
+  res.render('admin/orderUserDetails',{isOrder})
+   } catch (error) {
+    
+   }
+}
 module.exports = {
   adminUserManagement,
   userblock,
@@ -447,4 +510,6 @@ module.exports = {
   adminLogout,
   orderManagement,
   orderManagementPost,
+  oderProductDispay,
+  orderProductUserAddress,
 };

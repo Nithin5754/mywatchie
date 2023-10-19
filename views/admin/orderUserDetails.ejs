@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order User Address</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- Main Content -->
+  <main class="container mx-auto p-6 mb-10">
+
+    <!-- Section Heading -->
+    <h1 class="text-3xl font-semibold mb-4">User Address</h1>
+
+    <% isOrder.forEach((item,index) => { %>
+
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <div class="p-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">User Address</h2>
+            <div>
+              <p class="text-gray-600">Username:</p>
+              <p class="text-gray-800 font-semibold"><%= item.shippingAddress.username %></p>
+            </div>
+            <div>
+              <p class="text-gray-600">City:</p>
+              <p class="text-gray-800 font-semibold"><%= item.shippingAddress.city %></p>
+            </div>
+            <div>
+              <p class="text-gray-600">mobile number:</p>
+              <p class="text-gray-800 font-semibold"><%= item.phoneNumber %></p>
+            </div>
+
+              <div>
+                <p class="text-gray-600">Email:</p>
+                <p class="text-gray-800 font-semibold">
+                  <%= item.email %>
+                </p>
+              </div>
+            <div>
+              <p class="text-gray-600">Postal Code:</p>
+              <p class="text-gray-800 font-semibold"><%= item.shippingAddress.postalCode %></p>
+            </div>
+            <div>
+              <p class="text-gray-600">Address Tag:</p>
+              <p class="text-gray-800 font-semibold"><%= item.shippingAddress.address_tag%></p>
+            </div>
+          </div>
+        </div>
+      
+  <%  }); %>
+   
+    <!-- User Address Card -->
+<div class=" ">
+  <h1 class="items-center mt-4 "><a href="/adminOrderManagement" class="flex flex-row items-center gap-2"><i
+        class="fa-solid fa-arrow-left"></i>
+      <h2 class="italic font-bold">back</h2>
+    </a></h1>
+</div>
+
+
+
+
+
+  </main>
+  <!-- font awesome script link -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"></script>
+</body>
+
+</html>

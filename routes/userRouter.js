@@ -23,6 +23,7 @@ const {
   userDetailsEditForm,
   userDetailsEdit,
   userOrderCancel,
+  orderHistory,
   homepage,
   otpVerification,
   otpPage,
@@ -70,6 +71,7 @@ router
   .get(userProfileAddForm)
   .post(upload.single('image'), userProfileAdd);
 router.route('/userDeatils').get(userDetailspage);
+router.route('/orderHistory').get(orderHistory)
 router
   .route('/userDetails/detailsEdit')
   .get(userDetailsEditForm)
