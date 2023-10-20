@@ -6,11 +6,18 @@ let isCreateAccount;
 let isCreateAccountUrl;
 let isUrl;
 let orderUrl;
+
+
+
+
 const productList = async (req, res) => {
   const isProfile = req.session.profileName;
   userEmail = req.session.userEmail;
   const categoryName = req.params.categoryName;
-     const { sortContent,brandContent,discount,rate} = req.query;
+     const { sortContent,brandContent,discount,rate,searchContent} = req.query;
+
+     console.log("search query",searchContent);
+
 
      req.session.isSort=sortContent?sortContent:"relevance" ;
      console.log(req.session.isSort,"current sort");
@@ -53,7 +60,7 @@ isAvailableBrands=await product.find({ product_category: categoryName })
     
       const maxPage = Math.ceil(totalProducts / limit);
         if (page > maxPage) {
-        return res.redirect(`/adminProductManagement?page=${maxPage}`);
+        return res.redirect(`/`);
       }
 switch (sortContent) {
   case 'price-low-to-high':
@@ -90,10 +97,7 @@ switch (sortContent) {
 
 
 if(brandContent==='RM'){
-    
-    
- 
-  
+
          isProductListFilter = await product.find({ product_category: categoryName,brand:brandContent })
                 .limit(limit)
        .skip(startIndex)
@@ -211,8 +215,7 @@ if(rate==='5'){
 }
 
 
-    res.render('user/productPage', {
-      
+    res.render('user/productPage', {  
       isProductListFilter,
       isProfile,
       isUrl,
@@ -297,5 +300,5 @@ const productDetails = async (req, res) => {
 module.exports = {
   productList,
   productDetails,
-  // productSort,
+
 };

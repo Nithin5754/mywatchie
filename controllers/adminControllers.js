@@ -119,7 +119,7 @@ const productManagement = async (req, res) => {
 
     if (req.session.adminData) {
       const page = parseInt(req.query.page)||1
-      const limit = 7;
+      const limit = 5;
       const startIndex = (page - 1) * limit;
        const totalProducts = await productCollection.countDocuments();
     
@@ -244,6 +244,9 @@ const adminUpdateProduct = async (req, res) => {
     productQuantity,
   } = req.body;
   try {
+        
+  
+
     const updatedProduct = await productCollection.findByIdAndUpdate(
       productId,
       {
@@ -251,6 +254,7 @@ const adminUpdateProduct = async (req, res) => {
         product_description: productDescription,
         product_price: productPrice,
         product_discount: productDiscount,
+ 
         product_qty: productQuantity,
       },
       { new: true },
@@ -292,7 +296,7 @@ const adminCategoryDisplay = async (req, res) => {
           const page = parseInt(req.query.page)||1
       const limit = 7;
       const startIndex = (page - 1) * limit;
-       const totalProducts = await ategoryCollections.countDocuments();
+       const totalProducts = await categoryCollections.countDocuments();
     
     
       const maxPage = Math.ceil(totalProducts / limit);
@@ -417,6 +421,18 @@ const adminEditCategory = async (req, res) => {
     }
 
 
+       let imagePath = req.file.path;
+    console.log(imagePath);
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+    }
+    console.log('imagepath:', imagePath);
+
+    if (imagePath.includes('public\\')) {
+      imagePath = imagePath.replace('public\\', '');
+    } else if (imagePath.includes('public/')) {
+      imagePath = imagePath.replace('public/', '');
+    }
     const isCategoryUpdated = await categoryCollections.findByIdAndUpdate(
       categoryId,
       {
@@ -424,6 +440,7 @@ const adminEditCategory = async (req, res) => {
         category_description: categoryDescription,
         category_publishDate: categoryPublishDate,
         category_qty: categoryQuantity,
+          category_img_url:imagePath
       },
       { new: true },
     );
@@ -456,7 +473,7 @@ const orderManagement = async (req, res) => {
   try {
     if (req.session.adminData) {
          const page = parseInt(req.query.page)||1
-      const limit = 7;
+      const limit = 3;
       const startIndex = (page - 1) * limit;
        const totalProducts = await userOrder.countDocuments();
     

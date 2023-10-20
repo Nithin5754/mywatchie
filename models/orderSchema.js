@@ -22,9 +22,7 @@ const UserOrderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  totalQuantity: {
-    type: Number,
-  },
+
   totalPrice: {
     type: Number,
   },

@@ -64,7 +64,7 @@ router
 router
   .route('/adminProductManagement/createProduct/:productId')
   .get(editProductForm)
-  .post(adminUpdateProduct);
+  .post(upload.array('image', 4),adminUpdateProduct);
 
 //delete a product
 router
@@ -85,7 +85,7 @@ router
 router
   .route('/adminCategoryManagement/createCategory/:categoryId')
   .get(editCategoryForm)
-  .post(adminEditCategory);
+  .post(upload.single('image'),adminEditCategory);
 
 //delete a category
 router

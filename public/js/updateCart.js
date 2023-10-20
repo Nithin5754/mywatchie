@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const afterShipment = document.querySelector('#afterShipping');
   let total = 0;
   let afterShipTotal = 0;
+  let totalQuantity=0;
 
   quantitySelects.forEach(quantitySelect => {
     quantitySelect.addEventListener('change', event => {
@@ -30,8 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
           document.querySelector(`#price${id}`).getAttribute('data-price'),
         );
         const quantity = parseInt(select.value);
+      
         total += price * quantity;
+        
       });
+
 
       afterShipTotal = total + 8;
 
@@ -51,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
           productPrice: productPrice,
           newSingleProductTotal: newSingleProductTotal,
           total: total,
+          
+        
           afterShipTotal: afterShipTotal,
         }),
       })

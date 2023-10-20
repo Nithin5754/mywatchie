@@ -263,6 +263,36 @@ const orderHistory=async(req,res)=>{
      }
 }
 
+// ORDER HISTORY PRODUCT  SINGLE ORDER PRODUCTS LIST SHOW 
+
+ const userOrderProductList=async(req,res)=>{
+  const orderId=req.params.orderId
+     const isProfile = req.session.profileName;
+    islogout = 'log out';
+    isCreateAccount = 'contact us';
+    isCreateAccountUrl = '/homepage';
+    isUrl = '/userDeatils';
+    orderUrl='/orderHistory'
+
+try {
+     const isOrder = await UserOrder.find({orderNumber:orderId}).populate('items.product').exec()
+     console.log(isOrder,"my order");
+    res.render('user/orderHistoryViewProduct',{isOrder,  
+       isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+      cartItems,
+      orderUrl,})
+} catch (error) {
+
+  res.send("error fetching finding the order product from user side",error)
+  
+}
+
+ }
+
 // EDIT USER DETAILS SELECT THE ADDRESS THE WHICH IS PRIMARY
 
 const userDetailsEditForm = async (req, res) => {
@@ -612,10 +642,11 @@ const loginPost = async (req, res) => {
       return res.redirect('/login');
     }
 
+
     if (!user) {
       req.session.invalid = true;
       req.session.errorMessage = 'not found';
-      return res.redirect('/login');
+      return res.redirect('back');
     }
     const passwordMatch = await bcrypt.compare(lPassword, user.password);
     if (!passwordMatch) {
@@ -809,6 +840,7 @@ module.exports = {
   userProfileAdd,
   userDetailspage,
   orderHistory,
+  userOrderProductList,
   addAddressForm,
   userDetailsEditForm,
   userDetailsEdit,

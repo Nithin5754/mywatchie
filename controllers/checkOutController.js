@@ -45,7 +45,7 @@ const orderManagement = async (req, res) => {
       .exec();
 
     console.log('is cart is available' + isCartProduct);
-
+       
     let isProduct = isCartProduct.items.map(item => item.product);
 
     let isquantity = isCartProduct.items.map(item => item.quantity);

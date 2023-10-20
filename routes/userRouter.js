@@ -24,6 +24,7 @@ const {
   userDetailsEdit,
   userOrderCancel,
   orderHistory,
+  userOrderProductList,
   homepage,
   otpVerification,
   otpPage,
@@ -39,7 +40,7 @@ const {
 const {
   productList,
   productDetails,
-    // productSort,
+
 } = require('../controllers/productUserControllers');
 
 const userAuthentication = require('../middlewares/users/customeMiddle');
@@ -72,6 +73,7 @@ router
   .post(upload.single('image'), userProfileAdd);
 router.route('/userDeatils').get(userDetailspage);
 router.route('/orderHistory').get(orderHistory)
+router.route("/userOrderproduct/:orderId").get(userOrderProductList)
 router
   .route('/userDetails/detailsEdit')
   .get(userDetailsEditForm)
@@ -109,6 +111,7 @@ router.route('/sms').get(twilioSms);
 
 router.route('/productList/:categoryName').get(productList)
 router.route('/productList/details/:productId').get(productDetails);
+
 
 
 module.exports = router;

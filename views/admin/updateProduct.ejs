@@ -15,11 +15,12 @@
     <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4" action="/adminProductManagement/createProduct/<%=editProduct ? editProduct._id : '' %>"
       method="post">
       <!-- Product Image Upload -->
+
       <div class="mb-4">
         <label for="productImage" class="block text-gray-700 text-sm font-bold mb-2">Product Image</label>
-        <input type="file" id="productImage" name="productImage"
+        <input type="file" id="productImage" name="image"
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          accept="image/*">
+          multiple accept="image/*">
       </div>
 
       <!-- Product Name -->
@@ -33,9 +34,9 @@
       <!-- Product Description -->
       <div class="mb-4">
         <label for="productDescription" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
-        <textarea id="productDescription" name="productDescription" rows="4"
+        <input type="text" id="productDescription" name="productDescription" 
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          required value="<%= editProduct ? editProduct.product_description : '' %>"></textarea>
+          required value="<%= editProduct ? editProduct.product_description : '' %>"/>
       </div>
 
       <!-- Category -->
@@ -75,6 +76,8 @@
       </div>
 <div class="mb-6">
      <div class="flex flex-row gap-10">
+      
+      
       <img class="w-60 h-60" src="/<%= editProduct.product_image_url[0] %>" alt="image-1">
       <img class="w-60 h-60" src="/<%= editProduct.product_image_url[1] %>" alt="image-2">
       <img class="w-60 h-60" src="/<%= editProduct.product_image_url[2] %>" alt="image-3">

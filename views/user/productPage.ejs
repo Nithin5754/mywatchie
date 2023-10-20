@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mywatchie.com</title>
+  <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="dist/output.css">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/darkmode.css">
@@ -28,26 +29,24 @@
 
 <%- include('./partials/sidebar.ejs',{categoryName,isSort,isProductListFilter,isAvailableBrands,isStar,isDiscount}) %>
 
- 
-   
- 
 
 <main style="margin-top:5rem  w-4/5 p-4 ">
 
   <!-- search box -->
-      <%- include('./partials/search.ejs') %>
+      <%- include('./partials/search.ejs',{categoryName}) %>
   
+
 
 
   <!-- Second Section: Product List without Swiper -->
   <section>
-    <h1 class="text-center font-extrabold text-3xl mt-20"><%= categoryName %></h1>
-    <div class="grid grid-cols-3 justify-center items-center">
+    <h1 class="text-center font-extrabold text-3xl mt-14"><%= categoryName %></h1>
+    <ul class="grid grid-cols-3 justify-center items-center">
       
       <% isProductListFilter.forEach((element, index)=> { %>
         
-        <div
-          class="relative m-2 md:m-4 lg:m-10 flex w-full h-auto max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"  id="productList">
+        <li
+          class="searchable-item relative m-2 md:m-4 lg:m-10 flex w-full h-auto max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md" >
           <a class="relative mx-2 mt-2 md:mx-3 md:mt-3 lg:mx-4 lg:mt-4 h-28 md:h-52 overflow-hidden rounded-xl flex flex-col justify-between"
             href="/productList/details/<%= element._id %>">
             <img id="image" class="object-contain object-center w-full sm:h-48 md:h-52 lg:h-60 "
@@ -60,9 +59,10 @@
           </a>
           <div class="mt-2 md:mt-4 px-2 md:px-5 pb-2 md:pb-5">
             <a href="#">
-              <h5 class="sm:text-lg md:text-xl lg:text-2xl tracking-tight">
-                <%= element.product_name %>
-              </h5>
+            <h5 class="product-name sm:text-lg md:text-xl lg:text-2xl tracking-tight">
+              <%= element.product_name %>
+            </h5>
+
             </a>
             <div class="mt-1 md:mt-2 mb-3 md:mb-5 flex items-center justify-between">
               <p>
@@ -95,9 +95,9 @@
               </button>
             </div>
           </div>
-        </div>
+        </li>
         <% }) %>
-    </div>
+    </ul>
   </section>
 
   <section class="my-6">
@@ -130,7 +130,7 @@
     <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
     <script src="/js/darkmode.js"></script>
    
-    <script src="/js/search.js"></script>
+    <script src="/js/productSearch.js"></script>
 
   <script>
   var swiper = new Swiper(".mySwiper", {
@@ -164,9 +164,26 @@
 <script src="/js/brandSort.js"></script>
 <script src="/js/discount.js"></script>
 <script src="/js/rating.js"></script>
+<script src="/js/search.js"></script>
 
+<script>
+  const searchInput = document.getElementById('userSearch');
+  const searchableItems = document.querySelectorAll('.searchable-item'); // Select items by class
 
-   
+  searchInput.addEventListener('input', () => {
+    const searchText = searchInput.value.toLowerCase();
+
+    searchableItems.forEach(item => {
+      const itemText = item.textContent.toLowerCase();
+
+      if (itemText.includes(searchText)) {
+        item.style.display = 'block'; // Show the item
+      } else {
+        item.style.display = 'none'; // Hide the item
+      }
+    });
+  });
+</script>
 
 
 

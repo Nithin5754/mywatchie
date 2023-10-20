@@ -34,6 +34,10 @@
     
           <% isOrder.forEach(item=> { %>
             <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
+                <div id="view-more" class="mt-4 text-right">
+                  <button id="load-more" class="bg-blue-500 text-white px-2 rounded hover:bg-blue-600"><a
+                      href="/userOrderproduct/<%= item.orderNumber%>">view</a></button>
+                </div>
               <div class="flex justify-between items-center mb-2">
                 <p class="text-lg font-semibold text-gray-800">Order ID:<%=item.orderNumber %>
                 </p>
@@ -44,6 +48,9 @@
               </p>
               <p class="text-gray-600">status:<%=item.status %>
               </p>
+           
+
+             
     
               <% if(item.status=='cancelled' ||item.status==='userCancelled' ) {%>
                 <h4 class="border p-2 bg-slate-600 text-white font-bold rounded-md text-center">cancelled</h4>

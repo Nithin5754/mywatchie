@@ -123,6 +123,7 @@ const updateCart = async (req, res) => {
     newSingleProductTotal,
     total,
     afterShipTotal,
+ 
   } = req.body;
 
   console.log(productId);
@@ -131,6 +132,7 @@ const updateCart = async (req, res) => {
   console.log(newSingleProductTotal);
   console.log(total);
   console.log(afterShipTotal);
+
 
   const userEmail = req.session.userEmail;
   const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
@@ -153,7 +155,12 @@ const updateCart = async (req, res) => {
   }
 
   isProductInCart.quantity = quantity;
+  
   isProductInCart.single_product_total_price = newSingleProductTotal;
+
+   
+
+
   userCart.total = total;
 
   await userCart.save();

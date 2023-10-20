@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <title>Order History</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/darkmode.css">
+</head>
+
+<body class="bg-gray-100  flex items-center justify-center dark-mode">
+
+<%-
+  include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
+  %>
+
+ <main class="mt-24 w-full">
+
+  <section>
+        <div class="mb-10 ml-10">
+          <h1 class="items-center mt-4 "><a href='/orderHistory' class="flex flex-row items-center gap-2"><i
+                class="fa-solid fa-arrow-left"></i>
+              <h2 class="italic font-bold">back</h2>
+            </a></h1>
+        </div>
+  </section>
+    <section class="bg-white p-4 rounded shadow-lg w-full ">
+  
+    
+    
+      <h1 class="text-2xl font-semibold mb-4">Order History</h1>
+      <div class="overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="min-w-full bg-white border rounded-lg shadow-lg">
+          <thead class="bg-gray-800 text-white">
+            <tr>
+              <th class="py-3 px-6 text-left">ID</th>
+              <th class="py-3 px-6 text-left">Product Name</th>
+              <th class="py-3 px-6 text-left">Quantity</th>
+              <th class="py-3 px-6 text-left">Price</th>
+              <th class="py-3 px-6 text-left">Image</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loop through ordered products and display them here -->
+            <% isOrder.forEach((product, productIndex)=> { %>
+              <% product.items.forEach((item, itemIndex)=> { %>
+    
+                <tr class="hover:bg-gray-100 hover:text-black transition">
+                  <td class="py-3 px-6">
+                    <%= itemIndex + 1 %>
+                  </td>
+                  <td class="py-3 px-6">
+                    <%= item.product.product_name %>
+                  </td>
+                  <td class="py-3 px-6">
+                    <%= item.quantity %>
+                  </td>
+                  <td class="py-3 px-6">$<%= item.orderPrice %>
+                  </td>
+                  <td class="py-3 px-6">
+                    <img src="/<%= item.product.product_image_url[0] %>" alt="Product Image" class="w-20 h-20">
+                  </td>
+                </tr>
+                <% }) %>
+                  <% }) %>
+    
+                  
+          </tbody>
+        </table>
+      </div>
+    
+    
+    </section>
+ </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"></script>
+  <script src="/js/darkmode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+
+</body>
+
+</html>
