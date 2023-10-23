@@ -13,7 +13,7 @@
 <body class="bg-gray-100 dark-mode">
 <!-- header.ejs -->
 <%-
-  include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems})
+  include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems, orderUrl})
   %>
 
   <!-- User Details -->
@@ -86,8 +86,8 @@
             </div>
           </div>
         </div>
-    
-        <a href="/userDetails/address" class="block mt-6">
+    <% let confirm ="details" %>
+        <a href="/userDetails/address/<%= confirm %>" class="block mt-6">
           <button
             class="bg-blue-500 hover:bg-emerald-700 text-white py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">
             Add Address

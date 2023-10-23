@@ -6,31 +6,21 @@ let isCreateAccount;
 let isCreateAccountUrl;
 let isUrl;
 let orderUrl;
-
-
-
-
 const productList = async (req, res) => {
   const isProfile = req.session.profileName;
   userEmail = req.session.userEmail;
   const categoryName = req.params.categoryName;
-     const { sortContent,brandContent,discount,rate,searchContent} = req.query;
+  const { sortContent, brandContent, discount, rate } = req.query;
 
-     console.log("search query",searchContent);
+  req.session.isSort = sortContent ? sortContent : 'relevance';
+  console.log(req.session.isSort, 'current sort');
 
+  req.session.isDiscount = discount ? discount : 'all';
+  console.log(req.session.isDiscount, 'hello discount');
 
-     req.session.isSort=sortContent?sortContent:"relevance" ;
-     console.log(req.session.isSort,"current sort");
+  req.session.israte = rate ? rate : 'all';
+  console.log(req.session.israte, 'hello rating');
 
-
-
-     req.session.isDiscount=discount?discount:'all'
-     console.log(req.session.isDiscount,"hello discount");
-
-
-       req.session.israte=rate?rate:'all'
-     console.log(req.session.israte,"hello rating");
-  
   try {
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
@@ -41,181 +31,148 @@ const productList = async (req, res) => {
     isCreateAccount = 'contact us';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
-      orderUrl='/orderHistory'
-let isProductListFilter='';
-
-
+    orderUrl = '/orderHistory';
+    let isProductListFilter = '';
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
+    isAvailableBrands = await product.find({ product_category: categoryName });
 
-isAvailableBrands=await product.find({ product_category: categoryName })
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const startIndex = (page - 1) * limit;
+    const totalProducts = await product.countDocuments({
+      product_category: categoryName,
+    });
 
-   const page = parseInt(req.query.page)||1
-      const limit = 10;
-      const startIndex = (page - 1) * limit;
-       const totalProducts = await product.countDocuments({ product_category: categoryName });
-     
-    
-    
-      const maxPage = Math.ceil(totalProducts / limit);
-        if (page > maxPage) {
-        return res.redirect(`/`);
-      }
-switch (sortContent) {
-  case 'price-low-to-high':
-     
-    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: 1 })
-        .limit(limit)
-       .skip(startIndex)
-       .exec();
-    console.log("hello");
-  
-    break;
-  case 'price-high-to-low':
- 
-    
- 
-    isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: -1 })
+    const maxPage = Math.ceil(totalProducts / limit);
+    if (page > maxPage) {
+      return res.redirect(`/adminProductManagement?page=${maxPage}`);
+    }
+    switch (sortContent) {
+      case 'price-low-to-high':
+        isProductListFilter = await product
+          .find({ product_category: categoryName })
+          .sort({ product_price: 1 })
           .limit(limit)
-       .skip(startIndex)
-       .exec();
-   console.log("hai");
-    break;
-  default:
- console.log("nithin");
-  
-    
- 
-    isProductListFilter = await product.find({ product_category: categoryName }).sort({product_name:-1})
-           .limit(limit)
-       .skip(startIndex)
-       .exec();
-    break;
-}
+          .skip(startIndex)
+          .exec();
+        console.log('hello');
 
+        break;
+      case 'price-high-to-low':
+        isProductListFilter = await product
+          .find({ product_category: categoryName })
+          .sort({ product_price: -1 })
+          .limit(limit)
+          .skip(startIndex)
+          .exec();
+        console.log('hai');
+        break;
+      default:
+        console.log('nithin');
 
+        isProductListFilter = await product
+          .find({ product_category: categoryName })
+          .sort({ product_name: -1 })
+          .limit(limit)
+          .skip(startIndex)
+          .exec();
+        break;
+    }
 
-if(brandContent==='RM'){
-
-         isProductListFilter = await product.find({ product_category: categoryName,brand:brandContent })
-                .limit(limit)
-       .skip(startIndex)
-       .exec();
-}else if(brandContent==='TITAN'){
-    
-    
- 
- isProductListFilter = await product.find({ product_category: categoryName,brand:brandContent })
-               .limit(limit)
-       .skip(startIndex)
-       .exec();
-}else if(brandContent==='ALL'){
-      
-    
- 
-   isProductListFilter = await product.find({ product_category: categoryName})
-                 .limit(limit)
-       .skip(startIndex)
-       .exec();
-}
-
-
-
-if(discount==='90'){
-   
-    
- 
-  
-  isProductListFilter = await product.find({
-  product_category: categoryName,
-  product_discount: { $gt: 90 } 
-})
+    if (brandContent === 'RM') {
+      isProductListFilter = await product
+        .find({ product_category: categoryName, brand: brandContent })
         .limit(limit)
-       .skip(startIndex)
-       .exec();
-  console.log(discount,"my discount");
-}else if(discount==='70'){
-  
-    
- 
-  isProductListFilter = await product.find({
-  product_category: categoryName,
-  product_discount: { $gt: 70 } 
-})
-    .limit(limit)
-       .skip(startIndex)
-       .exec();
+        .skip(startIndex)
+        .exec();
+    } else if (brandContent === 'TITAN') {
+      isProductListFilter = await product
+        .find({ product_category: categoryName, brand: brandContent })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+    } else if (brandContent === 'ALL') {
+      isProductListFilter = await product
+        .find({ product_category: categoryName })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+    }
 
-  console.log(discount,"my discount");
-}else if(discount==='50'){
-    
-    
- 
-    isProductListFilter = await product.find({
-  product_category: categoryName,
-  product_discount: { $gt: 50 } 
-})
-.limit(limit)
-       .skip(startIndex)
-       .exec();
+    if (discount === '90') {
+      isProductListFilter = await product
+        .find({
+          product_category: categoryName,
+          product_discount: { $gt: 90 },
+        })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+      console.log(discount, 'my discount');
+    } else if (discount === '70') {
+      isProductListFilter = await product
+        .find({
+          product_category: categoryName,
+          product_discount: { $gt: 70 },
+        })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
 
-}else if(discount==='30'){
-   
-    
- 
-    isProductListFilter = await product.find({
-  product_category: categoryName,
-  product_discount: { $gt: 30 } 
-})
-.limit(limit)
-       .skip(startIndex)
-       .exec();
+      console.log(discount, 'my discount');
+    } else if (discount === '50') {
+      isProductListFilter = await product
+        .find({
+          product_category: categoryName,
+          product_discount: { $gt: 50 },
+        })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+    } else if (discount === '30') {
+      isProductListFilter = await product
+        .find({
+          product_category: categoryName,
+          product_discount: { $gt: 30 },
+        })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+    } else if (discount === '10') {
+      isProductListFilter = await product
+        .find({
+          product_category: categoryName,
+          product_discount: { $gt: 10 },
+        })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+    } else if (discount === '5') {
+      isProductListFilter = await product
+        .find({
+          product_category: categoryName,
+          product_discount: { $gt: 5 },
+        })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+    } else if (discount === 'all') {
+      isProductListFilter = await product
+        .find({
+          product_category: categoryName,
+        })
+        .limit(limit)
+        .skip(startIndex)
+        .exec();
+    }
 
-}else if(discount==='10'){
- 
-    
- 
-    isProductListFilter = await product.find({
-  product_category: categoryName,
-  product_discount: { $gt: 10 } 
-})
-.limit(limit)
-       .skip(startIndex)
-       .exec();
-}else if(discount==='5'){
-   
-    
- 
-    isProductListFilter = await product.find({
-  product_category: categoryName,
-  product_discount: { $gt: 5 } 
-})
-.limit(limit)
-       .skip(startIndex)
-       .exec();
-}else if(discount==='all'){
-     
-    
- 
-     isProductListFilter = await product.find({
-  product_category: categoryName
-})
-.limit(limit)
-       .skip(startIndex)
-       .exec();
-}
+    if (rate === '5') {
+      console.log('rate', rate);
+    }
 
-
-
-
-
-if(rate==='5'){
-  console.log("rate",rate);
-}
-
-
-    res.render('user/productPage', {  
+    res.render('user/productPage', {
       isProductListFilter,
       isProfile,
       isUrl,
@@ -226,9 +183,9 @@ if(rate==='5'){
       cartItems,
       verifyUserEmail,
       categoryName,
-      isSort:req.session.isSort,
-      isDiscount:req.session.isDiscount,
-      isStar:req.session.israte,
+      isSort: req.session.isSort,
+      isDiscount: req.session.isDiscount,
+      isStar: req.session.israte,
       isAvailableBrands,
       page,
       maxPage,
@@ -239,8 +196,6 @@ if(rate==='5'){
   }
 };
 
-
-
 const productDetails = async (req, res) => {
   const isProfile = req.session.profileName;
   const userEmail = req.session.userEmail;
@@ -250,7 +205,7 @@ const productDetails = async (req, res) => {
     isCreateAccount = 'Orders';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
-    orderUrl='/orderHistory'
+    orderUrl = '/orderHistory';
     const OneProduct = req.params.productId;
     const productLists = await product.findById(OneProduct);
 
@@ -273,10 +228,6 @@ const productDetails = async (req, res) => {
       prodQty = productQty.quantity;
     }
 
-
-
-   
-
     res.render('user/productDetailsPage', {
       verifyUserEmail,
       productLists,
@@ -295,10 +246,8 @@ const productDetails = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
   productList,
   productDetails,
-
+  // productSort,
 };

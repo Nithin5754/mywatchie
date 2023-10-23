@@ -80,7 +80,7 @@
                 <!-- Repeat this for each star -->
                 <span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span>
                 <span
-                  class="mr-2 ml-3 rounded bg-red-600 px-1 sm:px-2 md:px-3 lg:px-4 text-xs sm:text-sm md:lg:text-lg font-semibold text-white">5.0</span>
+                  class="mr-2 ml-3 rounded bg-red-600 px-1 sm:px-2 md:px-3 lg:px-4 text-xs sm:text-sm md:lg:text-lg font-semibold text-white"><%= element.product_rating %></span>
               </div>
             </div>
             <div class="flex flex-col gap-3">
@@ -91,7 +91,7 @@
                     d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z">
                   </path>
                 </svg>
-                Buy now
+                <a href=''>Buy now</a>
               </button>
             </div>
           </div>
@@ -164,7 +164,7 @@
 <script src="/js/brandSort.js"></script>
 <script src="/js/discount.js"></script>
 <script src="/js/rating.js"></script>
-<script src="/js/search.js"></script>
+
 
 <script>
   const searchInput = document.getElementById('userSearch');

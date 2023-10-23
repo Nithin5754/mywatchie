@@ -29,6 +29,9 @@ const ProductSchema = new mongoose.Schema({
   product_discount: {
     type: Number,
   },
+  product_rating: {
+    type: Number,
+  },
   product_category: {
     type: String,
   },

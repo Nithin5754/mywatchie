@@ -1,11 +1,18 @@
-const UserAuthentication = (req, res, next) => {
-  console.log('req.session.isUser:', req.session.isUser);
-  if (req.session && req.session.isUser) {
-    next();
+const userBeforeLoginAuthentication = (req, res, next) => {
+  if (req.session.isUser) {
+    return res.redirect('/homepage');
   } else {
-    console.log('Redirecting to /home');
-    return res.redirect('/');
+    next();
   }
 };
 
-module.exports = UserAuthentication;
+
+const userAfterLoginAuthentication=(req,res,next)=>{
+  if (req.session.isUser) {
+    next();
+  } else {
+    res.redirect('/');
+  }
+}
+
+module.exports = {userBeforeLoginAuthentication,userAfterLoginAuthentication};

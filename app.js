@@ -45,6 +45,7 @@ app.use(
     },
   }),
 );
+
 app.use(paginate.middleware(10, 50));
 app.use('/', userRoutes);
 app.use('/', adminRoutes);
@@ -66,7 +67,7 @@ const start = async () => {
       console.log('server started.....');
     });
   } catch (error) {
-    console.error('Error connecting to the database:', err);
+    console.error('Error connecting to the database:', error);
   }
 };
 

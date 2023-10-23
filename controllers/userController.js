@@ -45,13 +45,14 @@ let isUrl;
 let islogout;
 let isCreateAccount;
 let isCreateAccountUrl;
+let isLogin;
 const userBeforeLogin = async (req, res) => {
-  if (req.session.isUser) {
-    return res.redirect('/homepage');
-  }
   try {
     const randomBanner = await getRandomBannerImage();
-    const randomCategory = await categoryCollections.find().limit(4).sort({product_category:-1});
+const randomCategory = await categoryCollections.aggregate([
+  { $sort: { product_category: -1 } },
+  { $limit: 4 }
+]);
     isProfile = 'login';
     isUrl = '/login';
     islogout = 'help';
@@ -59,7 +60,7 @@ const userBeforeLogin = async (req, res) => {
     isCreateAccountUrl = '/signup';
     verifyUserEmail = 'profile';
     cartItems = '';
-    orderUrl='#'
+    (orderUrl = '#'), (isLogin = false);
 
     return res.render('user/userBeforeLogin', {
       randomBanner,
@@ -71,7 +72,8 @@ const userBeforeLogin = async (req, res) => {
       isCreateAccountUrl,
       verifyUserEmail,
       cartItems,
-      orderUrl
+      orderUrl,
+      isLogin,
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -84,24 +86,26 @@ const userBeforeLogin = async (req, res) => {
 const homepage = async (req, res) => {
   userEmail = req.session.userEmail;
   try {
-    const randomBanner = await getRandomBannerImage();
+
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
-    const randomCategory = await categoryCollections
-      .find()
-      .sort({ category_publishDate: -1 })
-      .limit(4);
+  
+const randomCategory = await categoryCollections.aggregate([
+  { $sort: { product_category: -1 } },
+  { $limit: 4 }
+]);  
     const isProfile = req.session.profileName;
     islogout = 'log out';
     isCreateAccount = 'contact us';
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
-    orderUrl='/orderHistory'
+    orderUrl = '/orderHistory';
+    isLogin = true;
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
-
+    const randomBanner = await getRandomBannerImage();
     return res.render('user/home', {
       randomBanner,
       randomCategory,
@@ -112,7 +116,8 @@ const homepage = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
-      orderUrl
+      orderUrl,
+      isLogin,
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -123,7 +128,13 @@ const homepage = async (req, res) => {
 // USER PROFILE DETAILS PAGE START HERE
 
 const userProfileAddForm = async (req, res) => {
-  res.render('user/userProfileAddForm');
+
+       try {
+        res.render('user/userProfileAddForm',{
+    });
+       } catch (error) {
+        res.send("error fetching add address form please check again")
+       }
 };
 
 const userProfileAdd = async (req, res) => {
@@ -174,6 +185,7 @@ const userDetailspage = async (req, res) => {
   isCreateAccount = 'contact us';
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
+  orderUrl = '/orderHistory';
   try {
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
 
@@ -191,10 +203,7 @@ const userDetailspage = async (req, res) => {
       ? userPrimaryAddress
       : temporaryAddress;
 
-
-
     return res.render('user/userdetails', {
-  
       verifyUserEmail,
       isAddressTheir,
       isProfile,
@@ -203,13 +212,13 @@ const userDetailspage = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
+      orderUrl,
     });
   } catch (error) {
     console.log('user details page error please check again', error);
     return res.send('user details page error please check again');
   }
 };
-
 
 const orderHistory=async(req,res)=>{
 
@@ -263,41 +272,43 @@ const orderHistory=async(req,res)=>{
      }
 }
 
-// ORDER HISTORY PRODUCT  SINGLE ORDER PRODUCTS LIST SHOW 
+// ORDER HISTORY PRODUCT  SINGLE ORDER PRODUCTS LIST SHOW
 
- const userOrderProductList=async(req,res)=>{
-  const orderId=req.params.orderId
-     const isProfile = req.session.profileName;
-    islogout = 'log out';
-    isCreateAccount = 'contact us';
-    isCreateAccountUrl = '/homepage';
-    isUrl = '/userDeatils';
-    orderUrl='/orderHistory'
+const userOrderProductList = async (req, res) => {
+  const orderId = req.params.orderId;
+  const isProfile = req.session.profileName;
+  islogout = 'log out';
+  isCreateAccount = 'contact us';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
+  orderUrl = '/orderHistory';
 
-try {
-     const isOrder = await UserOrder.find({orderNumber:orderId}).populate('items.product').exec()
-     console.log(isOrder,"my order");
-    res.render('user/orderHistoryViewProduct',{isOrder,  
-       isProfile,
+  try {
+    const isOrder = await UserOrder.find({ orderNumber: orderId })
+      .populate('items.product')
+      .exec();
+
+  
+    console.log(isOrder, 'my order');
+    res.render('user/orderHistoryViewProduct', {
+      isOrder,
+      isProfile,
       isUrl,
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
-      orderUrl,})
-} catch (error) {
-
-  res.send("error fetching finding the order product from user side",error)
-  
-}
-
- }
+      orderUrl,
+    });
+  } catch (error) {
+    res.send('error fetching finding the order product from user side', error);
+  }
+};
 
 // EDIT USER DETAILS SELECT THE ADDRESS THE WHICH IS PRIMARY
 
 const userDetailsEditForm = async (req, res) => {
   userEmail = req.session.userEmail;
-
 
   try {
     const verifyEmail = await UserCollection.findOne({ email: userEmail });
@@ -388,21 +399,22 @@ const userOrderCancel = async (req, res) => {
       orderNumber: cancelOrderNumber,
     });
 
-
-  if (userOrderItem.status === 'pending') {
-      const cancelOrder = await UserOrder.findOneAndUpdate({
-        orderNumber: cancelOrderNumber
-      },{status:"userCancelled"});
+    if (userOrderItem.status === 'pending') {
+      const cancelOrder = await UserOrder.findOneAndUpdate(
+        {
+          orderNumber: cancelOrderNumber,
+        },
+        { status: 'userCancelled' },
+      );
       if (!cancelOrder) {
-        console.log("error in cancelling order");
+        console.log('error in cancelling order');
         return res.redirect('/userDetails');
       }
 
-
-    // if (userOrderItem.status === 'pending') {
-    //   const cancelOrder = await UserOrder.findOneAndRemove({
-    //     orderNumber: cancelOrderNumber,
-    //   });
+      // if (userOrderItem.status === 'pending') {
+      //   const cancelOrder = await UserOrder.findOneAndRemove({
+      //     orderNumber: cancelOrderNumber,
+      //   });
       // if (!cancelOrder) {
       //   return res.redirect('/userDetails');
       // }
@@ -421,6 +433,16 @@ const userOrderCancel = async (req, res) => {
 
 const addAddressForm = async (req, res) => {
   const currentUserEmail = req.session.userEmail;
+  const confirm = req.params.isUser;
+   const isProfile = req.session.profileName;
+    islogout = 'log out';
+    isCreateAccount = 'contact us';
+    isCreateAccountUrl = '/homepage';
+    isUrl = '/userDeatils';
+    orderUrl = '/orderHistory';
+    isLogin = true;
+  console.log(confirm, 'isconfirm idfgf efgewgtruy gfgew ');
+
   try {
     const verifyEmail = await UserCollection.findOne({
       email: currentUserEmail,
@@ -429,7 +451,14 @@ const addAddressForm = async (req, res) => {
       .exec();
     const usersMultipleAddress = verifyEmail.address;
 
-    res.render('user/addAddress', { usersMultipleAddress });
+    res.render('user/addAddress', { usersMultipleAddress, confirm ,   isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+      cartItems,
+      orderUrl,
+      isLogin,});
   } catch (error) {
     res.send('error fetching rendering the add address page' + error);
     console.log(error);
@@ -477,7 +506,7 @@ const addingNewAddressForm = async (req, res) => {
 
     await verifyEmail.save();
 
-    return res.redirect('/userDetails/address');
+    return res.redirect('/userDetails/address/:isUser');
   } catch (error) {
     console.error('Error during add address:', error);
     return res.status(500).send('Error during adding new address');
@@ -492,9 +521,9 @@ const deleteAddress = async (req, res) => {
       return res.send('error occur in delete address');
     }
 
-    res.redirect('/userDetails/address');
+    res.redirect('/userDetails/address/:isUser');
   } catch (error) {
-    console.error('Error during delete address:', error);
+    console.error('Error during delete address:isUser', error);
     return res.status(500).send('Error during delete address');
   }
 };
@@ -522,7 +551,7 @@ const editAddressPost = async (req, res) => {
       );
     }
 
-    res.redirect('/userDetails/address');
+    res.redirect('/userDetails/address/:isUser');
   } catch (error) {
     console.error('Error during updating address:', error);
     return res.status(500).send('Error during updating address');
@@ -636,18 +665,17 @@ const loginPost = async (req, res) => {
     // Check if a user with the provided email exists
     const user = await UserCollection.findOne({ email: lEmail });
 
+    if (!user) {
+      req.session.invalid = true;
+      req.session.errorMessage = 'not found';
+      return res.redirect('back');
+    }
     if (user.isBlocked === true) {
       req.session.invalid = true;
       req.session.errorMessage = 'user blocked';
       return res.redirect('/login');
     }
 
-
-    if (!user) {
-      req.session.invalid = true;
-      req.session.errorMessage = 'not found';
-      return res.redirect('back');
-    }
     const passwordMatch = await bcrypt.compare(lPassword, user.password);
     if (!passwordMatch) {
       req.session.invalid = true;
@@ -660,6 +688,7 @@ const loginPost = async (req, res) => {
     req.session.profileName = user.username;
     req.session.userEmail = user.email;
     console.log('My email is ' + req.session.userEmail);
+
     res.redirect(`/homepage`);
   } catch (error) {
     console.error('Error during login:', error);

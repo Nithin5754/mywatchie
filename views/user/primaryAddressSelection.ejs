@@ -19,6 +19,9 @@
   <div class="mb-10 mt-28">
     <fieldset class="border rounded-md p-4 mb-4">
       <legend class="text-white text-lg font-semibold mb-4">Select a primary address</legend>
+        
+      <% let confirm="confirm" %>
+        <button class="bg-blue-800 text-white font-bold p-2 rounded-md  m-4" ><a href="/userDetails/address/<%= confirm %>">Add Address</a></button>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <% UserAddress.forEach((user, index)=> { %>
         <label
@@ -27,6 +30,9 @@
           <div
             class="bg-gradient-to-br from-purple-600 to-purple-400 text-white py-2 px-4 rounded-md text-center font-semibold">
             <%= user.address_tag %>
+          </div>
+          <div class="text-gray-700 mt-2 text-lg font-semibold">
+            <%= user.address_username%>
           </div>
           <div class="text-gray-700 mt-2 text-lg font-semibold">
             <%= user.premanant_address %>
@@ -57,6 +63,7 @@
     </fieldset>
   </div>
   <div class="mt-6">
+
     <button
       class="w-full px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-md shadow-md transition duration-300 ease-in-out"
       type="submit">Submit</button>

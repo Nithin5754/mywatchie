@@ -29,7 +29,7 @@
         <p class="text-center text-sm text-gray-600 mt-2">Already have an account? <a href="#"
             class="text-blue-600 hover:text-blue-700 hover:underline" title="Sign In">Sign in here</a></p>
 
-        <form class="my-8 text-sm" action="/signup" method="post">
+        <form class="my-8 text-sm" action="/signup" method="post"  onsubmit="return validateForm()">
           <div class="flex flex-col my-4">
             <label for="name" class="text-gray-700">Name</label>
             <input type="text" name="username" id="name"
@@ -44,16 +44,19 @@
               placeholder="Enter your email" required>
           </div>
               <div class="flex flex-col my-4">
-                <label for="number" class="text-gray-700">mobile number</label>
-                <input type="number" name="number" id="number"
+                <label for="number" class= "form-label text-gray-700">mobile number</label>
+                <input type="number" name="number" id="form3Example4" minlength="3"
+                  maxlength="6"
+                  pattern="^[a-zA-Z_$][a-zA-Z_$0-9]*$"
                   class="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
                   placeholder="Enter your number" required>
               </div>
+              <p id="mobileValidationMessage" class="text-red-700"></p>
 
           <div class="flex flex-col my-4">
             <label for="password" class="text-gray-700">Password</label>
             <div x-data="{ show: false }" class="relative flex items-center mt-2">
-              <input :type=" show ? 'text': 'password' " name="password" id="password"
+              <input :type=" show ? 'text': 'password' " name="password" id="form3Example5" 
                 class="flex-1 p-2 pr-10 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
                 placeholder="Enter your password" type="password" required>
               <button @click="show = !show" type="button"
@@ -81,7 +84,7 @@
           <div class="flex flex-col my-4">
             <label for="password_confirmation" class="text-gray-700">Password Confirmation</label>
             <div x-data="{ show: false }" class="relative flex items-center mt-2">
-              <input :type=" show ? 'text': 'password' " name="confirmPassword" id="password_confirmation"
+              <input :type=" show ? 'text': 'password' " name="confirmPassword" id="form3Example6"
                 class="flex-1 p-2 pr-10 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
                 placeholder="Enter your password again" type="password" >
               <button @click="show = !show" type="button"
@@ -103,6 +106,8 @@
                 </svg>
               </button>
             </div>
+
+            <p id="passwordMatchMessage" class="text-red-600"></p>
           </div>
 
           <div class="flex items-center">
@@ -249,6 +254,70 @@
   <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
   <script src="/js/swiper.js"></script>
   <script src="/js/search.js"></script>
+
+
+  <script>
+        function validateForm() {
+            return validateMobile() && validatePasswords();
+          }
+
+          function validateMobile() {
+            const mobileInput = document.getElementById("form3Example4");
+            const mobileValidationMessage = document.getElementById(
+              "mobileValidationMessage"
+            );
+            const mobileValue = mobileInput.value;
+
+            // Remove any existing validation message
+            mobileValidationMessage.textContent = "";
+
+            if (!isValidMobile(mobileValue)) {
+              // Mobile number is invalid
+              mobileValidationMessage.textContent =
+                "Please enter a valid 10-digit mobile number.";
+              return false;
+            }
+
+            return true;
+          }
+
+          function isValidMobile(mobileValue) {
+            return /^[0-9]{10}$/.test(mobileValue);
+          }
+
+
+
+
+            function validatePasswords() {
+                const passwordInput = document.getElementById("form3Example5");
+                const confirmPasswordInput = document.getElementById("form3Example6");
+                const passwordMatchMessage = document.getElementById(
+                  "passwordMatchMessage"
+                );
+                const passwordValue = passwordInput.value;
+                const confirmPasswordValue = confirmPasswordInput.value;
+
+                // Remove any existing validation message
+                passwordMatchMessage.textContent = "";
+
+                if (!arePasswordsMatching(passwordValue, confirmPasswordValue)) {
+                  passwordMatchMessage.textContent = "Passwords do not match.";
+                  return false;
+                }
+
+                return true;
+              }
+
+              function arePasswordsMatching(password, confirmPassword) {
+                return password === confirmPassword;
+              }
+
+              document
+                .getElementById("form3Example6")
+                .addEventListener("input", validatePasswords);
+
+  </script>
+
 </body>
 
 </html>

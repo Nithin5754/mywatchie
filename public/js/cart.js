@@ -6,6 +6,8 @@ var opts = {
   width: 5, // Line thickness
   radius: 5, // Inner circle radius
   speed: 2, // Adjust the speed here (higher value for faster spin)
+  animation: 'spinner-line-shrink',
+  color:"#ffff"
 };
 
 let spinner;

@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const adminAuthentication = require('../middlewares/admin/customMiddleware');
+const {
+  checkAdminAuthentication,
+  checkAdminLogin,
+} = require('../middlewares/admin/authentication');
 
 const {
   adminLogin,
@@ -44,27 +47,31 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // ADMIN LOGIN
-router.route('/adminLogin').get(adminLogin).post(verifyAdmin);
+router.route('/adminLogin').get(checkAdminLogin, adminLogin).post(verifyAdmin);
 
 router.route('/adminLogout').get(adminLogout);
 
 // HOME ROUTES
 
-router.route('/adminUserManagement').get(adminUserManagement);
+router
+  .route('/adminUserManagement')
+  .get(checkAdminAuthentication, adminUserManagement);
 
 // ADMIN PRODUCT MANAGEMENT SECTION
-router.route('/adminProductManagement').get(productManagement);
+router
+  .route('/adminProductManagement')
+  .get(checkAdminAuthentication, productManagement);
 // new product creation
 router
   .route('/adminProductManagement/createProduct')
-  .get(createProductDisplay)
+  .get(checkAdminAuthentication, createProductDisplay)
   .post(upload.array('image', 4), createProduct);
 
 //update product of exsiting product details
 router
   .route('/adminProductManagement/createProduct/:productId')
-  .get(editProductForm)
-  .post(upload.array('image', 4),adminUpdateProduct);
+  .get(checkAdminAuthentication, editProductForm)
+  .post(upload.array('image', 4), adminUpdateProduct);
 
 //delete a product
 router
@@ -74,18 +81,20 @@ router
 // ADMIN CATEGORY MANAGEMENT SECTION
 
 // categorysectionmanagement
-router.route('/adminCategoryManagement').get(adminCategoryDisplay);
+router
+  .route('/adminCategoryManagement')
+  .get(checkAdminAuthentication, adminCategoryDisplay);
 
 // new category creation
 router
   .route('/adminCategoryManagement/createCategory')
-  .get(createCategoryForm)
+  .get(checkAdminAuthentication, createCategoryForm)
   .post(upload.single('image'), createCategory);
 
 router
   .route('/adminCategoryManagement/createCategory/:categoryId')
-  .get(editCategoryForm)
-  .post(upload.single('image'),adminEditCategory);
+  .get(checkAdminAuthentication, editCategoryForm)
+  .post(upload.single('image'), adminEditCategory);
 
 //delete a category
 router
@@ -94,13 +103,18 @@ router
 
 // order managemnet
 
-router.route('/adminOrderManagement').get(orderManagement);
+router
+  .route('/adminOrderManagement')
+  .get(checkAdminAuthentication, orderManagement);
 
 router.route('/adminOrderManagement/:orderId').post(orderManagementPost);
 
-
-router.route('/adminOrdermanagement/orderProductDisplay/:orderId').get(oderProductDispay)
-router.route('/adminOrdermanagement/orderUserDetails/:orderId').get(orderProductUserAddress)
+router
+  .route('/adminOrdermanagement/orderProductDisplay/:orderId')
+  .get(oderProductDispay);
+router
+  .route('/adminOrdermanagement/orderUserDetails/:orderId')
+  .get(orderProductUserAddress);
 
 router.route('/userblock/:userId').get(userblock);
 router.route('/userunblock/:userId').get(userunblock);

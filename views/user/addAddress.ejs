@@ -7,138 +7,174 @@
   <title>Shipping Addresses</title>
   <!-- Include Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/darkmode.css">
   <!-- Custom CSS for styling -->
   <style>
     /* Add your custom styles here */
   </style>
 </head>
 
-<body class="bg-gray-100">
-  <!-- Header -->
-  <header class="bg-black-500 text-gray-950 py-4">
-    <div class="container mx-auto text-center">
-      <a href="/"><h1 class="text-3xl font-semibold">mywatchie.com</h1></a>
-    </div>
-  </header>
+<body class="bg-gray-100 dark-mode">
 
-  <!-- Address Content -->
-  <div class="container mx-auto mt-8 p-4">
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <!-- Address List -->
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Address List</h2>
-      <ul class="divide-y divide-gray-200 grid grid-cols-1 gap-3 lg:grid-cols-2">
-        <% usersMultipleAddress.forEach((userAddress, index)=> { %>
-          <!-- Address Item -->
-          <li class="p-4 mb-4 bg-white rounded-lg shadow-md">
-            <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-              <!-- Address Details -->
-              <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-800">
-                  <span>
-                    <%= index + 1 %> <span><span class="font-bold">Usename:</span><%= userAddress.address_username%></span>
-                  </span>
-                    <span>
-                      <button class="bg-purple-300 text-xs text-white p-2 rounded-md">
-                        <%= userAddress.address_tag %>
-                      </button>
-                    </span>
-                </h3>
-                  <p class="text-gray-600 truncate w-96"><span class="font-bold">permananet address:</span> <%= userAddress.premanant_address %></p>
-               
-                <p class="text-gray-600 truncate w-96"><span class="font-bold">Address line-two:</span>  <%= userAddress.address_two %>
-                </p>
-                <p class="text-gray-600"><span class="font-bold">City:</span><%= userAddress.city %>
-                </p>
-                <p class="text-gray-600"><span class="font-bold">Country:</span> <%= userAddress.country %>
-                </p>
-                <p class="text-gray-600"><span class="font-bold">Postal Code:</span> <%= userAddress.postalCode %>
-                </p>
-                <p class="text-gray-600"><span class="font-bold">Delivery info:</span> <%= userAddress.delivery_info %>
-                </p>
-              </div>
-    
-              <!-- Actions -->
-              <div class="flex space-x-2">
-                <!-- Edit Button -->
-                <form action="/userDetails/address/updateAddress/<%= userAddress._id %>" method="get">
-                  <button
-                    class="bg-blue-500 text-white hover:bg-blue-600 px-3 py-1 rounded-md transition duration-300 ease-in-out">
-                    Edit
-                  </button>
-                </form>
-                <!-- Delete Button -->
-                <form action="/userDetails/address/deleteAddress/<%= userAddress._id %>" method="post">
-                  <button
-                    class="bg-red-500 text-white hover:bg-red-600 px-3 py-1 rounded-md transition duration-300 ease-in-out">
-                    Delete
-                  </button>
-                </form>
-              </div>
-            </div>
-          </li>
-          <% }); %>
-            <!-- Add more address items here -->
-      </ul>
-    </div>
 
+<!-- header.ejs -->
+<%-
+  include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
+  %>
+   
+
+<main class="mt-28">
+
+  <div><h1 class="items-start px-10 py-4"><a href="/userDeatils" class="flex flex-row items-center gap-2"><i
+        class="fa-solid fa-arrow-left"></i>
+      <h2 class="italic font-bold">back</h2>
+    </a></h1></div>
 
       <!-- Add Address Form -->
-      <div>
+      <div class="p-4 border mx-10 shadow-lg rounded-md">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add Address</h2>
-        <form action="/userDetails/address" method="post">
-
-       
+        <form action="/userDetails/address/<%= confirm %>" method="post">
+      
+      
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label for="aUsername" class="text-gray-600 text-lg">username:</label>
-                <input type="text" id="aUsername" name="aUsername" class="w-full border border-gray-300 p-2 rounded-md">
-              </div>
+            <div>
+              <label for="aUsername" class="text-gray-600 text-lg">username:</label>
+              <input type="text" id="aUsername" placeholder="enter username" name="aUsername"
+                class="w-full border border-gray-300 p-2 rounded-md">
+            </div>
             <div>
               <label for="tag-address" class="text-gray-600 text-lg">Address Tag:</label>
-              <input type="text" id="tag-address" name="aTag" class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="tag-address" name="aTag" placeholder="Example:home"
+                class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="street" class="text-gray-600 text-lg">Address line-1:</label>
-              <input type="text" id="street" name="aAdderess" class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="street" placeholder="enter your address" name="aAdderess"
+                class="w-full border border-gray-300 p-2 rounded-md">
             </div>
-
-                <div>
-                  <label for="addressTwo" class="text-gray-600 text-lg">Address line-2:</label>
-                  <input type="text" id="addressTwo" name="aAdderessTwo" class="w-full border border-gray-300 p-2 rounded-md">
-                </div>
+      
+            <div>
+              <label for="addressTwo" class="text-gray-600 text-lg">Address line-2:</label>
+              <input type="text" id="addressTwo" placeholder="enter your secondary address" name="aAdderessTwo"
+                class="w-full border border-gray-300 p-2 rounded-md">
+            </div>
             <div>
               <label for="city" class="text-gray-600 text-lg">City:</label>
-              <input type="text" id="city" name="aCity" class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="city" name="aCity" placeholder="city name"
+                class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="country" class="text-gray-600 text-lg">Country:</label>
-              <input type="text" id="country" name="aCountry" class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="country" name="aCountry" placeholder="country name"
+                class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="postalCode" class="text-gray-600 text-lg">Postal Code:</label>
-              <input type="text" id="postalCode" name="aPincode" class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="postalCode" name="aPincode" placeholder="pin ncode"
+                class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="deliveryInfo" class="text-gray-600 text-lg">Delivery Information:</label>
-              <input type="text" id="deliveryInfo" name="aDeliveryInfo" class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="deliveryInfo" placeholder="enter your delivery Information" name="aDeliveryInfo"
+                class="w-full border border-gray-300 p-2 rounded-md">
             </div>
-          
+      
           </div>
-         
-        
+      
+      
           <button type="submit"
             class="bg-blue-500 hover:bg-blue-600 text-white mt-6 py-2 px-4 rounded-md transition duration-300 ease-in-out">
             Add Address
           </button>
         </form>
       </div>
-    </div>
-  </div>
 
 
 
+    <!-- Address Content -->
+    <section class="container mx-auto mt-8 p-4">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <!-- Address List -->
+        <div class="mb-8">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Address List</h2>
+          <ul class="divide-y divide-gray-200 grid grid-cols-1 gap-3 lg:grid-cols-2 ">
+            <% usersMultipleAddress.forEach((userAddress, index)=> { %>
+              <!-- Address Item -->
+              <li class="p-4 mb-4 bg-white rounded-lg shadow-2xl border">
+                <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+                  <!-- Address Details -->
+                  <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-800">
+                      <span>
+                        <%= index + 1 %> <span><span class="font-bold">Usename:</span>
+                            <%= userAddress.address_username%>
+                          </span>
+                      </span>
+                      <span>
+                        <button class="bg-purple-300 text-xs text-white p-2 rounded-md">
+                          <%= userAddress.address_tag %>
+                        </button>
+                      </span>
+                    </h3>
+                    <p class="text-gray-600 truncate w-96"><span class="font-bold">permananet address:</span>
+                      <%= userAddress.premanant_address %>
+                    </p>
+    
+                    <p class="text-gray-600 truncate w-96"><span class="font-bold">Address line-two:</span>
+                      <%= userAddress.address_two %>
+                    </p>
+                    <p class="text-gray-600"><span class="font-bold">City:</span>
+                      <%= userAddress.city %>
+                    </p>
+                    <p class="text-gray-600"><span class="font-bold">Country:</span>
+                      <%= userAddress.country %>
+                    </p>
+                    <p class="text-gray-600"><span class="font-bold">Postal Code:</span>
+                      <%= userAddress.postalCode %>
+                    </p>
+                    <p class="text-gray-600"><span class="font-bold">Delivery info:</span>
+                      <%= userAddress.delivery_info %>
+                    </p>
+                  </div>
+    
+                  <!-- Actions -->
+                  <div class="flex space-x-2">
+                    <!-- Edit Button -->
+                    <form action="/userDetails/address/updateAddress/<%= userAddress._id %>" method="get">
+                      <button
+                        class="bg-blue-500 text-white hover:bg-blue-600 px-3 py-1 rounded-md transition duration-300 ease-in-out">
+                        Edit
+                      </button>
+                    </form>
+                    <!-- Delete Button -->
+                    <form action="/userDetails/address/deleteAddress/<%= userAddress._id %>" method="post">
+                      <button
+                        class="bg-red-500 text-white hover:bg-red-600 px-3 py-1 rounded-md transition duration-300 ease-in-out">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </li>
+              <% }); %>
+                <!-- Add more address items here -->
+          </ul>
+        </div>
+    
+    
+  
+      </div>
+    </section>
+</main>
+
+
+    <script src="/js/darkmode.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+      <!-- font awesome script link -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"></script>
 </body>
 
 </html>

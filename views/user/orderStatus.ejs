@@ -1,103 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>order History</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/darkmode.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/darkmode.css">
 </head>
+
 <body class="dark-mode">
 
-<%-
-  include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
-  %>
+  <%-
+    include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
+    %>
 
 
 
-<main class="mt-28">
-<div class="ml-5 ">
-  <h1 class="items-start text-white "><a href="/" class="flex flex-row items-center gap-2"><i
-        class="fa-solid fa-arrow-left text-white"></i>
-      <h2 class="italic text-white font-bold">back</h2>
-    </a></h1>
-</div>
-
-    <section class=" p-6 flex justify-center">
-      <div class="mt-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Order History</h2>
-    
-        <!-- Order Entries -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Order Entry 1 -->
-    
-          <% isOrder.forEach(item=> { %>
-            <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
-                <div id="view-more" class="mt-4 text-right">
-                  <button id="load-more" class="bg-blue-500 text-white px-2 rounded hover:bg-blue-600"><a
-                      href="/userOrderproduct/<%= item.orderNumber%>">view</a></button>
-                </div>
-              <div class="flex justify-between items-center mb-2">
-                <p class="text-lg font-semibold text-gray-800">Order ID:<%=item.orderNumber %>
-                </p>
-                <p class="text-gray-600">Date: <%=item.orderDate %>
-                </p>
-              </div>
-              <p class="text-gray-600">Total: $<%=item.totalPrice%>
-              </p>
-              <p class="text-gray-600">status:<%=item.status %>
-              </p>
-           
-
-             
-    
-              <% if(item.status=='cancelled' ||item.status==='userCancelled' ) {%>
-                <h4 class="border p-2 bg-slate-600 text-white font-bold rounded-md text-center">cancelled</h4>
-                <% }else if(item.status==='delivered' ){ %>
-    
-                  <h1 class="text-gray-900 font-bold text-xl">cannot cancel order</h1>
-    
-                  <% }else {%>
-                    <a href="/userOrder/<%= item.orderNumber %>" class="text-blue-500 hover:underline mt-2 block">cancel
-                      order</a>
-                    <% } %>
+    <main class="mt-28">
+  
+      <section class="my-6 flex flex-row justify-between px-4 ">
+            <div class="ml-5 ">
+              <h1 class="items-start text-white "><a href="/" class="flex flex-row items-center gap-2"><i
+                    class="fa-solid fa-arrow-left text-white"></i>
+                  <h2 class="italic text-white font-bold">back</h2>
+                </a></h1>
             </div>
-    
-            <% }) %>
-    
-    
-    
-              <!-- Order Entry 2 -->
-    
-              <!-- Add more order entries as needed -->
-        </div>
-      </div>
-    </section>
-
-  <section class="my-6">
-    <div class="pagination flex justify-center gap-4">
-      <% if (paginate.hasPreviousPages) { %>
-        <a href="?page=<%= paginate.page-1 %>"
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Previous</a>
-        <% } %>
-  
-          <% if (paginate.hasNextPages && page<maxPage) { %>
-            <a href="?page=<%= paginate.page+1  %>"
-              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:bg-blue-700 focus:outline-none transition duration-300 ease-in-out">
-              Next
-            </a>
+        <div class="pagination flex justify-center gap-4">
+          <% if (paginate.hasPreviousPages) { %>
+            <a href="?page=<%= paginate.page-1 %>"
+              class="bg-blue-500 text-white text-sm px-2 py-2 rounded hover:bg-blue-600">Previous</a>
             <% } %>
-    </div>
-  </section>
+      
+              <% if (paginate.hasNextPages && page<maxPage) { %>
+                <a href="?page=<%= paginate.page+1  %>"
+                  class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:bg-blue-700 focus:outline-none transition duration-300 ease-in-out">
+                  Next
+                </a>
+                <% } %>
+        </div>
+      </section>
 
-</main>
-  
-  <!-- Order History -->
+      <section class=" p-6 flex justify-center">
+        <div class="container mx-auto p-4">
+          <table class="min-w-full divide-y divide-gray-200 border">
+            <thead class="border">
+              <tr>
+                <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                 index
+                </th>
+                <th
+                  class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Order ID
+                </th>
+                <th
+                  class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Order Date
+                </th>
+                <th
+                  class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Total Price
+                </th>
+                <th
+                  class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  ordered details
+                </th>
+                <th
+                  class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="border">
+              <% isOrder.forEach((item,index)=> { %>
+                <tr>
+                    <td class="px-6 py-4 whitespace-no-wrap">
+                      <p class="text-gray-800 text-lg font-semibold">
+                        <%= index+1 %>
+                      </p>
+                    </td>
+                  <td class="px-6 py-4 whitespace-no-wrap">
+                    <p class="text-gray-800 text-lg font-semibold">
+                      <%= item.orderNumber %>
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-no-wrap">
+                    <p class="text-gray-600">
+                      <!-- Function to format the order date -->
+                      <% function formatOrderDate(dateString) { %>
+                        <% const options={ year: 'numeric' , month: 'long' , day: 'numeric' , hour: 'numeric' ,
+                          minute: 'numeric' }; %>
+                          <% const formattedDate=new Date(dateString).toLocaleString('en-US', options); %>
+                            <%= formattedDate %>
+                              <% } %>
+                                <%= formatOrderDate(item.orderDate) %>
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-no-wrap">
+                    <p class="text-gray-600">$<%= item.totalPrice %>
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-no-wrap">
+                    <p class="text-gray-600">
+                    <a href="/userOrderproduct/<%= item.orderNumber%>" class="border-2 bg-blue-500 hover:bg-green-700 hover:text-white transition-all .3s p-3 rounded-md">view</a>
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-no-wrap">
+                    <% if (item.status==='cancelled' || item.status==='userCancelled' ) { %>
+                      <h4 class="border p-2 bg-slate-600 text-white font-bold rounded-md text-center">Cancelled</h4>
+                      <% } else if (item.status==='delivered' ) { %>
+                        <h1 class="text-gray-900 font-bold text-xl">Cannot Cancel Order</h1>
+                        <% } else { %>
+                          <a href="/userOrder/<%= item.orderNumber %>"
+                            class="text-blue-500 hover:underline mt-2 block">Cancel
+                            Order</a>
+                          <% } %>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+    </main>
+
+    <!-- Order History -->
 
 
     <script src="/js/darkmode.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
-      <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 </body>
+
 </html>
+
+
+

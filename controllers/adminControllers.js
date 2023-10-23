@@ -26,17 +26,12 @@ const verifyAdmin = async (req, res) => {
 
 const adminLogin = async (req, res) => {
   try {
-    if (req.session.adminData) {
-      res.redirect('/adminUserManagement');
-    } else {
-      const backGroundImages = await getRandomBannerImage();
-      res.status(200).render('admin/adminLogin', { backGroundImages });
-    }
+    const backGroundImages = await getRandomBannerImage();
+    res.status(200).render('admin/adminLogin', { backGroundImages });
   } catch (error) {
     res.send('error occur in admin login due to internet ');
   }
 };
-
 const adminLogout = (req, res) => {
   req.session.destroy();
   res.redirect('/adminLogin');
@@ -44,22 +39,19 @@ const adminLogout = (req, res) => {
 
 // ADMIN HOMEPAGE SECTION================
 const adminUserManagement = async (req, res) => {
-  if (req.session.adminData) {
-      const page = parseInt(req.query.page)||1
-      const limit = 10;
-      const startIndex = (page - 1) * limit;
-       const totalProducts = await UserCollection.countDocuments();
-    
-    
-      const maxPage = Math.ceil(totalProducts / limit);
-   
-        if (page > maxPage) {
-        return res.redirect(`/adminUserManagement?page=${maxPage}`);
-      }
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const startIndex = (page - 1) * limit;
+    const totalProducts = await UserCollection.countDocuments();
+    const maxPage = Math.ceil(totalProducts / limit);
+    if (page > maxPage) {
+      return res.redirect(`/adminUserManagement?page=${maxPage}`);
+    }
     const user = await UserCollection.find()
-        .limit(limit)
-        .skip(startIndex)
-        .exec();
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
     console.log(user);
 
     res.render('admin/adminUserManagement', {
@@ -68,8 +60,8 @@ const adminUserManagement = async (req, res) => {
       page,
       maxPage,
     });
-  } else {
-    res.redirect('/adminLogin');
+  } catch (error) {
+    res.send('error fetching: admin usermanagement', error);
   }
 };
 
@@ -112,58 +104,44 @@ const userunblock = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
- 
+
 const productManagement = async (req, res) => {
-    req.session.isDisable=false;
+  req.session.isDisable = false;
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
+    const startIndex = (page - 1) * limit;
+    const totalProducts = await productCollection.countDocuments();
 
-    if (req.session.adminData) {
-      const page = parseInt(req.query.page)||1
-      const limit = 5;
-      const startIndex = (page - 1) * limit;
-       const totalProducts = await productCollection.countDocuments();
-    
-    
-      const maxPage = Math.ceil(totalProducts / limit);
-        if (page > maxPage) {
-        return res.redirect(`/adminProductManagement?page=${maxPage}`);
-      }
-       console.log(totalProducts,"hello my products");
-      const displayProduct = await productCollection.find()
-       .limit(limit)
-        .skip(startIndex)
-        .exec()
-     
-
-      return res.render('admin/adminProductManagement', {
-        displayProduct,
-        SideBarSection: 'Product Management',
-        page ,
-        maxPage,
-       
-      });
-    } else {
-      res.redirect('/adminLogin');
+    const maxPage = Math.ceil(totalProducts / limit);
+    if (page > maxPage) {
+      return res.redirect(`/adminProductManagement?page=${maxPage}`);
     }
+    console.log(totalProducts, 'hello my products');
+    const displayProduct = await productCollection
+      .find()
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+
+    return res.render('admin/adminProductManagement', {
+      displayProduct,
+      SideBarSection: 'Product Management',
+      page,
+      maxPage,
+    });
   } catch (error) {
     console.error('Error blocking user:', error);
     res.status(500).send('display product error in admin page');
   }
 };
 
-
-
-
 // dispaly adding product
 const createProductDisplay = async (req, res) => {
   try {
-    if (req.session.adminData) {
-      const displayCategory = await categoryCollections.find();
+    const displayCategory = await categoryCollections.find();
 
-      res.render('admin/productAdd', { displayCategory });
-    } else {
-      res.redirect('/adminLogin');
-    }
+    res.render('admin/productAdd', { displayCategory });
   } catch (error) {
     console.error('Error blocking user:', error);
     res.status(500).send('fetching error:error in fetching display category');
@@ -180,6 +158,7 @@ const createProduct = async (req, res) => {
     productBrand,
     productQuantity,
     categoryProduct,
+    productRatings,
   } = req.body;
 
   try {
@@ -206,7 +185,8 @@ const createProduct = async (req, res) => {
       product_category: categoryProduct,
       product_qty: productQuantity,
       product_image_url: imagePaths,
-      brand:productBrand
+      brand: productBrand,
+      product_rating: productRatings,
     });
 
     await newProduct.save();
@@ -220,14 +200,10 @@ const createProduct = async (req, res) => {
 
 const editProductForm = async (req, res) => {
   try {
-    if (req.session.adminData) {
-      const productId = req.params.productId;
-      const editProduct = await productCollection.findById(productId);
-      console.log(editProduct);
-      return res.render('admin/updateProduct', { editProduct });
-    } else {
-      res.redirect('/adminLogin');
-    }
+    const productId = req.params.productId;
+    const editProduct = await productCollection.findById(productId);
+    console.log(editProduct);
+    return res.render('admin/updateProduct', { editProduct });
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).send('error fetching:update user finding');
@@ -242,11 +218,9 @@ const adminUpdateProduct = async (req, res) => {
     productPrice,
     productDiscount,
     productQuantity,
+    productRatings,
   } = req.body;
   try {
-        
-  
-
     const updatedProduct = await productCollection.findByIdAndUpdate(
       productId,
       {
@@ -254,7 +228,7 @@ const adminUpdateProduct = async (req, res) => {
         product_description: productDescription,
         product_price: productPrice,
         product_discount: productDiscount,
- 
+        product_rating: productRatings,
         product_qty: productQuantity,
       },
       { new: true },
@@ -292,34 +266,28 @@ const productDelete = async (req, res) => {
 
 const adminCategoryDisplay = async (req, res) => {
   try {
-    if (req.session.adminData) {
-          const page = parseInt(req.query.page)||1
-      const limit = 7;
-      const startIndex = (page - 1) * limit;
-       const totalProducts = await categoryCollections.countDocuments();
-    
-    
-      const maxPage = Math.ceil(totalProducts / limit);
-        if (page > maxPage) {
-        return res.redirect(`/adminCategoryManagement?page=${maxPage}`);
-      }
-      
-      const displayCategory = await categoryCollections
-        .find()
-        .sort({ category_publishDate: -1 })
-        .limit(limit)
-        .skip(startIndex)
-        .exec()
-      return res.render('admin/adminCategoryManagement', {
-        displayCategory,
-        SideBarSection: 'Category Management',
-           page ,
-        maxPage,
-       
-      });
-    } else {
-      res.redirect('/adminLogin');
+    const page = parseInt(req.query.page) || 1;
+    const limit = 7;
+    const startIndex = (page - 1) * limit;
+    const totalProducts = await categoryCollections.countDocuments();
+
+    const maxPage = Math.ceil(totalProducts / limit);
+    if (page > maxPage) {
+      return res.redirect(`/adminCategoryManagement?page=${maxPage}`);
     }
+
+    const displayCategory = await categoryCollections
+      .find()
+      .sort({ category_publishDate: -1 })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+    return res.render('admin/adminCategoryManagement', {
+      displayCategory,
+      SideBarSection: 'Category Management',
+      page,
+      maxPage,
+    });
   } catch (error) {
     console.error('Error creating user:', error);
     return res
@@ -330,11 +298,9 @@ const adminCategoryDisplay = async (req, res) => {
 
 // dispaly adding category form
 const createCategoryForm = (req, res) => {
-  if (req.session.adminData) {
-    res.render('admin/categoryAdd');
-  } else {
-    res.redirect('/adminLogin');
-  }
+  res.render('admin/categoryAdd', {
+    categoryValidation: req.session.isCategoryExist,
+  });
 };
 
 //create category of a product
@@ -361,11 +327,14 @@ const createCategory = async (req, res) => {
     }
     // adding new category
 
-    const isCategoryExist= await categoryCollections.findOne({ product_category:categoryName})
-    if(isCategoryExist){
-      return res.redirect('/adminCategoryManagement/createCategory')
+    const isCategoryExist = await categoryCollections.findOne({
+      product_category: categoryName,
+    });
+    if (isCategoryExist) {
+      req.session.isCategoryExist = `${categoryName} is already exist`;
+      return res.redirect('/adminCategoryManagement/createCategory');
     }
-
+    req.session.isCategoryExist = '';
     const newProduct = new categoryCollections({
       product_category: categoryName,
       category_description: categoryDescription,
@@ -387,16 +356,12 @@ const editCategoryForm = async (req, res) => {
   const categoryId = req.params.categoryId;
 
   try {
-    if (req.session.adminData) {
-      const isCategoryFind = await categoryCollections.findById(categoryId);
+    const isCategoryFind = await categoryCollections.findById(categoryId);
 
-      if (!isCategoryFind) {
-        return res.send('not found category check once more');
-      }
-      res.render('admin/editCategory', { isCategoryFind });
-    } else {
-      res.redirect('/adminLogin');
+    if (!isCategoryFind) {
+      return res.send('not found category check once more');
     }
+    res.render('admin/editCategory', { isCategoryFind });
   } catch (error) {
     console.error('Error creating user:', error);
     return res.status(500).send('fetch error:check once more');
@@ -414,14 +379,15 @@ const adminEditCategory = async (req, res) => {
       categoryQuantity,
     } = req.body;
 
-
-    const isCategoryExist= await categoryCollections.findOne({ product_category:categoryName})
-    if(isCategoryExist){
-      return res.redirect('/adminCategoryManagement/createCategory')
+    const isCategoryExist = await categoryCollections.findOne({
+      product_category: categoryName,
+    });
+    if (isCategoryExist) {
+      req.session.isCategoryExist = `${categoryName} is already exist`;
+      return res.redirect('/adminCategoryManagement/createCategory');
     }
 
-
-       let imagePath = req.file.path;
+    let imagePath = req.file.path;
     console.log(imagePath);
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
@@ -440,7 +406,7 @@ const adminEditCategory = async (req, res) => {
         category_description: categoryDescription,
         category_publishDate: categoryPublishDate,
         category_qty: categoryQuantity,
-          category_img_url:imagePath
+        category_img_url: imagePath,
       },
       { new: true },
     );
@@ -471,32 +437,29 @@ const categoryRemove = async (req, res) => {
 
 const orderManagement = async (req, res) => {
   try {
-    if (req.session.adminData) {
-         const page = parseInt(req.query.page)||1
-      const limit = 3;
-      const startIndex = (page - 1) * limit;
-       const totalProducts = await userOrder.countDocuments();
-    
-    
-      const maxPage = Math.ceil(totalProducts / limit);
-        if (page > maxPage) {
-        return res.redirect(`/adminCategoryManagement?page=${maxPage}`);
-      }
-      const isOrder = await userOrder.find().sort({ orderDate:-1}).populate('items.product')
-      .limit(limit)
-       .skip(startIndex)
-       .exec();
-    
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3;
+    const startIndex = (page - 1) * limit;
+    const totalProducts = await userOrder.countDocuments();
 
-      return res.render('admin/adminOrderManagement', {
-        isOrder,
-        SideBarSection: 'Order Management',
-        page,
-        maxPage,
-      });
-    } else {
-      res.redirect('/adminLogin');
+    const maxPage = Math.ceil(totalProducts / limit);
+    if (page > maxPage) {
+      return res.redirect(`/adminCategoryManagement?page=${maxPage}`);
     }
+    const isOrder = await userOrder
+      .find()
+      .sort({ orderDate: -1 })
+      .populate('items.product')
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+
+    return res.render('admin/adminOrderManagement', {
+      isOrder,
+      SideBarSection: 'Order Management',
+      page,
+      maxPage,
+    });
   } catch (error) {
     console.error('Error blocking user:', error);
     res.status(500).send('display product error in admin page');
@@ -505,11 +468,11 @@ const orderManagement = async (req, res) => {
 
 const orderManagementPost = async (req, res) => {
   const { data } = req.body;
-  console.log("data",data);
+  console.log('data', data);
 
   const orderId = req.params.orderId;
 
-  console.log(orderId,"yeah my order");
+  console.log(orderId, 'yeah my order');
 
   try {
     const hasThisOrderValid = await userOrder.findOne({ orderNumber: orderId });
@@ -524,42 +487,41 @@ const orderManagementPost = async (req, res) => {
 
     if (!isUpdateOrderStatus) {
       return res.send('oredr status update error');
-    } 
+    }
     console.log(hasThisOrderValid + 'order number is verified');
     res.redirect('back');
   } catch (error) {
-    console.log("fetching order management post controller",error);
+    console.log('fetching order management post controller', error);
   }
 };
 
+const oderProductDispay = async (req, res) => {
+  const orderId = req.params.orderId;
 
-const oderProductDispay=async(req,res)=>{
+  try {
+    const isOrder = await userOrder
+      .find({ orderNumber: orderId })
+      .populate('items.product')
+      .exec();
 
-  const orderId=req.params.orderId
+    res.render('admin/orderProductDisplay', { isOrder });
+  } catch (error) {
+    console.log(error, 'error fetching order product in admin side');
+  }
+};
 
+const orderProductUserAddress = async (req, res) => {
+  const orderId = req.params.orderId;
 
-    try {
-        const isOrder = await userOrder.find({ orderNumber:orderId}).populate('items.product').exec();
-        
-  res.render('admin/orderProductDisplay',{isOrder})
+  try {
+    const isOrder = await userOrder
+      .find({ orderNumber: orderId })
+      .populate('items.product')
+      .exec();
 
-    } catch (error) {
-      console.log(error,"error fetching order product in admin side");
-    }
-}
-
-const orderProductUserAddress=async(req,res)=>{
-    const orderId=req.params.orderId
-
-   try {
-      const isOrder = await userOrder.find({ orderNumber:orderId}).populate('items.product').exec();
-
-
-  res.render('admin/orderUserDetails',{isOrder})
-   } catch (error) {
-    
-   }
-}
+    res.render('admin/orderUserDetails', { isOrder });
+  } catch (error) {}
+};
 module.exports = {
   adminUserManagement,
   userblock,

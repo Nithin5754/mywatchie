@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
-
-
 const {
   login,
   userBeforeLogin,
@@ -40,10 +38,9 @@ const {
 const {
   productList,
   productDetails,
-
 } = require('../controllers/productUserControllers');
 
-const userAuthentication = require('../middlewares/users/customeMiddle');
+const {userBeforeLoginAuthentication,userAfterLoginAuthentication }= require('../middlewares/users/customeMiddle');
 
 // multer
 
@@ -59,40 +56,46 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.route('/').get(userBeforeLogin);
-router.route('/login').get(login).post(loginPost);
-router.route('/signup').get(signup).post(signupData);
-router.route('/resendSignup').get(resendSignup);
+router.route('/').get(userBeforeLoginAuthentication, userBeforeLogin);
+router
+  .route('/login')
+  .get(userBeforeLoginAuthentication, login)
+  .post(loginPost);
+router
+  .route('/signup')
+  .get(userBeforeLoginAuthentication, signup)
+  .post(signupData);
+router.route('/resendSignup').get(userBeforeLoginAuthentication, resendSignup);
 
-router.route('/homepage').get(userAuthentication, homepage);
+router.route('/homepage').get(userAfterLoginAuthentication,homepage);
 router.route('/logout').get(logout);
 
 router
   .route('/userProfileAddForm')
-  .get(userProfileAddForm)
+  .get(userAfterLoginAuthentication,userProfileAddForm)
   .post(upload.single('image'), userProfileAdd);
-router.route('/userDeatils').get(userDetailspage);
-router.route('/orderHistory').get(orderHistory)
-router.route("/userOrderproduct/:orderId").get(userOrderProductList)
+router.route('/userDeatils').get(userAfterLoginAuthentication,userDetailspage);
+router.route('/orderHistory').get(userAfterLoginAuthentication,orderHistory);
+router.route('/userOrderproduct/:orderId').get(userAfterLoginAuthentication,userOrderProductList);
 router
   .route('/userDetails/detailsEdit')
-  .get(userDetailsEditForm)
+  .get(userAfterLoginAuthentication,userDetailsEditForm)
   .post(userDetailsEdit);
 
 // add address secion path
 router
-  .route('/userDetails/address')
-  .get(addAddressForm)
+  .route('/userDetails/address/:isUser')
+  .get(userAfterLoginAuthentication,addAddressForm)
   .post(addingNewAddressForm);
 router
   .route('/userDetails/address/deleteAddress/:addressId')
   .post(deleteAddress);
 router
   .route('/userDetails/address/updateAddress/:addressId')
-  .get(editAddress)
+  .get(userAfterLoginAuthentication,editAddress)
   .post(editAddressPost);
 
-router.route('/userOrder/:cancelOrderId').get(userOrderCancel);
+router.route('/userOrder/:cancelOrderId').get(userAfterLoginAuthentication,userOrderCancel);
 // router.route("/userDetails/address/:updateAddress").get(editAddressFormDisplay)
 
 router.route('/otpVerfication').get(otpPage).post(otpVerification);
@@ -108,10 +111,7 @@ router
 
 router.route('/sms').get(twilioSms);
 
-
-router.route('/productList/:categoryName').get(productList)
-router.route('/productList/details/:productId').get(productDetails);
-
-
+router.route('/productList/:categoryName').get(userAfterLoginAuthentication,productList);
+router.route('/productList/details/:productId').get(userAfterLoginAuthentication,productDetails);
 
 module.exports = router;

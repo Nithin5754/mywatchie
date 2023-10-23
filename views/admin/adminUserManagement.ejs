@@ -121,7 +121,14 @@
                       </td>
                       <td class="px-6 py-4">
                         <div class="flex items-center">
-                         <%= list.registerTime  %>
+                          <% function formatOrderDate(dateString) { %>
+                            <% const options={ year: 'numeric' , month: 'long' , day: 'numeric' , hour: 'numeric' , minute: 'numeric' }; %>
+                              <% const formattedDate=new Date(dateString).toLocaleString('en-US', options); %>
+                                <%= formattedDate %>
+                                  <% } %>
+                                    <%= formatOrderDate(list.registerTime) %>
+
+               
                         </div>
                       </td>
                       <td class="px-6 py-4">
