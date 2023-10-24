@@ -40,7 +40,10 @@ const {
   productDetails,
 } = require('../controllers/productUserControllers');
 
-const {userBeforeLoginAuthentication,userAfterLoginAuthentication }= require('../middlewares/users/customeMiddle');
+const {
+  userBeforeLoginAuthentication,
+  userAfterLoginAuthentication,
+} = require('../middlewares/users/customeMiddle');
 
 // multer
 
@@ -67,35 +70,39 @@ router
   .post(signupData);
 router.route('/resendSignup').get(userBeforeLoginAuthentication, resendSignup);
 
-router.route('/homepage').get(userAfterLoginAuthentication,homepage);
+router.route('/homepage').get(userAfterLoginAuthentication, homepage);
 router.route('/logout').get(logout);
 
 router
   .route('/userProfileAddForm')
-  .get(userAfterLoginAuthentication,userProfileAddForm)
+  .get(userAfterLoginAuthentication, userProfileAddForm)
   .post(upload.single('image'), userProfileAdd);
-router.route('/userDeatils').get(userAfterLoginAuthentication,userDetailspage);
-router.route('/orderHistory').get(userAfterLoginAuthentication,orderHistory);
-router.route('/userOrderproduct/:orderId').get(userAfterLoginAuthentication,userOrderProductList);
+router.route('/userDeatils').get(userAfterLoginAuthentication, userDetailspage);
+router.route('/orderHistory').get(userAfterLoginAuthentication, orderHistory);
+router
+  .route('/userOrderproduct/:orderId')
+  .get(userAfterLoginAuthentication, userOrderProductList);
 router
   .route('/userDetails/detailsEdit')
-  .get(userAfterLoginAuthentication,userDetailsEditForm)
+  .get(userAfterLoginAuthentication, userDetailsEditForm)
   .post(userDetailsEdit);
 
 // add address secion path
 router
   .route('/userDetails/address/:isUser')
-  .get(userAfterLoginAuthentication,addAddressForm)
+  .get(userAfterLoginAuthentication, addAddressForm)
   .post(addingNewAddressForm);
 router
   .route('/userDetails/address/deleteAddress/:addressId')
   .post(deleteAddress);
 router
   .route('/userDetails/address/updateAddress/:addressId')
-  .get(userAfterLoginAuthentication,editAddress)
+  .get(userAfterLoginAuthentication, editAddress)
   .post(editAddressPost);
 
-router.route('/userOrder/:cancelOrderId').get(userAfterLoginAuthentication,userOrderCancel);
+router
+  .route('/userOrder/:cancelOrderId')
+  .get(userAfterLoginAuthentication, userOrderCancel);
 // router.route("/userDetails/address/:updateAddress").get(editAddressFormDisplay)
 
 router.route('/otpVerfication').get(otpPage).post(otpVerification);
@@ -111,7 +118,11 @@ router
 
 router.route('/sms').get(twilioSms);
 
-router.route('/productList/:categoryName').get(userAfterLoginAuthentication,productList);
-router.route('/productList/details/:productId').get(userAfterLoginAuthentication,productDetails);
+router
+  .route('/productList/:categoryName')
+  .get(userAfterLoginAuthentication, productList);
+router
+  .route('/productList/details/:productId')
+  .get(userAfterLoginAuthentication, productDetails);
 
 module.exports = router;

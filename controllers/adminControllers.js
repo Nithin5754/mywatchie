@@ -522,6 +522,76 @@ const orderProductUserAddress = async (req, res) => {
     res.render('admin/orderUserDetails', { isOrder });
   } catch (error) {}
 };
+
+// admin stock management
+
+const stockManagement = async (req, res) => {
+  try {
+    const productAvailable = await productCollection.find();
+
+    res.render('admin/adminStockManagement', {
+      productAvailable,
+
+      SideBarSection: 'Stock Management',
+    });
+  } catch (error) {
+    res.send('error fetching: admin usermanagement', error);
+  }
+};
+
+const stockAdd = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+
+    const { stockQty } = req.body;
+    let isProductAvailable = '';
+    if (stockQty <= 0) {
+      isProductAvailable = await productCollection.findByIdAndUpdate(itemId, {
+        product_qty: 0,
+      });
+      return res.redirect('back');
+    }
+
+    isProductAvailable = await productCollection.findByIdAndUpdate(itemId, {
+      product_qty: stockQty,
+    });
+
+    if (!isProductAvailable) {
+      console.log('not avilable');
+      res.redirect('/adminStockMnagement');
+    }
+    console.log(isProductAvailable, `yes available${stockQty}`);
+    res.redirect('/adminStockMnagement');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const unlistBtn = async (req, res) => {
+  const unlist = req.params.itemId;
+
+  const isProductAvailable = await productCollection.findByIdAndUpdate(unlist, {
+    $set: { isListed: false },
+  });
+
+  if (!isProductAvailable) {
+    return res.redirect('/adminStockMnagement');
+  }
+  res.redirect('/adminStockMnagement');
+};
+
+const listBtn = async (req, res) => {
+  const list = req.params.itemId;
+  const isProductAvailable = await productCollection.findByIdAndUpdate(list, {
+    $set: { isListed: true },
+  });
+
+  if (!isProductAvailable) {
+    return res.redirect('/adminStockMnagement');
+  }
+  res.redirect('/adminStockMnagement');
+};
+
 module.exports = {
   adminUserManagement,
   userblock,
@@ -545,4 +615,9 @@ module.exports = {
   orderManagementPost,
   oderProductDispay,
   orderProductUserAddress,
+
+  stockManagement,
+  stockAdd,
+  unlistBtn,
+  listBtn,
 };

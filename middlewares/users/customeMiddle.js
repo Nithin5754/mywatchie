@@ -6,13 +6,15 @@ const userBeforeLoginAuthentication = (req, res, next) => {
   }
 };
 
-
-const userAfterLoginAuthentication=(req,res,next)=>{
+const userAfterLoginAuthentication = (req, res, next) => {
   if (req.session.isUser) {
     next();
   } else {
     res.redirect('/');
   }
-}
+};
 
-module.exports = {userBeforeLoginAuthentication,userAfterLoginAuthentication};
+module.exports = {
+  userBeforeLoginAuthentication,
+  userAfterLoginAuthentication,
+};

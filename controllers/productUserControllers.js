@@ -209,8 +209,6 @@ const productDetails = async (req, res) => {
     const OneProduct = req.params.productId;
     const productLists = await product.findById(OneProduct);
 
-    console.log(productLists + 'dfjhhsdgf');
-
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
       return res.redirect('/homepage');

@@ -65,24 +65,31 @@
                             
                   <div class="sm:order-1">
                     <div class="mx-auto relative w-24">
-                      <select name="quantity"
-                        class="block appearance-none w-full rounded-lg bg-gray-100 border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-l-md text-xs uppercase transition quantity-display"
-                        data-product-id="<%= item._id %>" id="qty">
-                        <% for (let i=1; i <=10; i++) { %>
-                          <option value="<%= i %>" <%=i===cartquantity[index] ? 'selected' : '' %>
-                            class="text-gray-700">
-                            <%= i %>
-                          </option>
-                          <% } %>
-                      </select>
-                      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-600">
-                        <!-- Add a dropdown arrow icon -->
-                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4z"
-                            clip-rule="evenodd" />
-                        </svg>
-                      </div>
+
+                      <% if (item.product_qty<=0||item.isListed===false) { %>
+                        <p class="bg-gray-100 text-red border p-4">out of stock</p>
+                        
+                   <%   } else { %>
+                            <select name="quantity"
+                              class="block appearance-none w-full rounded-lg bg-gray-100 border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-l-md text-xs uppercase transition quantity-display"
+                              data-product-id="<%= item._id %>" id="qty">
+                              <% for (let i=1; i <=10; i++) { %>
+                                <option value="<%= i %>" <%=i===cartquantity[index] ? 'selected' : '' %>
+                                  class="text-gray-700">
+                                  <%= i %>
+                                </option>
+                                <% } %>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-600">
+                              <!-- Add a dropdown arrow icon -->
+                              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                  d="M5.293 7.293a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4z"
+                                  clip-rule="evenodd" />
+                              </svg>
+                            </div>
+                     <% } %>
+                  
                     </div>
                   </div>
 
@@ -131,17 +138,28 @@
                       <%= cartItems.total+8.00 %>
                     </p>
                   </div>
+                  <% let count=0 %>
+                  <% cartProducts.forEach((item) => { %>
+                       <% if(item.product_qty<=0||item.isListed===false){ %>
+                         <%  count=count+1; %>
+                    <% }  %> 
+                <%  }) %>
 
-                  <div class="mt-6 text-center">
-                    <a href="/orderManagement"
-                      class="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800">
-                      Checkout
-                      <svg xmlns="http://www.w3.org/2000/svg" class="group-hover:ml-8 ml-4 h-6 w-6 transition-all"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </a>
-                  </div>
+                <% if (count===0) { %>
+                    <div class="mt-6 text-center">
+                      <a href="/orderManagement"
+                        class="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800">
+                        Checkout
+                        <svg xmlns="http://www.w3.org/2000/svg" class="group-hover:ml-8 ml-4 h-6 w-6 transition-all" fill="none"
+                          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </a>
+                    </div>
+                <% }else{ %>
+<h4 class="bg-gray-100 font-semibold text-black border p-4 text-center">remove out of stock items from the cart</h4>
+             <%   } %>
+               
                 </div>
               </div>
             </div>

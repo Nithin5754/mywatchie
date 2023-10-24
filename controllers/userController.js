@@ -49,10 +49,10 @@ let isLogin;
 const userBeforeLogin = async (req, res) => {
   try {
     const randomBanner = await getRandomBannerImage();
-const randomCategory = await categoryCollections.aggregate([
-  { $sort: { product_category: -1 } },
-  { $limit: 4 }
-]);
+    const randomCategory = await categoryCollections.aggregate([
+      { $sort: { product_category: -1 } },
+      { $limit: 4 },
+    ]);
     isProfile = 'login';
     isUrl = '/login';
     islogout = 'help';
@@ -86,16 +86,15 @@ const randomCategory = await categoryCollections.aggregate([
 const homepage = async (req, res) => {
   userEmail = req.session.userEmail;
   try {
-
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
-  
-const randomCategory = await categoryCollections.aggregate([
-  { $sort: { product_category: -1 } },
-  { $limit: 4 }
-]);  
+
+    const randomCategory = await categoryCollections.aggregate([
+      { $sort: { product_category: -1 } },
+      { $limit: 4 },
+    ]);
     const isProfile = req.session.profileName;
     islogout = 'log out';
     isCreateAccount = 'contact us';
@@ -128,13 +127,11 @@ const randomCategory = await categoryCollections.aggregate([
 // USER PROFILE DETAILS PAGE START HERE
 
 const userProfileAddForm = async (req, res) => {
-
-       try {
-        res.render('user/userProfileAddForm',{
-    });
-       } catch (error) {
-        res.send("error fetching add address form please check again")
-       }
+  try {
+    res.render('user/userProfileAddForm', {});
+  } catch (error) {
+    res.send('error fetching add address form please check again');
+  }
 };
 
 const userProfileAdd = async (req, res) => {
@@ -220,43 +217,41 @@ const userDetailspage = async (req, res) => {
   }
 };
 
-const orderHistory=async(req,res)=>{
+const orderHistory = async (req, res) => {
+  userEmail = req.session.userEmail;
+  const isProfile = req.session.profileName;
+  islogout = 'log out';
+  isCreateAccount = 'contact us';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
+  orderUrl = '/orderHistory';
 
-    userEmail = req.session.userEmail;
-      const isProfile = req.session.profileName;
-    islogout = 'log out';
-    isCreateAccount = 'contact us';
-    isCreateAccountUrl = '/homepage';
-    isUrl = '/userDeatils';
-    orderUrl='/orderHistory'
-
-     try {
-       const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+  try {
+    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
 
     if (!verifyUserEmail) {
       return res.redirect('/homepage');
     }
 
-       const page = parseInt(req.query.page)||1
-      const limit = 7;
-      const startIndex = (page - 1) * limit;
-       const totalProducts = await UserOrder.countDocuments();
-    
-    
-      const maxPage = Math.ceil(totalProducts / limit);
-        if (page > maxPage) {
-        return res.redirect(`/orderHistory?page=${maxPage}`);
-      }
+    const page = parseInt(req.query.page) || 1;
+    const limit = 7;
+    const startIndex = (page - 1) * limit;
+    const totalProducts = await UserOrder.countDocuments();
+
+    const maxPage = Math.ceil(totalProducts / limit);
+    if (page > maxPage) {
+      return res.redirect(`/orderHistory?page=${maxPage}`);
+    }
 
     const isOrder = await UserOrder.find({ email: userEmail })
       .populate('items.product')
-       .limit(limit)
-        .skip(startIndex)
-        .exec()
-     
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
 
-  res.render('user/orderStatus', { verifyUserEmail,
-    isOrder,
+    res.render('user/orderStatus', {
+      verifyUserEmail,
+      isOrder,
       isProfile,
       isUrl,
       islogout,
@@ -265,12 +260,12 @@ const orderHistory=async(req,res)=>{
       cartItems,
       orderUrl,
       page,
-      maxPage
-    })
-     } catch (error) {
-      res.send("orderHistory fetching:",error)
-     }
-}
+      maxPage,
+    });
+  } catch (error) {
+    res.send('orderHistory fetching:', error);
+  }
+};
 
 // ORDER HISTORY PRODUCT  SINGLE ORDER PRODUCTS LIST SHOW
 
@@ -288,7 +283,6 @@ const userOrderProductList = async (req, res) => {
       .populate('items.product')
       .exec();
 
-  
     console.log(isOrder, 'my order');
     res.render('user/orderHistoryViewProduct', {
       isOrder,
@@ -434,13 +428,13 @@ const userOrderCancel = async (req, res) => {
 const addAddressForm = async (req, res) => {
   const currentUserEmail = req.session.userEmail;
   const confirm = req.params.isUser;
-   const isProfile = req.session.profileName;
-    islogout = 'log out';
-    isCreateAccount = 'contact us';
-    isCreateAccountUrl = '/homepage';
-    isUrl = '/userDeatils';
-    orderUrl = '/orderHistory';
-    isLogin = true;
+  const isProfile = req.session.profileName;
+  islogout = 'log out';
+  isCreateAccount = 'contact us';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
+  orderUrl = '/orderHistory';
+  isLogin = true;
   console.log(confirm, 'isconfirm idfgf efgewgtruy gfgew ');
 
   try {
@@ -451,14 +445,18 @@ const addAddressForm = async (req, res) => {
       .exec();
     const usersMultipleAddress = verifyEmail.address;
 
-    res.render('user/addAddress', { usersMultipleAddress, confirm ,   isProfile,
+    res.render('user/addAddress', {
+      usersMultipleAddress,
+      confirm,
+      isProfile,
       isUrl,
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
       cartItems,
       orderUrl,
-      isLogin,});
+      isLogin,
+    });
   } catch (error) {
     res.send('error fetching rendering the add address page' + error);
     console.log(error);

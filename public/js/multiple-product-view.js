@@ -1,6 +1,3 @@
-
-
-
 const service = document.querySelector('.services');
 const btns = document.querySelectorAll('.service-btn');
 const hideSections = document.querySelectorAll('.hiddenSection-box');

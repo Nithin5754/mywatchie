@@ -7,7 +7,7 @@ var opts = {
   radius: 5, // Inner circle radius
   speed: 2, // Adjust the speed here (higher value for faster spin)
   animation: 'spinner-line-shrink',
-  color:"#ffff"
+  color: '#ffff',
 };
 
 let spinner;

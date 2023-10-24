@@ -30,6 +30,11 @@ const {
   orderManagementPost,
   oderProductDispay,
   orderProductUserAddress,
+
+  stockManagement,
+  stockAdd,
+  unlistBtn,
+  listBtn,
 } = require('../controllers/adminControllers');
 
 // multer
@@ -115,6 +120,15 @@ router
 router
   .route('/adminOrdermanagement/orderUserDetails/:orderId')
   .get(orderProductUserAddress);
+
+// stock management
+
+router.route('/adminStockMnagement').get(stockManagement);
+
+router.route('/adminStockManagement/:itemId').post(stockAdd);
+
+router.route('/adminStockManagement/unlisted/:itemId').get(unlistBtn);
+router.route('/adminStockManagement/listed/:itemId').get(listBtn);
 
 router.route('/userblock/:userId').get(userblock);
 router.route('/userunblock/:userId').get(userunblock);

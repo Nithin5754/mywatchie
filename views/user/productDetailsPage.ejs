@@ -194,23 +194,33 @@
             <div class="flex flex-wrap items-center -mx-4 ">
               <div class="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
 
-                <% console.log(prodQty ) %>
+           
 
-                  <% if(prodQty<1){ %>
 
-                    <button id="add-to-cart-display-btn"
-                      class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 add-to-cart-btn"
-                      data-productid="<%= productLists._id %>">
-                      <a href="" class="initial-state">Add to Cart</a>
-                    </button>
+           <% if (productLists.product_qty<=0||productLists.isListed===false) { %>
+                <h6
+                  class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 ">
+               notify if available
+           </h6>
+            
+           <% }else{ %>
+<% if(prodQty<1){ %>
 
-                    <% } else{ %>
-                      <button id="go-to-cart-display-btn"
-                        class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 ">
-                        <a href="/cart" class="initial-state">go to cart</a>
-                      </button>
+  <button id="add-to-cart-display-btn"
+    class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 add-to-cart-btn"
+    data-productid="<%= productLists._id %>">
+    <a href="" class="initial-state">Add to Cart</a>
+  </button>
 
-                      <%} %>
+  <% } else{ %>
+    <button id="go-to-cart-display-btn"
+      class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 ">
+      <a href="/cart" class="initial-state">go to cart</a>
+    </button>
+
+    <%} %>
+          <%   } %>
+
 
               </div>
               <div class="w-full px-4 mb-4 lg:mb-0 lg:w-1/2">
