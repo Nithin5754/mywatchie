@@ -19,6 +19,7 @@ const generateOrderNumber = () => {
 const confirmPage = async (req, res) => {
   const isProfile = req.session.profileName;
   const userEmail = req.session.userEmail;
+  const paymentMethod = req.params.paymentMethod;
 
   islogout = 'log out';
   isCreateAccount = 'contact us';
@@ -103,6 +104,7 @@ const confirmPage = async (req, res) => {
       islogout,
       isCreateAccount,
       isCreateAccountUrl,
+      paymentMethod,
     });
   } catch (error) {
     console.log(error);

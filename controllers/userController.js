@@ -8,6 +8,8 @@ const twiloGet = require('../utilities/twilio/twilio');
 const Address = require('../models/addressSchema');
 const Cart = require('../models/cartSchema');
 const UserOrder = require('../models/orderSchema');
+const wallet=require('../models/walletSchema')
+// const product=require('../models/admin/productSchema')
 
 let userEmail;
 
@@ -104,6 +106,21 @@ const homepage = async (req, res) => {
     isLogin = true;
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
+    const isWallet= await wallet.findOne({ userId: verifyUserEmail._id });
+
+let newWallet;
+
+if(!isWallet){
+
+ newWallet=new wallet({
+    userId: verifyUserEmail._id, 
+    balance:0,
+  })
+  await newWallet.save();
+}
+
+
     const randomBanner = await getRandomBannerImage();
     return res.render('user/home', {
       randomBanner,
@@ -243,11 +260,35 @@ const orderHistory = async (req, res) => {
       return res.redirect(`/orderHistory?page=${maxPage}`);
     }
 
-    const isOrder = await UserOrder.find({ email: userEmail })
-      .populate('items.product')
-      .limit(limit)
-      .skip(startIndex)
-      .exec();
+    const isOrder = await UserOrder.aggregate([
+      {
+        $match: {
+          email: userEmail,
+        },
+      },
+      {
+        $sort: {
+          orderDate: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'items.product',
+          foreignField: '_id',
+          as: 'items.product',
+        },
+      },
+      {
+        $unwind: '$items.product',
+      },
+      {
+        $skip: startIndex,
+      },
+      {
+        $limit: limit,
+      },
+    ]);
 
     res.render('user/orderStatus', {
       verifyUserEmail,
@@ -386,13 +427,19 @@ const userDetailsEdit = async (req, res) => {
 };
 
 const userOrderCancel = async (req, res) => {
+  const userEmail = req.session.userEmail;
   const cancelOrderNumber = req.params.cancelOrderId;
 
   try {
+    const verifyEmail = await UserCollection.findOne({ email: userEmail });
+    console.log(verifyEmail._id,"verifyemail");
+
     const userOrderItem = await UserOrder.findOne({
       orderNumber: cancelOrderNumber,
     });
 
+  
+   console.log(userOrderItem.totalPrice ,"pp");
     if (userOrderItem.status === 'pending') {
       const cancelOrder = await UserOrder.findOneAndUpdate(
         {
@@ -400,18 +447,50 @@ const userOrderCancel = async (req, res) => {
         },
         { status: 'userCancelled' },
       );
+
+
       if (!cancelOrder) {
         console.log('error in cancelling order');
         return res.redirect('/userDetails');
       }
+     
 
-      // if (userOrderItem.status === 'pending') {
-      //   const cancelOrder = await UserOrder.findOneAndRemove({
-      //     orderNumber: cancelOrderNumber,
-      //   });
-      // if (!cancelOrder) {
-      //   return res.redirect('/userDetails');
-      // }
+
+
+      const iswallet=await wallet.findOne({userId:verifyEmail._id})
+      console.log(iswallet.balance,"my wallet");
+
+
+
+      let updateWallet=iswallet.balance+cancelOrder.totalPrice;
+
+
+      const isWalletUpdate=await wallet.findOneAndUpdate({userId:verifyEmail._id},{balance:updateWallet})
+
+      if(!isWalletUpdate){
+        return res.redirect('/userDetails');
+      }
+
+      const isAddWalletHistory = await wallet.findOneAndUpdate(
+        { userId: verifyEmail._id },
+        {
+          $push: {
+            transactions: {
+              description: "Order cancellation",
+              amount:cancelOrder.totalPrice,
+              date: Date.now(),
+            }
+          }
+        }
+      );
+
+
+      if (!isAddWalletHistory) {
+        return res.redirect('/userDetails');
+      }
+
+    
+
     }
 
     return res.redirect('back');

@@ -1,7 +1,16 @@
 const Cart = require('../models/cartSchema');
+const Razorpay = require('razorpay');
 
 const Address = require('../models/addressSchema');
 const UserCollection = require('../models/userSchema');
+const wallet=require('../models/walletSchema')
+
+
+
+const razorpay = new Razorpay({
+  key_id: 'rzp_test_7dotomB7U7VvTw',
+  key_secret: 'KaGFObsci9kLLLMmuApX3Ss8',
+});
 
 let islogout;
 let isCreateAccount;
@@ -142,4 +151,47 @@ const updatePrimary = async (req, res) => {
   res.redirect('/orderManagement');
 };
 
-module.exports = { orderManagement, selectingPrimaryAddress, updatePrimary };
+const createOrder = (req, res) => {
+  isProfile = req.session.profileName;
+  const amount = req.params.orderAmount;
+  const userEmail = req.session.userEmail;
+  console.log(amount, 'amountdhfy dhgedwyf fhjg ');
+
+  const options = {
+    amount: amount * 100,
+    currency: 'INR',
+    receipt: 'order_receipt_1',
+  };
+
+  razorpay.orders.create(options, (err, order) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error creating order' });
+    }
+    console.log(order, 'my order');
+    const orderDetails = {
+      order: order,
+      profileName: isProfile,
+      userEmail: userEmail,
+    };
+
+    console.log(orderDetails, 'my order');
+
+    res.json(orderDetails);
+  });
+};
+
+const lottieAnimation = (req, res) => {
+  res.render('lottie')
+}
+
+
+
+
+module.exports = {
+  orderManagement,
+  selectingPrimaryAddress,
+  updatePrimary,
+  createOrder,
+  lottieAnimation,
+  
+};

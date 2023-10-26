@@ -1,152 +1,263 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>Place Order</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
-  <title>Place Order</title>
-</head>
-
-<body class="bg-gray-100 font-sans">
-  <!-- header.ejs -->
-  <%-
+  <body class="bg-gray-100 font-sans">
+    <!-- header.ejs -->
+    <%-
     include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems})
     %>
 
+    <!-- Container for Left and Right Sections -->
+    <div class="container mx-auto flex p-4 mt-16">
+      <!-- Left Section -->
+      <div class="w-2/3 p-4">
+        <!-- Payment Information -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+          <h2 class="text-lg font-semibold mb-4">Payment Information</h2>
+          <div class="space-y-4">
+            <!-- Payment Options (Radio Buttons) -->
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="cashOnDelivery"
+                name="paymentMethod"
+                value="cash"
+              />
+              <label for="cashOnDelivery">Cash on Delivery</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="creditCard"
+                name="paymentMethod"
+                value="credit"
+              />
+              <label for="creditCard">Credit Card</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="wallet"
+                name="paymentMethod"
+                value="wallet"
+              />
+              <label for="wallet">wallet</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="debitCard"
+                name="paymentMethod"
+                value="debit"
+              />
+              <label for="debitCard">Debit Card</label>
+            </div>
+          </div>
+        </div>
 
-  <!-- Container for Left and Right Sections -->
-  <div class="container mx-auto flex p-4 mt-16">
-    <!-- Left Section -->
-    <div class="w-2/3 p-4">
-      <!-- Payment Information -->
-      <div class="bg-white rounded-lg shadow-md p-4 mb-4">
-        <h2 class="text-lg font-semibold mb-4">Payment Information</h2>
-        <div class="space-y-4">
-          <!-- Payment Options (Radio Buttons) -->
-          <div class="flex items-center space-x-2">
-            <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cash">
-            <label for="cashOnDelivery">Cash on Delivery</label>
+        <!-- Delivery Options -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+          <h2 class="text-lg font-semibold mb-4">Delivery Options</h2>
+          <div class="space-y-4">
+            <!-- Delivery Speed (Radio Buttons) -->
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="fastDelivery"
+                name="deliverySpeed"
+                value="fast"
+              />
+              <label for="fastDelivery">Fast Delivery</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="normalDelivery"
+                name="deliverySpeed"
+                value="normal"
+              />
+              <label for="normalDelivery">Normal Delivery</label>
+            </div>
           </div>
-          <div class="flex items-center space-x-2">
-            <input type="radio" id="creditCard" name="paymentMethod" value="credit">
-            <label for="creditCard">Credit Card</label>
+        </div>
+
+        <!-- Primary Address (Dummy Example) -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h2 class="text-lg font-semibold mb-4">Primary Address</h2>
+          <p><%=isAddressTheir.address_username%></p>
+          <p><%=isAddressTheir.city%></p>
+          <p><%=isAddressTheir.state%></p>
+          <p><%=isAddressTheir.country%></p>
+          <p>Phone: <%= verifyUserEmail.mobileNumber %></p>
+          <button class="bg-blue-700 text-white font-bold p-2 rounded-md">
+            <a href="/selectingPrimaryAddress">change address</a>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Section (Order Summary) -->
+      <div class="w-1/3 p-4">
+        <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+          <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
+          <!-- Product List (Assuming it's a dynamic list) -->
+          <% isProduct.forEach((item, index)=> { %>
+          <div class="flex items-center mb-2">
+            <div class="w-16 h-16 bg-gray-200 mr-4">
+              <img
+                src="/<%= item.product_image_url[0] %>"
+                alt="<%= item.product_name %>"
+              />
+            </div>
+            <div>
+              <h3 class="font-semibold"><%= item.product_name %></h3>
+              <p class="text-gray-500">Quantity: <%= isquantity[index] %></p>
+              <p class="text-gray-500" id="productPrice">
+                Price: $<%= isSingleTotalPrice[index] %>
+              </p>
+            </div>
           </div>
-          <div class="flex items-center space-x-2">
-            <input type="radio" id="upi" name="paymentMethod" value="upi">
-            <label for="upi">UPI</label>
+          <% }); %>
+
+          <!-- Subtotal -->
+          <div class="mt-4">
+            <h3 class="font-semibold">Subtotal: $<%= userCart.total %></h3>
           </div>
-          <div class="flex items-center space-x-2">
-            <input type="radio" id="debitCard" name="paymentMethod" value="debit">
-            <label for="debitCard">Debit Card</label>
+          <% let Shipping=0 %>
+          <!-- Shipping Cost (if applicable) -->
+          <% if (userCart.total>=400) { %> <% Shipping=100 %>
+
+          <div class="mt-4">
+            <h3 class="font-semibold">Shipping Cost: $100</h3>
+          </div>
+          <% }else{ %> <% let Shipping=0 %>
+          <div class="mt-4">
+            <h3 class="font-semibold">Shipping Cost:0</h3>
+          </div>
+          <% } %>
+
+          <!-- Tax (if applicable) -->
+          <div class="mt-4">
+            <h3 class="font-semibold">
+              Tax (10%): $<%= (userCart.total * 0.10).toFixed(2) %>
+            </h3>
+          </div>
+
+          <!-- Total Price -->
+          <div class="mt-4">
+            <h3>total price:</h3>
+            <h3 class="font-semibold" id="totalPrice">
+              <%= (userCart.total-(userCart.total * 0.10)-Shipping).toFixed(2)
+              %>
+            </h3>
           </div>
         </div>
       </div>
 
-      <!-- Delivery Options -->
-      <div class="bg-white rounded-lg shadow-md p-4 mb-4">
-        <h2 class="text-lg font-semibold mb-4">Delivery Options</h2>
-        <div class="space-y-4">
-          <!-- Delivery Speed (Radio Buttons) -->
-          <div class="flex items-center space-x-2">
-            <input type="radio" id="fastDelivery" name="deliverySpeed" value="fast">
-            <label for="fastDelivery">Fast Delivery</label>
-          </div>
-          <div class="flex items-center space-x-2">
-            <input type="radio" id="normalDelivery" name="deliverySpeed" value="normal">
-            <label for="normalDelivery">Normal Delivery</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Primary Address (Dummy Example) -->
-      <div class="bg-white rounded-lg shadow-md p-4">
-        <h2 class="text-lg font-semibold mb-4">Primary Address</h2>
-        <p><%=isAddressTheir.address_username%></p>
-        <p><%=isAddressTheir.city%></p>
-        <p><%=isAddressTheir.state%></p>
-        <p><%=isAddressTheir.country%></p>
-        <p>Phone: <%= verifyUserEmail.mobileNumber %></p>
-        <button class="bg-blue-700 text-white font-bold p-2 rounded-md" ><a href="/selectingPrimaryAddress">change address</a></button>
+      <div
+        class="amount-box text-center mt-4 bg-white h-44 rounded-lg shadow-lg p-4 flex flex-col justify-around"
+      >
+        <img
+          src="https://lh3.googleusercontent.com/ohLHGNvMvQjOcmRpL4rjS3YQlcpO0D_80jJpJ-QA7-fQln9p3n7BAnqu3mxQ6kI4Sw"
+          alt="wallet"
+          class="mx-auto w-12 h-12"
+        />
+        <p class="text-md font-semibold">Total Balance</p>
+        <p class="text-lg font-bold text-green-600">$0</p>
       </div>
     </div>
-      
-<!-- Right Section (Order Summary) -->
-<div class="w-1/3 p-4">
-  <div class="bg-white rounded-lg shadow-md p-4 mb-4">
-    <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
-    <!-- Product List (Assuming it's a dynamic list) -->
-    <% isProduct.forEach((item, index)=> { %>
-      <div class="flex items-center mb-2">
-        <div class="w-16 h-16 bg-gray-200 mr-4">
-          <img src="/<%= item.product_image_url[0] %>" alt="<%= item.product_name %>">
-        </div>
-        <div>
-          <h3 class="font-semibold">
-            <%= item.product_name %>
-          </h3>
-          <p class="text-gray-500">Quantity: <%= isquantity[index] %>
-          </p>
-          <p class="text-gray-500">Price: $<%= isSingleTotalPrice[index] %>
-          </p>
-        </div>
-      </div>
-      <% }); %>
-
-     
-
-        <!-- Subtotal -->
-        <div class="mt-4">
-          <h3 class="font-semibold">Subtotal: $<%= userCart.total %>
-          </h3>
-        </div>
-
-        <!-- Shipping Cost (if applicable) -->
-        <div class="mt-4">
-          <h3 class="font-semibold">Shipping Cost: $100</h3>
-        </div>
-
-        <!-- Tax (if applicable) -->
-        <div class="mt-4">
-          <h3 class="font-semibold">Tax (10%): $<%= (userCart.total * 0.10).toFixed(2) %>
-          </h3>
-        </div>
-
-
-        <!-- Total Price -->
-        <div class="mt-4">
-          <h3 class="font-semibold">Total Price: $<%= (userCart.total-(userCart.total * 0.10)-100).toFixed(2) %>
-          </h3>
-        </div>
-  </div>
-</div>
-
-  </div>
 
     <!-- Place Order button (Centered) -->
     <div class="flex justify-center">
-      <button type="submit" onclick="completePurchase()" class="bg-blue-500 hover:bg-blue-600 text-white  py-2 px-4  font-extrabold capitalize rounded w-full items-center">
+      <button
+        type="submit"
+        onclick="completePurchase()"
+        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 font-extrabold capitalize rounded w-full items-center"
+      >
         Place Order
       </button>
     </div>
-
+    <div id="success-message" style="display: none">Payment Successful!</div>
 
     <script>
-   
-      function completePurchase() {
-        // Check the selected payment method
-        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+      async function completePurchase() {
+        const selectedPaymentMethod = document.querySelector(
+          'input[name="paymentMethod"]:checked',
+        );
 
-        if (paymentMethod === 'cash') {
-          // Redirect to the order success page
-          window.location.href = '/confirmOrder';
-        } else {
-           window.location.href = '/orderManagement';
+        if (selectedPaymentMethod) {
+          const paymentMethod = selectedPaymentMethod.value;
+
+          if (paymentMethod === 'cash') {
+            window.location.href = `/confirmOrder/${paymentMethod}`;
+          } else if (paymentMethod === 'wallet') {
+            window.location.href = '/userwallet';
+          } else if (paymentMethod === 'debit') {
+            const amount1 = document.getElementById('totalPrice').textContent;
+            const amount = parseFloat(amount1);
+
+            console.log(amount, 'amt');
+            fetch('/createOrder/' + amount, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+              .then(response => response.json())
+              .then(orderDetails => {
+                console.log(orderDetails, 'orderData');
+                if (orderDetails.order.id) {
+                  const options = {
+                    key: 'rzp_test_7dotomB7U7VvTw',
+                    amount: orderDetails.order.amount,
+                    currency: 'INR',
+                    name: 'my watchie.com',
+                    description: 'Payment for Your Order',
+                    image: 'path_to_your_logo.png',
+                    order_id: orderDetails.order.id, // Order ID received from the server
+                    handler: function (response) {
+                      window.location.href = `/lootie`;
+                    },
+                    prefill: {
+                      name: orderDetails.profileName,
+                      email: orderDetails.userEmail,
+                      contact: '7902965815',
+                    },
+                    notes: {
+                      address: 'mywatchie coporate office',
+                    },
+                    theme: {
+                      color: '#FFFF00',
+                    },
+                  };
+
+                  const rzp = new Razorpay(options);
+                  rzp.open();
+                } else {
+                  console.log('error occur');
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
         }
       }
     </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
-</body>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"
+      defer
+    ></script>
+  </body>
 </html>

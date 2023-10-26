@@ -12,7 +12,13 @@ module.exports = {
     animation: {
       openmenu: 'openmenu 0.5s ease-in-out forwards',
     },
-    extend: {},
+    extend: {
+      width: {
+        'custom-width-10': '10rem',
+        'custom-width-15': '15rem',
+        'custom-width-20': '20rem',
+      },
+    },
   },
   plugins: [],
 };

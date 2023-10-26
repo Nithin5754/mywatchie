@@ -86,25 +86,14 @@ h1{
 </style>
 
 <body
-  class="bg-gradient-to-t from-purple-900 to-purple-500 min-h-screen flex justify-center items-center overflow-hidden">
+  class="bg-gradient-to-t from-purple-900 to-purple-500 min-h-screen flex justify-center text-center overflow-hidden">
+       
 
-
-  <div class="text-white text-center absolute top-52">
-    <div class="flex flex-row items-center justify-center">
-      <div class="text-2xl font-bold text-white">ERROR :</div>
-    <h1 class="text-8xl font-extrabold text-white animate-bounce">404</h1>
-
-    </div>
-    <hr class="w-32 border-t-2 border-white mx-auto my-4">
-    <div class="text-4xl text-red-200">Page Not Found</div>
-    <a href="/" class="text-white hover:text-blue-400">Back to Home</a>
+  <div class="text-white text-center absolute ">
+       <div class="w-screen h-screen" id="lottie"></div>
   </div>
 
-  <div class="astronaut">
-    <img
-      src="https://images.vexels.com/media/users/3/152639/isolated/preview/506b575739e90613428cdb399175e2c8-space-astronaut-cartoon-by-vexels.png"
-      alt="Astronaut" class="w-32 absolute top-2/4 -left-20 animate-astronaut-fly">
-  </div>
+  <a class="text-white text-start z-50 font-bold hover:text-blue-800" href="/">back to home</a>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -128,7 +117,20 @@ h1{
         }
       }
     })
+
+    
 </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js"></script>
+    <script>
+      bodymovin.loadAnimation({
+        container: document.getElementById('lottie'),
+        path:'/json/404.json',
+      });
+    </script>
 
 </body>
 </html>
+
+
+
+

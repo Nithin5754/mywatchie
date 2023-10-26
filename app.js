@@ -21,6 +21,8 @@ const cartRoutes = require('./routes/cartRouter');
 const checkOutRoutes = require('./routes/checkOutRouter');
 
 const confirmRoutes = require('./routes/confirmRouter');
+
+const walletRoutes=require('./routes/walletRouter')
 // global midlleware
 
 app.use(express.json());
@@ -52,6 +54,7 @@ app.use('/', adminRoutes);
 app.use('/', cartRoutes);
 app.use('/', checkOutRoutes);
 app.use('/', confirmRoutes);
+app.use('/',walletRoutes)
 
 app.get('*', (req, res) => {
   res.status(404).render('404page');

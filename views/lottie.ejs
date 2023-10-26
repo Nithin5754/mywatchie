@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lootie</title>
+    <link rel="stylesheet" href="dist/output.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main>
+      <section>
+        <div class="h-screen w-custom-width-20" id="lottie"></div>
+      </section> 
+    </main>
+
+    <!-- Include the Lottie library for the browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js"></script>
+    <script>
+      bodymovin.loadAnimation({
+        container: document.getElementById('lottie'),
+        path: '../json/confirmLottie.json',
+      });
+    </script>
+
+    <script>
+       setTimeout(() => {
+        let paymentMethod = "debit";
+        window.location.href = `/confirmOrder/${paymentMethod}`;
+       }, 1000); // Change 1000 to 3000 to wait for 3 seconds
+    </script>
+  </body>
+</html>

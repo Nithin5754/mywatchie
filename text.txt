@@ -1,346 +1,137 @@
-
-   <script>
-     // Get all the buttons
-      const addButton = document.querySelectorAll('.Add-cart');
-      const minusButton = document.querySelectorAll('.minus-cart');
-      const quantityDisplays = document.querySelectorAll('.quantity-display');
-  
-
-      addButton.forEach(button => {
-        button.addEventListener('click', () => {
-          const productId = button.getAttribute('data-Addid');
-          const quantityDisplay = document.querySelector(`[data-product-id="${productId}"]`);
- 
-          let quantity = parseInt(quantityDisplay.textContent);
-        
-
-
-          // Update the quantity (add logic to limit the maximum quantity if needed)
-       if(quantity<10){
-           quantity++;
-       }else{
-        quantity;
-       }
-          quantityDisplay.textContent = quantity;
-      
-        });
-      });
-
-      minusButton.forEach(button => {
-        button.addEventListener('click', () => {
-          const productId = button.getAttribute('data-minusid');
-          const quantityDisplay = document.querySelector(`[data-product-id="${productId}"]`);
-          let quantity = parseInt(quantityDisplay.textContent);
-    
-
-          // Update the quantity (add logic to limit the minimum quantity if needed)
-          if (quantity > 1) {
-            quantity--;
-            quantityDisplay.textContent = quantity;
-
-          }
-        });  
-      });
+                   <button class="add-btn px-4 py-2 bg-blue-600 text-white rounded" id="open" data-box="box<%= index + 1 %>">
+                             cancel
+                              </button>
+                              
+                        <div id="box<%= index + 1 %>"
+                          class="open-qty  inset-0 z-50  flex items-center justify-center bg-gray-800 bg-opacity-80 p-4 overflow-x-hidden overflow-y-auto hidden">
+                          <div class="relative w-full max-w-md max-h-full">
+                            <!-- Modal content -->
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                              <button type="button"
+                                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white close-button"
+                                data-modal-hide="authentication-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                              </button>
+                              <div class="px-6 py-6 lg:px-8">
+                                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Do you want to cancel</h3>
+                                <a href="/userOrder/<%= item.orderNumber %>" class="text-blue-500 hover:underline mt-2 block">Cancel
+                                  Order</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
 
 
 
 
+                            <script>
+         const btns = document.querySelectorAll('.add-btn');
 
-    
+          const closeButtons = document.querySelectorAll('.close-button');
 
-   </script>
+          btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              btn.style.display="none"
+              const boxId = btn.getAttribute('data-box');
+
+              const box = document.getElementById(boxId);
+
+              if (box) {
+                box.style.display = 'block';
+              }
+            });
+          });
+
+          closeButtons.forEach(closebtn => {
+            closebtn.addEventListener('click', () => {
+              btns.forEach((btn)=>btn.style.display="block")
+              const close = closebtn.closest('.open-qty');
+             
+              if (close) {
+                close.style.display = 'none';
+              }
+            });
+          });
+
+    </script>
+
+
+
+    key id:
+
+    key screct:
 
 
 
 
 
+       
+      function completePurchase() {
+        // Check the selected payment method
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
 
-
-
-
-
-
-
-
-
-   //////////////////////////////////////
-
-
-   productaddd and productb minus
-   
-//////////////////////////////////////////////////////////////
-
-
-   const productMinus = async (req, res) => {
-  try {
-    const productId = req.params.productId;
-    const userEmail = req.session.userEmail;
-
-    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-    if (!verifyUserEmail) {
-      return res.redirect('/homepage');
-    }
-
-    const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
-    if (!userCart) {
-      return res.status(404).json({ message: 'Cart not found' });
-    }
-
-    const isProductInCart = userCart.items.find(
-      item => item.product.toString() === productId
-    );
-
-    if (!isProductInCart) {
-      return res.status(404).json({ message: 'Product not found in the cart' });
-    }
-
-    const qtyMinus = isProductInCart.quantity - 1;
-
-    if (qtyMinus <= 0) {
-      const itemTotalPrice = isProductInCart.single_product_total_price;
-      userCart.total -= itemTotalPrice;
-      const itemIndex = userCart.items.findIndex(
-        item => item.product.toString() === productId
-      );
-
-      if (itemIndex !== -1) {
-        userCart.items.splice(itemIndex, 1);
+        if (paymentMethod === 'cash') {
+          // Redirect to the order success page
+          window.location.href = '/confirmOrder';
+        } else {
+           window.location.href = '/orderManagement';
+        }
       }
-    } else {
-      const productPrice = await product.findOne({ _id: productId });
-      const singleTotal = productPrice.product_price * qtyMinus;
 
-      isProductInCart.quantity = qtyMinus;
-      isProductInCart.single_product_total_price = singleTotal;
-      userCart.total -= productPrice.product_price;
-    }
 
-    userCart.totalQuantity -= 1;
-    await userCart.save();
 
-    res.redirect('back');
-  } catch (error) {
-    console.error('Error decrementing product quantity:', error);
-    return res.status(500).send(error);
-  }
-};
 
-const productAdd = async (req, res) => {
-  try {
-    const productId = req.params.productId;
-    const userEmail = req.session.userEmail;
 
-    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
-    if (!verifyUserEmail) {
-      return res.redirect('/homepage');
-    }
 
-    const userCart = await Cart.findOne({ userId: verifyUserEmail._id });
-    if (!userCart) {
-      return res.status(404).json({ message: 'Cart not found' });
-    }
 
-    const isproductInCart = userCart.items.find(
-      item => item.product.toString() === productId
-    );
 
-    if (!isproductInCart) {
-      return res.status(404).json({ message: 'Product not found in the cart' });
-    }
 
-    let qtyAdd = isproductInCart.quantity + 1;
-    if (qtyAdd > 10) {
-      return res.redirect('back');
-    }
 
-    const productPrice = await product.findOne({ _id: productId });
-    const singleTotal = qtyAdd * productPrice.product_price;
 
-    isproductInCart.quantity = qtyAdd;
-    isproductInCart.single_product_total_price = singleTotal;
 
-    const isTotal = userCart.total + productPrice.product_price;
-    userCart.total = isTotal;
-    userCart.totalQuantity += 1;
 
-    await userCart.save();
-    return res.redirect('back');
-  } catch (error) {
-    console.error('Error adding product quantity:', error);
-    return res.status(500).send(error);
-  }
-};
 
 
 
 
 
 
+           const placeOrder=document.querySelector('#place-order-button');
+     
+     placeOrder.addEventListener('click',()=>{
+       const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked')
+       
+       if(selectedPayment){
+        const paymentMethod=selectedPayment.value 
+        if(paymentMethod){
 
+               fetch('/validatePayment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ paymentMethod }),
+          })
+           .then(response => response.json())
+              .then(data => {
+                   // Handle redirection based on the payment method
+                   if (data.success) {
+                     if (paymentMethod === 'cash') {
+                       window.location.href = '/confirmOrder';
+                     }
+                   } else {
+                        window.location.href = '/orderManagement';
+                   }
+                 })
+                       .catch(error => {
+                   console.error('Error:', error);
+                 });
 
-
-
-//////////////////////////////////////////
-
-///////////////////////////////////////             //////////////////////////// ///////////////
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-        //  if (sortContent === 'price-low-to-high') {
-//   console.log("low-high");
-//   isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: 1 });
-//     console.log("product filter",isProductListFilter);
-// } else if (sortContent === 'price-high-to-low') {
-//   console.log("high-low");
-//   isProductListFilter = await product.find({ product_category: categoryName }).sort({ product_price: -1 });
-//   console.log("product filter",isProductListFilter);
-// } else {
-//   console.log("relevance");
-//   isProductListFilter = await product.find({ product_category: categoryName });
-// }
-
-
-
-
-
-///////////////////////////////////////
-/////////////////////
-///////////
-///////
-///
-//
-/
-
-
-<!-- <form action="/adminOrderManagement/<%= item.orderNumber%>" method="post">
-
-
-
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Tomorrow', sans-serif;
-    height: 100vh;
-    background-image: linear-gradient(to top, #2e1753, #1f1746, #131537, #0d1028, #050819);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-  }
-
-  .text {
-    position: absolute;
-    top: 10%;
-    color: #fff;
-    text-align: center;
-  }
-
-  h1 {
-    font-size: 50px;
-  }
-
-  .star {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: #fff;
-    right: 0;
-    animation: starTwinkle 3s infinite linear;
-  }
-
-  .astronaut img {
-    width: 100px;
-    position: absolute;
-    top: 55%;
-    animation: astronautFly 6s infinite linear;
-  }
-
-  @keyframes astronautFly {
-    0% {
-      left: -100px;
-    }
-
-    25% {
-      top: 50%;
-      transform: rotate(30deg);
-    }
-
-    50% {
-      transform: rotate(45deg);
-      top: 55%;
-    }
-
-    75% {
-      top: 60%;
-      transform: rotate(30deg);
-    }
-
-    100% {
-      left: 110%;
-      transform: rotate(45deg);
-    }
-  }
-
-  @keyframes starTwinkle {
-    0% {
-      background: rgba(255, 255, 255, 0.4);
-    }
-
-    25% {
-      background: rgba(255, 255, 255, 0.8);
-    }
-
-    50% {
-      background: rgba(255, 255, 255, 1);
-    }
-
-    75% {
-      background: rgba(255, 255, 255, 0.8);
-    }
-
-    100% {
-      background: rgba(255, 255, 255, 0.4);
-    }
-  }
-</style>
-
-
-
-
-
-
-
-
-
-'''''''''''''''''''''''''''''''''''''
-'''''''''''''''''''
-;;;;;;;;;;;;;;
-
-
-
-
-    
-                    <div class="hiddenSection-box relative mb-6  lg:mb-10 h-80 w-80 items-center overflow-hidden m-auto  " id="btn-2">
-                      <img  id="zoom_04" class="product-image object-contain      " src="/<%= productLists.product_image_url[1] %>"
-                        alt="<%= productLists.product_name[1] %>">
-                    
-                    </div>
-
-                     
-                    <div class="hiddenSection-box relative mb-6  lg:mb-10 h-80 w-80 items-center overflow-hidden m-auto  " id="btn-3">
-                      <img  id="zoom_04" class="product-image object-contain     " src="/<%= productLists.product_image_url[2] %>"
-                        alt="<%= productLists.product_name[2] %>">
-                    
-                    </div>
-
-                      <div class="hiddenSection-box relative mb-6  lg:mb-10 h-80 w-80 items-center overflow-hidden m-auto  " id="btn-4">
-                        <img  id="zoom_04" class="product-image object-contain     " src="/<%= productLists.product_image_url[3] %>"
-                          alt="<%= productLists.product_name[3] %>">
-                      
-                      </div>
+        }
+       }
+       
+    })

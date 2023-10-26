@@ -327,8 +327,9 @@ const createCategory = async (req, res) => {
     }
     // adding new category
 
+    let categoryToUpper = categoryName.toUpperCase();
     const isCategoryExist = await categoryCollections.findOne({
-      product_category: categoryName,
+      product_category: categoryToUpper,
     });
     if (isCategoryExist) {
       req.session.isCategoryExist = `${categoryName} is already exist`;
