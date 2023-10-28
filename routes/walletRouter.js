@@ -5,11 +5,11 @@ const router = express.Router();
 
 
 
-const {ewallet}=require('../controllers/walletController')
+const {ewallet,updateEwallet}=require('../controllers/walletController')
 
 
 
-router.route('/userwallet').get(ewallet)
+router.route('/userwallet').get(ewallet).post(updateEwallet)
 
 
 

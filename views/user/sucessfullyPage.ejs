@@ -10,19 +10,25 @@
 
 <body class="bg-gray-100 font-sans">
 
-<%- include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail}) %>
+  <%- include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl}) %>
 
   <div class="container mx-auto p-4 mt-40">
     <div class="bg-white rounded-lg shadow-md p-4">
       <h2 class="text-2xl font-semibold text-green-600 mb-4">Order Successfully Placed</h2>
       <p class="text-gray-600 mb-4">Thank you for your order! Your order has been successfully placed.</p>
+      <h6 class="text-center"><a href="/invoice"><i class="fa-solid fa-download"></i> <span>download invoice</span></a></h6>
 
       <!-- Order Details -->
       <div class="border-t border-gray-300 mt-4 pt-4">
         <h3 class="text-lg font-semibold mb-2">Order Details</h3>
         <p><span class="font-semibold">Order Number:</span> <%= orderConfirm.orderNumber %></p>
         <p><span class="font-semibold">Order Date:</span> <%= formattedDate %></p>
-        <p><span class="font-semibold">Total Amount:</span> $<%= orderConfirm.totalPrice %></p>
+        <% let shipping=0 %>
+        <% if (orderConfirm.totalPrice >=400) { %> <% shipping=100 } %>
+        <p><span class="font-semibold">Total Amount:</span> $ <%= ( orderConfirm.totalPrice+( orderConfirm.totalPrice * 0.05)+shipping).toFixed(2)
+          %></p>
+
+
         <!-- You can display more order details here -->
       </div>
 
@@ -44,10 +50,12 @@
 
     <div class="mt-6 text-center">
       <a href="/" class="text-blue-500 hover:underline">back to homepage</a>
+
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+  <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

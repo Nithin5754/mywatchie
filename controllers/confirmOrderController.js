@@ -3,6 +3,8 @@ const Cart = require('../models/cartSchema');
 const UserCollection = require('../models/userSchema');
 const Address = require('../models/addressSchema');
 
+const pdfService=require('../services/pdf-invoice')
+
 let islogout;
 let isCreateAccount;
 let isCreateAccountUrl;
@@ -20,6 +22,8 @@ const confirmPage = async (req, res) => {
   const isProfile = req.session.profileName;
   const userEmail = req.session.userEmail;
   const paymentMethod = req.params.paymentMethod;
+
+  req.session.paymentMethod=paymentMethod
 
   islogout = 'log out';
   isCreateAccount = 'contact us';
@@ -94,12 +98,16 @@ const confirmPage = async (req, res) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = originalDate.toLocaleDateString('en-US', options);
 
+
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
     return res.render('user/sucessfullyPage', {
       verifyUserEmail,
       orderConfirm,
       formattedDate,
       isProfile,
       isUrl,
+      cartItems,
       orderUrl,
       islogout,
       isCreateAccount,
@@ -111,4 +119,73 @@ const confirmPage = async (req, res) => {
   }
 };
 
-module.exports = { confirmPage };
+
+
+
+
+const invoice=async(req,res,next)=>{
+  const  getLatestOrderNumber=req.session.latestOrdreNumber 
+
+const paymentMethod=req.session.paymentMethod
+
+  try {
+
+    const orderConfirm = await UserOrder.findOne({
+      orderNumber:getLatestOrderNumber,
+    });
+    if (!orderConfirm) {
+      return res.send('error in finding new order');
+    }
+    console.log(orderConfirm,"orderConfirm ");
+
+    const isOrderProduct = await UserOrder.find({orderNumber:getLatestOrderNumber})
+    .populate('items.product')
+    .exec();
+
+    if(!isOrderProduct){
+      return res.send('error finding  order product for invoice')
+    }
+
+
+ 
+function formatOrderDate(dateString) { 
+  const options={ year: 'numeric' , month: 'long' , day: 'numeric' , hour: 'numeric' , minute: 'numeric' }; 
+    const formattedDate=new Date(dateString).toLocaleString('en-US', options); 
+      return formattedDate;
+        } 
+
+        const baseTotalPrice = orderConfirm.totalPrice; // Base total price
+        const taxRate = 0.05; // Tax rate (5%)
+        const shippingCost = orderConfirm.totalPrice >= 400 ? 100 : 0;
+        const totalPrice = (baseTotalPrice + baseTotalPrice * taxRate + shippingCost).toFixed(2);
+
+    
+  const stream=res.writeHead(200,{
+    'Content-Type':'application/pdf',
+    'Content-Disposition':'attachment;filename=myWatchie.invoice.pdf',
+  });
+  const dataOrder={
+ orderNumber:orderConfirm.orderNumber,
+  orderDate:formatOrderDate(orderConfirm.orderDate),
+  username:orderConfirm.shippingAddress.username,
+  city:orderConfirm.shippingAddress.city,
+  postalCode:orderConfirm.shippingAddress.postalCode,
+  address_tag:orderConfirm.shippingAddress.city,
+  phoneNumber:orderConfirm.phoneNumber,
+  totalPrice:totalPrice,
+  paymentMethod:paymentMethod
+     
+  }
+  
+
+  pdfService.buildPDF((chunk)=>stream.write(chunk),
+  ()=>stream.end(),dataOrder,isOrderProduct)
+  } catch (error) {
+    console.log("pdfservice fetching error",error);
+  }
+
+
+
+}
+
+module.exports = { confirmPage ,invoice};

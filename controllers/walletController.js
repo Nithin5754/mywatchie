@@ -47,5 +47,61 @@ res.render('user/wallet', {
 }
 
 
+const updateEwallet=async(req,res)=>{
+  const userEmail = req.session.userEmail;
+  const totalPriceValue=req.body
+  console.log(totalPriceValue.amount,"MY FETCH API TOTAL");
 
-module.exports={ewallet}
+  try {
+    let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
+
+   const isWallet= await wallet.findOne({ userId: verifyUserEmail._id });
+   if(!wallet){
+    return res.redirect('/')
+   }
+
+ 
+
+   
+  const isWalletUpdated = await wallet.findOneAndUpdate(
+        { userId: verifyUserEmail._id },
+        {
+          $inc: { balance:-totalPriceValue.amount}, // Increment the balance
+          $push: {
+            transactions: {
+              description: "product purchased",
+              amount:totalPriceValue.amount,
+              date: Date.now(),
+            },
+          },
+        },
+        { new: true } // This option returns the updated document
+      );
+      
+
+
+   if(!isWalletUpdated){
+    res.redirect('/homepage')
+   }
+
+
+    
+  } catch (error) {
+    console.log("error fetching upadating wallet");
+  }
+
+
+  res.status(200).json({ message: "E-wallet updated successfully" });
+
+}
+
+
+
+
+
+
+
+module.exports={ewallet,updateEwallet}

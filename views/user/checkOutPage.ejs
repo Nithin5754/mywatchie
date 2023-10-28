@@ -147,17 +147,15 @@
           <!-- Tax (if applicable) -->
           <div class="mt-4">
             <h3 class="font-semibold">
-              Tax (10%): $<%= (userCart.total * 0.10).toFixed(2) %>
+              Tax (5%): $<%= (userCart.total * 0.05).toFixed(2) %>
             </h3>
           </div>
 
           <!-- Total Price -->
           <div class="mt-4">
             <h3>total price:</h3>
-            <h3 class="font-semibold" id="totalPrice">
-              <%= (userCart.total-(userCart.total * 0.10)-Shipping).toFixed(2)
-              %>
-            </h3>
+            <h3 class="font-semibold" id="totalPrice" ><%= (userCart.total+(userCart.total * 0.05)+Shipping).toFixed(2) %></h3>
+
           </div>
         </div>
       </div>
@@ -171,7 +169,7 @@
           class="mx-auto w-12 h-12"
         />
         <p class="text-md font-semibold">Total Balance</p>
-        <p class="text-lg font-bold text-green-600">$0</p>
+       <SPan>$</SPan> <p class="text-lg font-bold text-green-600" id="walletBalance"><%= (isWallet.balance).toFixed(2)  %></p>
       </div>
     </div>
 
@@ -188,18 +186,48 @@
     <div id="success-message" style="display: none">Payment Successful!</div>
 
     <script>
+          const totalPrice = document.getElementById('totalPrice').textContent;
+          const totalAmount = parseFloat(totalPrice );
+
+          const walletBalance=document.getElementById('walletBalance').textContent;
+          const  convertedWalletBalance=parseFloat(walletBalance)
+
       async function completePurchase() {
         const selectedPaymentMethod = document.querySelector(
           'input[name="paymentMethod"]:checked',
         );
+       
+
 
         if (selectedPaymentMethod) {
           const paymentMethod = selectedPaymentMethod.value;
 
           if (paymentMethod === 'cash') {
             window.location.href = `/confirmOrder/${paymentMethod}`;
-          } else if (paymentMethod === 'wallet') {
-            window.location.href = '/userwallet';
+          } else if (paymentMethod === 'wallet'&&  convertedWalletBalance>=totalAmount) {
+
+            const amount1 = document.getElementById('totalPrice').textContent;
+            const amount = parseFloat(amount1);
+            console.log(amount ,"hello my total price element");
+
+            fetch('/userwallet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+       
+        body: JSON.stringify({amount}),
+      })
+      .then(response => response.json())
+      .then((data)=>{
+        if(data){
+          window.location.href ='/lootie';
+        }
+      })
+      .catch((err)=>console.log("error",err))
+
+
+          
           } else if (paymentMethod === 'debit') {
             const amount1 = document.getElementById('totalPrice').textContent;
             const amount = parseFloat(amount1);
@@ -243,11 +271,19 @@
                   rzp.open();
                 } else {
                   console.log('error occur');
+              
                 }
               })
               .catch(error => {
                 console.log(error);
               });
+          }else{
+            if(paymentMethod === 'wallet'&&  convertedWalletBalance<totalAmount){
+                    alert("insufficent balance in wallet")
+                  }else{
+                 console.log("error in payment method");
+
+                  }
           }
         }
       }
@@ -259,5 +295,8 @@
       src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"
       defer
     ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   </body>
 </html>

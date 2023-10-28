@@ -63,6 +63,14 @@ const orderManagement = async (req, res) => {
       item => item.single_product_total_price,
     );
 
+    const isWallet= await wallet.findOne({ userId: verifyUserEmail._id });
+    if(!isWallet){
+      console.log("wallet is not their");
+      res.redirect('/ordermanagement')
+    }
+
+
+
     res.render('user/checkOutPage', {
       isProduct,
       isquantity,
@@ -77,6 +85,7 @@ const orderManagement = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       verifyUserEmail,
+      isWallet,
     });
   } catch (error) {
     console.log('order page error' + error);
