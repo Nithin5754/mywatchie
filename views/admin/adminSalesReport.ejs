@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Home Page</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <%- include('./partials/adminNav.ejs',{SideBarSection}) %>
+
+    <%- include('./partials/adminSideBar.ejs') %>
+ 
+
+
+    <main>
+
+         
+   
+    
+   </section>
+         
+     <section class="flex flex-wrap justify-center gap-10 mt-16 m-auto">
+           <div class="w-3/12 ">
+            <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart" data-type="daily" >Daily Sales</h5>
+              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="dailySales"><%= TotalDailySales %></h1>
+             
+
+            </a>
+           </div>
+           <div class="w-3/12">
+            <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center" data-type="weekly">weekly Sales</h5>
+              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400">₹<%= TotalWeekSales %></h1>
+            </a>
+           </div>
+
+           <div class="w-3/12">
+            <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center" data-type="monthly">Monthly Sales</h5>
+              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400">₹<%= TotalMonthSales %></h1>
+            </a>
+           </div>
+     </section>
+
+   
+     <section class="mt-16">
+      <div class="w-6/12 flex m-auto">
+        <canvas id="dailySalesChart"></canvas>
+      </div>
+      
+     </section>
+
+
+
+
+
+     <!-- daily -->
+
+   
+ 
+
+    </main> 
+
+  
+
+
+
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
+      <!-- font-awesome -->
+      <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
+
+
+      <!-- chart js -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <script src="/js/search.js"></script>
+      <script>
+        // Create a global chart variable
+        let dailySalesChart;
+        
+        // Get all elements with the data-type attribute
+        const salesElements = document.querySelectorAll('[data-type]');
+        
+        // Attach click event listeners to each element
+        salesElements.forEach((element) => {
+          element.addEventListener('click', async(event) => {
+            const clickedElement = event.target;
+            const salesType = clickedElement.getAttribute('data-type');
+            console.log('Clicked on:', salesType);
+        
+            try {
+              const response = await fetch('/adminSalesReport/daily', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ salesType }),
+              });
+        
+              if (response.ok) {
+                const data = await response.json();
+              
+        
+                const salesData = data.data;
+
+              
+
+
+              
+        
+                const dates = salesData.map(data => data._id);
+                const salesAmounts = salesData.map(data => data.totalSales);
+        
+                // Check if the chart already exists, and destroy it
+                if (dailySalesChart) {
+                  dailySalesChart.destroy();
+                }
+        
+                const ctx = document.getElementById('dailySalesChart').getContext('2d');
+                dailySalesChart = new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                    labels: dates,
+                    datasets: [{
+                      label: `${salesType} sales`,
+                      data: salesAmounts,
+                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                      borderColor: 'rgba(75, 192, 192, 1)',
+                      borderWidth: 1,
+                    }],
+                  },
+                  options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                      },
+                    },
+                  },
+                });
+              } else {
+                console.error("Failed to fetch data.");
+              }
+            } catch (error) {
+              console.error('Error while fetching data', error);
+            }
+          });
+        });
+        </script>
+
+
+
+        
+      
+      
+</body>
+</body>
+
+</html>
+
+
+
+
+<script>
+
+

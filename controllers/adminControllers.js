@@ -1,9 +1,11 @@
 const path = require('path');
+const moment=require('moment')
 const adminCollection = require('../models/admin/adminSchema');
 const UserCollection = require('../models/userSchema');
 const productCollection = require('../models/admin/productSchema');
 const categoryCollections = require('../models/admin/categorySchema');
 const userOrder = require('../models/orderSchema');
+const Sales=require('../models/admin/salesSchema')
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 
 const verifyAdmin = async (req, res) => {
@@ -17,7 +19,7 @@ const verifyAdmin = async (req, res) => {
       res.redirect('/adminLogin');
     } else {
       req.session.adminData = adminEmail;
-      res.redirect('/adminUserManagement');
+      res.redirect('/adminDashBoard');
     }
   } catch (error) {
     console.log(error);
@@ -267,7 +269,7 @@ const productDelete = async (req, res) => {
 const adminCategoryDisplay = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 7;
+    const limit = 4;
     const startIndex = (page - 1) * limit;
     const totalProducts = await categoryCollections.countDocuments();
 
@@ -439,7 +441,7 @@ const categoryRemove = async (req, res) => {
 const orderManagement = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 3;
+    const limit = 7;
     const startIndex = (page - 1) * limit;
     const totalProducts = await userOrder.countDocuments();
 
@@ -568,6 +570,9 @@ const stockAdd = async (req, res) => {
   }
 };
 
+
+
+
 const unlistBtn = async (req, res) => {
   const unlist = req.params.itemId;
 
@@ -592,6 +597,148 @@ const listBtn = async (req, res) => {
   }
   res.redirect('/adminStockMnagement');
 };
+
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++DASHBOARDMANAGEMENT++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+const adminDasBoard=async(req,res)=>{
+
+  try {
+   const userCount= await UserCollection.countDocuments();
+   if(!userCount){
+    userCount=0;
+   }
+
+
+   const filter={
+    status:{$nin:['delivered','userCancelled','cancelled']}
+   }
+
+   const productOrdersCount=await userOrder.countDocuments(filter);
+   if(!productOrdersCount){
+    productOrdersCount=0
+   }
+
+
+
+   const totalOrders=await userOrder.countDocuments()
+
+
+   const deliveredProductCount = await userOrder.countDocuments({ status: 'delivered' });
+   const userCancelledProductCount = await userOrder.countDocuments({ status: 'userCancelled' });
+   const cancelledProductCount = await userOrder.countDocuments({ status: 'cancelled' });
+   const pendingProductCount = await userOrder.countDocuments({ status: 'pending' });
+
+
+
+   const SalesCollections=await Sales.find();
+   console.log(SalesCollections,"sales");
+
+   const totalSalesPrice=SalesCollections.reduce((totalSale,sale)=>totalSale+sale.totalSalesPerOrderPrice,0)
+   console.log(totalSalesPrice,"total sales prices");
+
+
+const productList=await productCollection.countDocuments()
+
+if(!productList){
+  productList="no product available"
+}
+
+const categoryList=await categoryCollections.countDocuments();
+
+if(!categoryList){
+  categoryList="no category "
+}
+
+
+const cashPurchase = await Sales.find({ PaymentMethod: 'cash' });
+
+const totalCashPurchase = cashPurchase.reduce((total, cash) => total + cash.totalSalesPerOrderPrice, 0);
+
+console.log(totalCashPurchase, "total cash purchase");
+
+
+const  debitPurchase = await Sales.find({ PaymentMethod: 'debit'});
+
+const totalDebitPurchase = debitPurchase.reduce((total, cash) => total + cash.totalSalesPerOrderPrice, 0);
+
+console.log(totalDebitPurchase, "total cash purchase");
+
+
+   res.render('admin/adminDashBoard',{
+    SideBarSection:"DashBoard",
+    userCount,
+    productOrdersCount,
+    totalSalesPrice,
+    productList,
+    categoryList,
+    totalCashPurchase,
+    totalDebitPurchase,
+    deliveredProductCount,
+    cancelledProductCount,
+    userCancelledProductCount,
+    pendingProductCount,
+    totalOrders
+    
+
+    })
+    
+  } catch (error) {
+    console.log("error in admin dashboard",error);
+  }
+ 
+}
+
+
+
+
+
+// sales by week
+const getSalesDataByWeek = async (req, res) => {
+  try {
+    // Calculate the start and end of the current week
+    const startOfWeek = moment().startOf('week');
+    const endOfWeek = moment().endOf('week');
+
+    const salesData = await userOrder.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startOfWeek.toDate(),
+            $lte: endOfWeek.toDate(),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$orderDate' },
+            month: { $month: '$orderDate' },
+            day: { $dayOfMonth: '$orderDate' },
+          },
+          totalAmount: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+console.log(salesData,"hello");
+    res.json(salesData);
+  } catch (error) {
+    console.error('Error fetching week sales data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
+
+
+
+
+
+
+
 
 module.exports = {
   adminUserManagement,
@@ -619,6 +766,11 @@ module.exports = {
 
   stockManagement,
   stockAdd,
+
+  adminDasBoard,
+  getSalesDataByWeek,
+
+
   unlistBtn,
   listBtn,
 };

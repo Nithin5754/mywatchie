@@ -13,7 +13,7 @@
 <body class="dark-mode">
 
   <%-
-    include('./partials/header.ejs',{isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
+    include('./partials/header.ejs',{iswallet,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
     %>
 
 
@@ -67,6 +67,10 @@
                   ordered details
                 </th>
                 <th
+                class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+               status
+              </th>
+                <th
                   class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Action
                 </th>
@@ -107,10 +111,14 @@
                     </p>
                   </td>
                   <td class="px-6 py-4 whitespace-no-wrap">
+                    <p class="text-gray-600"><%= item.status %>
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-no-wrap">
                     <% if (item.status==='cancelled' || item.status==='userCancelled' ) { %>
                       <h4 class="border p-2 bg-slate-600 text-white font-bold rounded-md text-center">Cancelled</h4>
                       <% } else if (item.status==='delivered' ) { %>
-                        <h1 class="text-white font-bold text-xl">item delivered</h1>
+                        <h1 class="text-white font-bold text-xl hidden">item delivered</h1>
                         <% } else { %>
                               <button class="add-btn px-4 py-2 bg-blue-600 text-white rounded" id="open" data-box="box<%= index + 1 %>">
                              cancel

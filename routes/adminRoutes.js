@@ -33,6 +33,10 @@ const {
 
   stockManagement,
   stockAdd,
+
+  adminDasBoard,
+  getSalesDataByWeek,
+
   unlistBtn,
   listBtn,
 } = require('../controllers/adminControllers');
@@ -56,7 +60,15 @@ router.route('/adminLogin').get(checkAdminLogin, adminLogin).post(verifyAdmin);
 
 router.route('/adminLogout').get(adminLogout);
 
-// HOME ROUTES
+
+//ADMIN DASHBOARD
+router.route('/adminDashBoard').get(adminDasBoard)
+router.route('/getSalesDataByWeek').get(getSalesDataByWeek)
+
+
+
+
+// USER MANAGEMENT
 
 router
   .route('/adminUserManagement')
@@ -129,6 +141,12 @@ router.route('/adminStockManagement/:itemId').post(stockAdd);
 
 router.route('/adminStockManagement/unlisted/:itemId').get(unlistBtn);
 router.route('/adminStockManagement/listed/:itemId').get(listBtn);
+
+
+
+
+
+
 
 router.route('/userblock/:userId').get(userblock);
 router.route('/userunblock/:userId').get(userunblock);

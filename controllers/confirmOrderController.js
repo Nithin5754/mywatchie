@@ -1,15 +1,24 @@
+const moment=require('moment')
 const UserOrder = require('../models/orderSchema');
+
 const Cart = require('../models/cartSchema');
 const UserCollection = require('../models/userSchema');
 const Address = require('../models/addressSchema');
 
+const product=require('../models/admin/productSchema')
+
+const Sales=require('../models/admin/salesSchema')
+
 const pdfService=require('../services/pdf-invoice')
+
+
 
 let islogout;
 let isCreateAccount;
 let isCreateAccountUrl;
 let isUrl;
 let orderUrl;
+let iswallet;
 
 const generateOrderNumber = () => {
   const getTimeStamp = Date.now();
@@ -30,6 +39,7 @@ const confirmPage = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet';
   try {
     let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
@@ -53,10 +63,6 @@ const confirmPage = async (req, res) => {
       _id: isAddress.isPrimaryAddress,
     });
 
-    // username: String,
-    // city: String,
-    // state: String,
-    // postalCode: String,
 
     const newOrder = new UserOrder({
       items: userCart.items.map(item => ({
@@ -90,6 +96,26 @@ const confirmPage = async (req, res) => {
       return res.send('error in finding new order');
     }
 
+// sales  data creation in this section it will store to sales schema
+
+    const newSalesRecord=new Sales({
+      items: userCart.items.map(item => ({
+        product: item.product,
+        quantity: item.quantity,
+        orderPrice: item.product.product_price,
+        priceOfTotalQTy: item.product.product_price * item.quantity,
+      })),
+      orderNumber:req.session.latestOrdreNumber,
+      date:moment(new Date()),
+      salesPerOrderQuantity:userCart.items.reduce((acc,total)=>acc+total.quantity,0),
+      totalSalesPerOrderPrice:isCart.total,
+      PaymentMethod:paymentMethod
+    })
+
+    await newSalesRecord.save()
+    .then((salesRecord)=>console.log(salesRecord,"sales are record"))
+    .catch((error)=>console.log("error recording sales ",error))
+
     await Cart.deleteOne({ userId: verifyUserEmail._id });
 
     console.log(orderConfirm + 'this is my order');
@@ -100,6 +126,9 @@ const confirmPage = async (req, res) => {
 
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
+
+   
 
     return res.render('user/sucessfullyPage', {
       verifyUserEmail,
@@ -113,6 +142,7 @@ const confirmPage = async (req, res) => {
       isCreateAccount,
       isCreateAccountUrl,
       paymentMethod,
+      iswallet,
     });
   } catch (error) {
     console.log(error);

@@ -9,6 +9,7 @@ const Address = require('../models/addressSchema');
 const Cart = require('../models/cartSchema');
 const UserOrder = require('../models/orderSchema');
 const wallet=require('../models/walletSchema')
+const Sales=require('../models/admin/salesSchema')
 // const product=require('../models/admin/productSchema')
 
 let userEmail;
@@ -48,6 +49,8 @@ let islogout;
 let isCreateAccount;
 let isCreateAccountUrl;
 let isLogin;
+let iswallet;
+
 const userBeforeLogin = async (req, res) => {
   try {
     const randomBanner = await getRandomBannerImage();
@@ -55,12 +58,14 @@ const userBeforeLogin = async (req, res) => {
       { $sort: { product_category: -1 } },
       { $limit: 4 },
     ]);
+    
     isProfile = 'login';
     isUrl = '/login';
     islogout = 'help';
     isCreateAccount = 'create account';
     isCreateAccountUrl = '/signup';
     verifyUserEmail = 'profile';
+    iswallet='/'
     cartItems = '';
     (orderUrl = '#'), (isLogin = false);
 
@@ -76,6 +81,7 @@ const userBeforeLogin = async (req, res) => {
       cartItems,
       orderUrl,
       isLogin,
+      iswallet
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -104,6 +110,7 @@ const homepage = async (req, res) => {
     isUrl = '/userDeatils';
     orderUrl = '/orderHistory';
     isLogin = true;
+    iswallet='/userwallet'
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
@@ -134,6 +141,7 @@ if(!isWallet){
       cartItems,
       orderUrl,
       isLogin,
+      iswallet
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -144,8 +152,26 @@ if(!isWallet){
 // USER PROFILE DETAILS PAGE START HERE
 
 const userProfileAddForm = async (req, res) => {
+  const isProfile = req.session.profileName;
+  islogout = 'log out';
+  isCreateAccount = 'contact us';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
+  orderUrl = '/orderHistory';
+  isLogin = true;
+  iswallet='/userwallet'
   try {
-    res.render('user/userProfileAddForm', {});
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
+    res.render('user/userProfileAddForm', { isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+      cartItems,
+      orderUrl,
+      isLogin,
+      iswallet});
   } catch (error) {
     res.send('error fetching add address form please check again');
   }
@@ -200,6 +226,7 @@ const userDetailspage = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
   try {
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
 
@@ -227,6 +254,7 @@ const userDetailspage = async (req, res) => {
       isCreateAccountUrl,
       cartItems,
       orderUrl,
+      iswallet
     });
   } catch (error) {
     console.log('user details page error please check again', error);
@@ -242,6 +270,7 @@ const orderHistory = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
 
   try {
     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
@@ -302,6 +331,7 @@ const orderHistory = async (req, res) => {
       orderUrl,
       page,
       maxPage,
+      iswallet
     });
   } catch (error) {
     res.send('orderHistory fetching:', error);
@@ -318,6 +348,7 @@ const userOrderProductList = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
 
   try {
     const isOrder = await UserOrder.find({ orderNumber: orderId })
@@ -334,6 +365,7 @@ const userOrderProductList = async (req, res) => {
       isCreateAccountUrl,
       cartItems,
       orderUrl,
+      iswallet
     });
   } catch (error) {
     res.send('error fetching finding the order product from user side', error);
@@ -344,6 +376,16 @@ const userOrderProductList = async (req, res) => {
 
 const userDetailsEditForm = async (req, res) => {
   userEmail = req.session.userEmail;
+  const isProfile = req.session.profileName;
+  islogout = 'log out';
+  isCreateAccount = 'contact us';
+  isCreateAccountUrl = '/homepage';
+  isUrl = '/userDeatils';
+  orderUrl = '/orderHistory';
+  isLogin = true;
+  iswallet='/userwallet'
+
+    
 
   try {
     const verifyEmail = await UserCollection.findOne({ email: userEmail });
@@ -358,7 +400,17 @@ const userDetailsEditForm = async (req, res) => {
       .exec();
     const UserAddress = verifyEmailForAddress.address;
 
-    res.render('user/userDetailsEditForm', { verifyEmail, UserAddress });
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
+    res.render('user/userDetailsEditForm', { verifyEmail, UserAddress,isProfile,
+      isUrl,
+      islogout,
+      isCreateAccount,
+      isCreateAccountUrl,
+      cartItems,
+      orderUrl,
+      isLogin,
+      iswallet });
   } catch (error) {
     console.error('Error during userDetailsEditForm:', error);
     return res.status(500).send('Error during userDetailsEditForm');
@@ -451,7 +503,7 @@ const userOrderCancel = async (req, res) => {
 
       if (!cancelOrder) {
         console.log('error in cancelling order');
-        return res.redirect('/userDetails');
+        return res.redirect('/');
       }
      
 
@@ -468,7 +520,7 @@ const userOrderCancel = async (req, res) => {
       const isWalletUpdate=await wallet.findOneAndUpdate({userId:verifyEmail._id},{balance:updateWallet})
 
       if(!isWalletUpdate){
-        return res.redirect('/userDetails');
+        return res.redirect('/');
       }
 
       const isAddWalletHistory = await wallet.findOneAndUpdate(
@@ -486,13 +538,15 @@ const userOrderCancel = async (req, res) => {
 
 
       if (!isAddWalletHistory) {
-        return res.redirect('/userDetails');
+        return res.redirect('/');
       }
-
-    
-
     }
 
+
+
+    // when user  cancel it should delete from  sales collection
+ await Sales.findOneAndDelete({orderNumber:cancelOrderNumber})
+ 
     return res.redirect('back');
   } catch (error) {
     console.log('cancel order item something error' + error);
@@ -513,6 +567,7 @@ const addAddressForm = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
   isLogin = true;
   console.log(confirm, 'isconfirm idfgf efgewgtruy gfgew ');
 
@@ -535,6 +590,7 @@ const addAddressForm = async (req, res) => {
       cartItems,
       orderUrl,
       isLogin,
+      iswallet,
     });
   } catch (error) {
     res.send('error fetching rendering the add address page' + error);

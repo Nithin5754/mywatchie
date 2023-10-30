@@ -31,25 +31,27 @@
 
         <form class="my-8 text-sm" action="/signup" method="post"  onsubmit="return validateForm()">
           <div class="flex flex-col my-4">
-            <label for="name" class="text-gray-700">Name</label>
+            <label for="name" class="text-gray-700">username</label>
             <input type="text" name="username" id="name"
               class="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
-              placeholder="Enter your name">
+              placeholder="Enter your name" oninput="validateName()">
           </div>
+          <p id="nameValidation" class="text-red-700"></p>
           
           <div class="flex flex-col my-4">
             <label for="email" class="text-gray-700">Email Address</label>
-            <input type="email" name="email" id="email"
+            <input type="text" name="email" id="email"
               class="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
-              placeholder="Enter your email" required>
+              placeholder="Enter your email" oninput="validateEmail()" >
           </div>
+          <p id="emailValidationMessage" class="text-red-700"></p>
               <div class="flex flex-col my-4">
                 <label for="number" class= "form-label text-gray-700">mobile number</label>
                 <input type="number" name="number" id="form3Example4" minlength="3"
                   maxlength="6"
                   pattern="^[a-zA-Z_$][a-zA-Z_$0-9]*$"
                   class="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
-                  placeholder="Enter your number" required>
+                  placeholder="Enter your number" oninput="validateMobile()">
               </div>
               <p id="mobileValidationMessage" class="text-red-700"></p>
 
@@ -58,7 +60,7 @@
             <div x-data="{ show: false }" class="relative flex items-center mt-2">
               <input :type=" show ? 'text': 'password' " name="password" id="form3Example5" 
                 class="flex-1 p-2 pr-10 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
-                placeholder="Enter your password" type="password" required>
+                placeholder="Enter your password" type="password" >
               <button @click="show = !show" type="button"
                 class="absolute right-2 bg-transparent flex items-center justify-center text-gray-700">
                 <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -111,7 +113,7 @@
           </div>
 
           <div class="flex items-center">
-            <input type="checkbox" name="remember_me" id="remember_me" class="mr-2 focus:ring-0 rounded" required>
+            <input type="checkbox" name="remember_me" id="remember_me" class="mr-2 focus:ring-0 rounded" >
             <label for="remember_me" class="text-gray-700">I accept the <a href="#"
                 class="text-blue-600 hover:text-blue-700 hover:underline">terms</a> and <a href="#"
                 class="text-blue-600 hover:text-blue-700 hover:underline">privacy policy</a></label>
@@ -258,8 +260,58 @@
 
   <script>
         function validateForm() {
-            return validateMobile() && validatePasswords();
+            return validateName()&& validateEmail() && validateMobile() && validatePasswords();
           }
+
+
+          function validateName() {
+    const nameInput = document.getElementById("name");
+    const nameValidationMessage = document.getElementById("nameValidation");
+    const nameValue = nameInput.value;
+
+    // Remove any existing validation message
+    nameValidationMessage.textContent = "";
+
+    if (!isValidName(nameValue)) {
+      // Name is invalid
+      nameValidationMessage.textContent = "Please enter a valid name without spaces.";
+      return false;
+    }
+
+    return true;
+  }
+
+  function isValidName(nameValue) {
+    // Use a regular expression to check if the name contains only letters and may include hyphens or apostrophes
+    const nameRegex = /^[a-zA-Z'-]+$/;
+    return nameRegex.test(nameValue);
+  }
+
+
+          function validateEmail() {
+    const emailInput = document.getElementById("email");
+    const emailValidationMessage = document.getElementById("emailValidationMessage");
+    const emailValue = emailInput.value;
+
+    // Remove any existing validation message
+    emailValidationMessage.textContent = "";
+
+    if (!isValidEmail(emailValue)) {
+      // Email is invalid
+      emailValidationMessage.textContent = "Please enter a valid email address.";
+      return false;
+    }
+
+    return true;
+  }
+
+  function isValidEmail(emailValue) {
+    // Use a regular expression for basic email format validation
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,4}$/;
+    return emailRegex.test(emailValue);
+  }
+
+
 
           function validateMobile() {
             const mobileInput = document.getElementById("form3Example4");
@@ -317,6 +369,7 @@
                 .addEventListener("input", validatePasswords);
 
   </script>
+
 
 </body>
 

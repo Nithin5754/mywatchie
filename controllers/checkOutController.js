@@ -18,6 +18,7 @@ let isCreateAccountUrl;
 let isUrl;
 let isProfile;
 let orderUrl;
+let iswallet;
 
 const orderManagement = async (req, res) => {
   isProfile = req.session.profileName;
@@ -27,6 +28,7 @@ const orderManagement = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
   try {
     let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
@@ -86,6 +88,7 @@ const orderManagement = async (req, res) => {
       isCreateAccountUrl,
       verifyUserEmail,
       isWallet,
+      iswallet,
     });
   } catch (error) {
     console.log('order page error' + error);
@@ -100,6 +103,7 @@ const selectingPrimaryAddress = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
 
   try {
     let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
@@ -123,6 +127,7 @@ const selectingPrimaryAddress = async (req, res) => {
       isCreateAccountUrl,
       verifyUserEmail,
       orderUrl,
+      iswallet
     });
   } catch (error) {
     res.send('adding primary address fetching error', error);

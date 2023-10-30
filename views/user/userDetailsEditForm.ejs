@@ -9,7 +9,9 @@
 </head>
 
 <body class="bg-gray-100">
-  <main class=" flex items-center justify-center">
+  <%- include('./partials/header.ejs',{iswallet,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl}) %>
+
+  <main class=" flex items-center justify-center mt-24">
 <section class="bg-gray-100">
   <div class="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-4">
     <form action="/userDetails/detailsEdit" method="post">
@@ -68,7 +70,11 @@
 </section>
   </main>
     
-
+  <!-- Alpine.js and Swiper JS scripts -->
+  <script src="/js/darkmode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" ></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
 
 

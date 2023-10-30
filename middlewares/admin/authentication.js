@@ -1,6 +1,6 @@
 const checkAdminLogin = (req, res, next) => {
   if (req.session.adminData) {
-    res.redirect('/adminUserManagement');
+    res.redirect('/adminDashBoard');
   } else {
     next();
   }

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Home Page</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+
+<body class=" bg-gray-100 font-sans">
+
+  <%- include('./partials/adminNav.ejs',{SideBarSection}) %>
+
+    <%- include('./partials/adminSideBar.ejs') %>
+
+
+    <main>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-12 gap-6">
+          <div class="col-span-12 sm:col-span-4">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fas fa-list-ol"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="totalOrders"><%= totalOrders %></div>
+              <div class="te text-xl font-extrabold">Total Orders</div>
+            </div>
+          </div>
+    
+          <div class="col-span-12 sm:col-span-4">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fas fa-list-ol"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5"><%= productOrdersCount %></div>
+              <div class="te text-xl font-extrabold">Total Orders Pending</div>
+            </div>
+          </div>
+    
+          <div class="col-span-12 sm:col-span-4">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fa-regular fa-user"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="totalUsers"><%= userCount %></div>
+              <div class="te text-xl font-extrabold">Total Users</div>
+            </div>
+          </div>
+    
+          <div class="col-span-12 sm:col-span-6">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fas fa-money-bill"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="totalSales">₹<%= totalSalesPrice %></div>
+              <div class="te text-xl font-extrabold">Total Sales <span class="text-sm">(Month)</span></div>
+            </div>
+          </div>
+    
+          <div class="col-span-12 sm:col-span-6">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fas fa-tshirt"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5"><%= productList %></div>
+              <div class="te text-xl font-extrabold">Total Products Listed</div>
+            </div>
+          </div>
+    
+      
+        </div>
+      </div>
+    
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-5">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 sm:col-span-4">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fas fa-money-bill"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="cash" data-cash="<%= totalCashPurchase %>">₹<%= totalCashPurchase %></div>
+              <div class="te text-xl font-extrabold">Cash Sales</div>
+            </div>
+          </div>
+
+          <div class="col-span-12 sm:col-span-4">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fas fa-laptop"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5"><%= categoryList %></div>
+              <div class="te text-xl font-extrabold">Total Categories Listed</div>
+            </div>
+          </div>
+    
+          <div class="col-span-12 sm:col-span-4">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <p class="text-2xl text-gray-400"><i class="fas fa-book"></i></p>
+              </div>
+              <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="bank" data-bank="<%= totalDebitPurchase %>">₹<%= totalDebitPurchase %></div>
+              <div class="te text-xl font-extrabold">Bank Payment</div>
+            </div>
+          </div>
+    
+          <div class="col-span-12 sm:col-span-4">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full">
+                <canvas id="myChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-12 sm:col-span-8">
+            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-center items-center w-full h-52">
+                <canvas id="mystatus"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+
+   
+      
+      <div id="data-delivery" data-delivery="<%= JSON.stringify(deliveredProductCount) %>"></div>
+      <div id="data-cancelled" data-cancelled="<%= JSON.stringify(cancelledProductCount) %>"></div>
+      <div id="data-userCancelled" data-userCancelled="<%= JSON.stringify(userCancelledProductCount) %>"></div>
+      <div id="data-pending" data-pending="<%= JSON.stringify(pendingProductCount) %>"></div>
+    </main>
+    
+    <!-- chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
+      <!-- font-awesome -->
+      <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
+
+
+      <script src="/js/search.js"></script>
+
+
+
+   
+        
+<script>
+
+   
+    
+const cashId=document.querySelector('#cash')
+
+const cash=cashId.getAttribute('data-cash')
+
+const bankId=document.querySelector('#bank')
+
+const bank=bankId.getAttribute('data-bank')
+console.log(bank,"my bank price");
+
+
+
+const deliveryId=document.querySelector('#data-delivery')
+const delivery=parseFloat(deliveryId.getAttribute('data-delivery'))
+console.log(typeof(delivery),"delivery");
+
+
+const cancelledId=document.querySelector('#data-cancelled')
+const cancelled=parseFloat(cancelledId.getAttribute('data-cancelled'))
+console.log(cancelled,"cancelled");
+
+
+const userCancelledId=document.querySelector('#data-userCancelled')
+const userCancelled=parseFloat(userCancelledId.getAttribute('data-userCancelled'))
+console.log(userCancelled,"userCancelled");
+
+
+const pendingId=document.querySelector('#data-pending')
+const pending=parseFloat(pendingId.getAttribute('data-pending'))
+console.log(pending,"pending");
+
+
+
+
+        var xValues = ["cash", "bank"];
+        var yValues = [cash,bank];
+        var barColors = [
+          "#b91d47",
+          "#00aba9",
+         
+        ];
+        
+        new Chart("myChart", {
+          type: "pie",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor: barColors,
+              data: yValues
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: "cash and bank"
+            }
+          }
+        });
+
+
+
+
+
+
+        var xValues = ["delivered", "pending", "cancelled", "userCancelled"];
+var yValues = [delivery,pending,cancelled,userCancelled];
+var barColors = ["red", "green","blue","orange","brown"];
+
+new Chart("mystatus", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: true,
+      text: "orders status"
+    }
+  }
+});
+        
+        </script>
+
+
+
+<script>
+  const totalrevenue = document.getElementById('totalSales').textContent
+  const totalorder = document.getElementById('totalOrders').textContent
+  const totaluser = document.getElementById('totalUsers').textContent
+  console.log(totalrevenue,totalorder,totaluser);
+  var xValues = ["Total"];
+  var barColors = ["#ec8888"];
+  let barColors2 = ["#6bcbe0"];
+  let barColors3 = ["#56dead"];
+
+  new Chart("myChart", {
+      type: "bar",
+      data: {
+          labels: xValues,
+          datasets: [{
+              label: "Total revenue",
+              backgroundColor: barColors,
+              data: totalrevenue
+          }, {
+              label: "Total orders",
+              backgroundColor: barColors2,
+              data: totalorder
+
+          }, {
+              label: "Total Users",
+              backgroundColor: barColors3,
+              data: totaluser
+          }],
+          options: {
+              legend: { display: true },
+              title: {
+                  display: true,
+                  text: "sales"
+              }
+          }
+      }
+  });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+</body>
+
+
+</html>

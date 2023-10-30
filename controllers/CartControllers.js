@@ -9,6 +9,7 @@ let isCreateAccountUrl;
 let isUrl;
 let isProfile;
 let orderUrl;
+let iswallet;
 
 const cartDisplay = async (req, res) => {
   // HEADER SECTION DETAILS
@@ -17,6 +18,7 @@ const cartDisplay = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
   // HEADER SECTION DETAILS END HERE
 
   let userEmail = req.session.userEmail;
@@ -56,6 +58,7 @@ const cartDisplay = async (req, res) => {
       cartProducts,
       cartquantity,
       cartProductPrice,
+      iswallet
     });
   } catch (error) {
     console.log('error fetching cart display ' + cartDisplay);

@@ -57,7 +57,7 @@
                   <div class="txn-history mt-4 w-8/12 m-auto bg-white rounded-lg shadow-lg p-4">
                     <p class="text-lg font-semibold"><b>History</b></p>
                 
-                    <% isWallet.transactions.map((history,index) => { %>
+                    <% isWallet.transactions.sort((a, b) => new Date(b.date) - new Date(a.date)).map((history,index) => { %>
                         <div class="txn-list flex justify-between items-center border-b border-gray-300 py-2">
                             <div class="flex flex-row gap-5">
                                 <p><%= index+1 %></p>

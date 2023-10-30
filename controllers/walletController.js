@@ -13,6 +13,7 @@ const ewallet = async (req, res) => {
   isCreateAccountUrl = '/homepage';
   isUrl = '/userDeatils';
   orderUrl = '/orderHistory';
+  iswallet='/userwallet'
 
   try {
     let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
@@ -37,6 +38,7 @@ res.render('user/wallet', {
   isCreateAccountUrl,
   verifyUserEmail,
   isWallet,
+  iswallet
 })
 
 

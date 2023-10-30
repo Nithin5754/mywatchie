@@ -6,6 +6,7 @@ let isCreateAccount;
 let isCreateAccountUrl;
 let isUrl;
 let orderUrl;
+let iswallet;
 const productList = async (req, res) => {
   const isProfile = req.session.profileName;
   userEmail = req.session.userEmail;
@@ -33,6 +34,7 @@ const productList = async (req, res) => {
     isUrl = '/userDeatils';
     orderUrl = '/orderHistory';
     let isProductListFilter = '';
+    iswallet='/userwallet'
 
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
@@ -189,6 +191,7 @@ const productList = async (req, res) => {
       isAvailableBrands,
       page,
       maxPage,
+      iswallet
     });
   } catch (error) {
     console.error('Error fetching images helo:', error.message);
@@ -206,6 +209,7 @@ const productDetails = async (req, res) => {
     isCreateAccountUrl = '/homepage';
     isUrl = '/userDeatils';
     orderUrl = '/orderHistory';
+    iswallet='/userwallet';
     const OneProduct = req.params.productId;
     const productLists = await product.findById(OneProduct);
 
@@ -237,6 +241,7 @@ const productDetails = async (req, res) => {
       isCreateAccountUrl,
       cartItems,
       prodQty,
+      iswallet
     });
   } catch (error) {
     console.error('Error fetching product details:', error);
