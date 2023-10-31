@@ -33,7 +33,7 @@
 
 </head>
 
-<body class=" scroll-smooth capitalize bg-slate-300 dark-mode">
+<body class=" scroll-smooth capitalize bg-slate-300 bg-gray-200 h-full w-full">
 
 
   <%- include('./partials/header.ejs',{iswallet,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail}) %>
@@ -44,11 +44,11 @@
     <!-- header.ejs -->
 <main>
 
-  <section class="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800">
+  <section class="overflow-hidden py-32 font-poppins ">
     <div class="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
       <div class="flex flex-wrap  -mx-4">
-        <div class="w-full px-4 md:w-1/2">
-          <div class="sticky top-0 overflow-hidden flex flex-col  md:flex-row-reverse ">
+        <div class="w-full px-4 md:w-1/2 ">
+          <div class="sticky  overflow-hidden flex flex-col    md:flex-row-reverse ">
 
             <div class="hiddenSection-box relative mb-6 lg:mb-10 h-80 w-80 items-center overflow-hidden m-auto live"
               id="btn-1">
@@ -151,10 +151,10 @@
                 </ul>
                 <p class="text-xs dark:text-gray-400">(2 customer reviews)</p>
               </div>
-              <p class="max-w-md mb-8 text-white dark:text-gray-400">
+              <p class="max-w-md mb-8 text-gray-800">
                 <%= productLists.product_description %>
               </p>
-              <p class="inline-block mb-8 text-4xl font-bold text-white dark:text-gray-400 ">
+              <p class="inline-block mb-8 text-4xl font-bold text-gray-800 ">
                 <span>$ <%= productLists.product_price %></span>
                 <span class="text-base font-normal text-gray-100 line-through dark:text-gray-400">$<%=
                     productLists.product_price+500 %></span>
@@ -187,7 +187,7 @@
             </div>
 
             <!-- HTML structure for a custom notification -->
-            <div class="w-52 mb-8 text-green-800 font-extrabold hidden" id="cartMessage">
+            <div class="w-52 mb-8 text-green-600 font-bold hidden" id="cartMessage">
               <h5 class="w-52">item added to Cart</h5>
             </div>
 
@@ -197,35 +197,35 @@
            
 
 
-           <% if (productLists.product_qty<=0||productLists.isListed===false) { %>
-                <h6
-                  class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 ">
-               notify if available
-           </h6>
-            
-           <% }else{ %>
-<% if(prodQty<1){ %>
-
-  <button id="add-to-cart-display-btn"
-    class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 add-to-cart-btn"
-    data-productid="<%= productLists._id %>">
-    <a href="" class="initial-state">Add to Cart</a>
-  </button>
-
-  <% } else{ %>
-    <button id="go-to-cart-display-btn"
-      class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 ">
-      <a href="/cart" class="initial-state">go to cart</a>
+                <% if (productLists.product_qty<=0||productLists.isListed===false) { %>
+                  <h6
+                    class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 ">
+                 notify if available
+             </h6>
+              
+             <% }else{ %>
+  <% if(prodQty<1){ %>
+  
+    <button id="add-to-cart-display-btn"
+      class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500  rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 font-bold add-to-cart-btn"
+      data-productid="<%= productLists._id %>">
+      <a href="" class="initial-state">Add to Cart</a>
     </button>
-
-    <%} %>
-          <%   } %>
+  
+    <% } else{ %>
+      <button id="go-to-cart-display-btn"
+        class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300 ">
+        <a href="/cart" class="initial-state">go to cart</a>
+      </button>
+  
+      <%} %>
+            <%   } %>
 
 
               </div>
               <div class="w-full px-4 mb-4 lg:mb-0 lg:w-1/2">
                 <button
-                  class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300">
+                  class="flex items-center justify-center w-full p-4 text-white  bg-blue-900 rounded-md hover:bg-blue-600 hover:text-white">
                   Add to wishlist
                 </button>
               </div>

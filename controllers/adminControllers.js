@@ -47,7 +47,7 @@ const adminUserManagement = async (req, res) => {
     const startIndex = (page - 1) * limit;
     const totalProducts = await UserCollection.countDocuments();
     const maxPage = Math.ceil(totalProducts / limit);
-    if (page > maxPage) {
+    if (page > maxPage) { 
       return res.redirect(`/adminUserManagement?page=${maxPage}`);
     }
     const user = await UserCollection.find()

@@ -24,7 +24,7 @@ const cartDisplay = async (req, res) => {
   let userEmail = req.session.userEmail;
   isProfile = req.session.profileName;
   try {
-    const randomBannerImage = await getRandomBannerImage();
+    // const randomBannerImage = await getRandomBannerImage();
     let verifyUserEmail = await UserCollection.findOne({ email: userEmail });
     if (!verifyUserEmail) {
       return res.redirect('/homepage');
@@ -45,8 +45,9 @@ const cartDisplay = async (req, res) => {
       item => item.single_product_total_price,
     );
 
+
     return res.render('user/cart', {
-      randomBannerImage,
+      // randomBannerImage,
       isProfile,
       isUrl,
       islogout,
@@ -156,6 +157,7 @@ const updateCart = async (req, res) => {
   }
 
   isProductInCart.quantity = quantity;
+  userCart.totalQuantity =quantity
 
   isProductInCart.single_product_total_price = newSingleProductTotal;
 

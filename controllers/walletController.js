@@ -1,6 +1,8 @@
 const UserCollection = require('../models/userSchema');
 const wallet=require('../models/walletSchema')
 
+const Cart=require('../models/cartSchema')
+
 
 
 // the wallet is created in db in home page in user controller  
@@ -26,6 +28,8 @@ const ewallet = async (req, res) => {
     return res.redirect('/')
    }
 
+   const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
    console.log(isWallet,"hello world shjg fhjwe hjgfh hgruyew hjgru");
 
 
@@ -38,7 +42,8 @@ res.render('user/wallet', {
   isCreateAccountUrl,
   verifyUserEmail,
   isWallet,
-  iswallet
+  iswallet,
+  cartItems,
 })
 
 

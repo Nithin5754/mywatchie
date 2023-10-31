@@ -16,7 +16,7 @@
 
 </head>
 
-<body>
+<body >
 
   <!-- header.ejs -->
   <%-
@@ -24,22 +24,42 @@
     %>
 
 
-    <main
-      style="background-image: url('<%= randomBannerImage %>'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <main class="bg-gray-100 h-screen w-screen">
+
+
+
       <section>
+
+        <% if (Object.keys(cartProducts).length === 0 || Object.keys(cartItems).length === 0){ %>
+        
+          <section class="h-auto py-12 sm:py-16 lg:py-20 relative flex flex-col justify-center items-center text-black">
+            <div class="inset-0 text-center" id="emptyCart">
+              <!-- Your content goes here -->
+            </div>
+            <a href="/" class="inset-0 flex justify-center items-center hover:underline  hover:text-blue-700 text-gray-900 font-bold ">
+            Continue Shopping
+            </a>
+          </section>
+                
+       <% }else{ %>
+
         <section class="h-screen py-12 sm:py-16 lg:py-20">
           <div class="mx-auto px-4  sm:px-6 lg:px-8">
             <div class="flex items-center justify-center">
-              <h1 class="text-5xl font-extrabold text-white">Your Cart</h1>
+              <h1 class="text-5xl font-extrabold text-gray-900">Your Cart</h1>
             </div>
 
             <div class="mx-auto  bg-white rounded-md shadow-lg mt-8 p-4 max-w-6xl md:mt-12">
               <div class="">
                 <div class="px-4 py-6 sm:px-8 sm:py-10">
                   <div class="flow-root">
+
                     <ul class="-my-8 flex flex-col gap-5">
                       <!-- PRODUCT VIEW SECTION START HERE -->
+            
+
                       <% cartProducts.forEach((item, index)=> { %>
+                    
                         <li
                           class="flex flex-col space-y-3 border-2 rounded-xl py-6 px-4  text-left sm:flex-row sm:space-x-5 sm:space-y-0">
                           <div class="shrink-0">
@@ -73,7 +93,7 @@
                             <select name="quantity"
                               class="block appearance-none w-full rounded-lg bg-gray-100 border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded-l-md text-xs uppercase transition quantity-display"
                               data-product-id="<%= item._id %>" id="qty">
-                              <% for (let i=1; i <=10; i++) { %>
+                              <% for (let i=1; i <= ( item.product_qty>10?10:item.product_qty) ;i++) { %>
                                 <option value="<%= i %>" <%=i===cartquantity[index] ? 'selected' : '' %>
                                   class="text-gray-700">
                                   <%= i %>
@@ -114,9 +134,10 @@
                         </li>
                         <% }); %>
                     </ul>
-
+               
                   </div>
 
+           
 
                   <!-- TOTAL PRICE SECTION -->
 
@@ -166,6 +187,9 @@
           </div>
         </section>
 
+        <% } %>
+
+
       </section>
     </main>
     <!-- Alpine.js and Swiper JS scripts -->
@@ -177,6 +201,13 @@
     <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
     <script src="/js/swiper.js"></script>
     <script src="/js/search.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js"></script>
+    <script>
+      bodymovin.loadAnimation({
+        container: document.getElementById('emptyCart'),
+        path:'/json/emptyCart.json',
+      });
+    </script>
 
 
 </body>

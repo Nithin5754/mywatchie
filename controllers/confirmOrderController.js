@@ -5,7 +5,7 @@ const Cart = require('../models/cartSchema');
 const UserCollection = require('../models/userSchema');
 const Address = require('../models/addressSchema');
 
-const product=require('../models/admin/productSchema')
+const Product=require('../models/admin/productSchema')
 
 const Sales=require('../models/admin/salesSchema')
 
@@ -96,7 +96,40 @@ const confirmPage = async (req, res) => {
       return res.send('error in finding new order');
     }
 
-// sales  data creation in this section it will store to sales schema
+
+
+    console.log(orderConfirm,"hello order cart");
+
+
+
+    for (const item of userCart.items) {
+      const productId = item.product._id; 
+      const orderedQuantity = item.quantity;
+    
+      const product = await Product.findById(productId);
+    
+      if (product) {
+        console.log(product.product_qty, "my product qty", orderedQuantity, "ordered qty");
+    
+
+        const newQuantity = product.product_qty - orderedQuantity;
+    
+      
+        const updatedProduct = await Product.findByIdAndUpdate(
+          { _id: productId },
+          { $set: { product_qty: newQuantity } }
+        );
+    
+        if (updatedProduct) {
+          console.log("Quantity is updated when the order happens");
+        } else {
+          console.log("Quantity update failed");
+        }
+      } else {
+        console.log("Product not found");
+      }
+    }
+    
 
     const newSalesRecord=new Sales({
       items: userCart.items.map(item => ({

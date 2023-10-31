@@ -10,6 +10,7 @@ const Cart = require('../models/cartSchema');
 const UserOrder = require('../models/orderSchema');
 const wallet=require('../models/walletSchema')
 const Sales=require('../models/admin/salesSchema')
+const Product=require('../models/admin/productSchema')
 // const product=require('../models/admin/productSchema')
 
 let userEmail;
@@ -319,6 +320,8 @@ const orderHistory = async (req, res) => {
       },
     ]);
 
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+
     res.render('user/orderStatus', {
       verifyUserEmail,
       isOrder,
@@ -539,6 +542,37 @@ const userOrderCancel = async (req, res) => {
 
       if (!isAddWalletHistory) {
         return res.redirect('/');
+      }
+    }
+
+
+
+    
+    for (const item of userOrderItem.items) {
+      const productId = item.product._id; 
+      const orderedQuantity = item.quantity;
+    
+      const product = await Product.findById(productId);
+    
+      if (product) {
+        console.log(product.product_qty, "my product qty", orderedQuantity, "ordered qty");
+    
+
+        const newQuantity = product.product_qty + orderedQuantity;
+    
+      
+        const updatedProduct = await Product.findByIdAndUpdate(
+          { _id: productId },
+          { $set: { product_qty: newQuantity } }
+        );
+    
+        if (updatedProduct) {
+          console.log("Quantity is updated when the order happens");
+        } else {
+          console.log("Quantity update failed");
+        }
+      } else {
+        console.log("Product not found");
       }
     }
 
@@ -893,7 +927,7 @@ const resendSignup = async (req, res) => {
 const forgotPassWordDisplay = async (req, res) => {
   try {
     const randomBannerImage = await getRandomBannerImage();
-    res.render('user/resetPasswordForm', { randomBannerImage });
+    res.render('user/resetPasswordForm', { randomBannerImage })
   } catch (error) {
     console.log('error in display forgot page');
     res.send('error in display forgot page');
