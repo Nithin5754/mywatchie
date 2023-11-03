@@ -7,13 +7,19 @@ const {checkAdminAuthentication}=require('../middlewares/admin/authentication')
 
 
 
-const {SalesReport,dailySalesReport}=require('../controllers/salesController')
+const {SalesReport}=require('../controllers/salesController')
 
 
-router.route('/adminSalesReport').get(checkAdminAuthentication,SalesReport)
-router.route('/adminSalesReport/daily').post(dailySalesReport)
+// router.route('/adminChart/sevenDaySales').get(checkAdminAuthentication,SalesReportSevenDays)
+
+router.route("/adminSalesReport").get(SalesReport)
+
+
+
 
 
 
 
 module.exports=router
+
+

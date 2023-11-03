@@ -8,6 +8,8 @@
 
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 
+
+
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -28,33 +30,56 @@
      <section class="flex flex-wrap justify-center gap-10 mt-16 m-auto">
            <div class="w-3/12 ">
             <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart" data-type="daily" >Daily Sales</h5>
-              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="dailySales"><%= TotalDailySales %></h1>
-             
+              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">Daily Sales</h5>
+              <div class="flex flex-row gap-5 justify-center">
+              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="dailySales">0</h1>
+              <button id="download-sales-report-daily" class="text-gray-900  text-xl">  <i  class="fa fa-file-excel-o"></i></button>
+              <button class="text-xl"><i class="fa fa-file-pdf-o"></i></button>
+         
+
+            </div>
 
             </a>
            </div>
            <div class="w-3/12">
             <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center" data-type="weekly">weekly Sales</h5>
-              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400">₹<%= TotalWeekSales %></h1>
+              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">weekly Sales</h5>
+           <div class="flex flex-row gap-5 justify-center">
+            <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="weeklySales">0</h1>
+            <button id="download-sales-report" class="text-gray-900  text-xl">  <i  class="fa fa-file-excel-o"></i></button>
+            <button class="text-xl"><i class="fa fa-file-pdf-o"></i></button>
+           </div>
+            
+          
+           
+
             </a>
            </div>
 
            <div class="w-3/12">
             <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center" data-type="monthly">Monthly Sales</h5>
-              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400">₹<%= TotalMonthSales %></h1>
+              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">month Sales</h5>
+              <div class="flex flex-row gap-5 justify-center">
+              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="monthSales">0</h1>
+              <button id="download-sales-report-month" class="text-gray-900 text-xl">  <i  class="fa fa-file-excel-o"></i></button>
+              <button class="text-xl"><i class="fa fa-file-pdf-o"></i></button>
+              </div>
             </a>
            </div>
      </section>
 
+
+
    
-     <section class="mt-16">
+     <section class="mt-16 flex flex-row justify-around gap-7 mx-20">
       <div class="w-6/12 flex m-auto">
-        <canvas id="dailySalesChart"></canvas>
+        <canvas id="mySales-1"></canvas>
       </div>
       
+
+      <div class="w-6/12 flex m-auto">
+        <canvas id="mySales-2"></canvas>
+      </div>
      </section>
 
 
@@ -69,7 +94,7 @@
     </main> 
 
   
-
+    <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
 
 
       <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
@@ -81,87 +106,248 @@
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
       <script src="/js/search.js"></script>
-      <script>
-        // Create a global chart variable
-        let dailySalesChart;
-        
-        // Get all elements with the data-type attribute
-        const salesElements = document.querySelectorAll('[data-type]');
-        
-        // Attach click event listeners to each element
-        salesElements.forEach((element) => {
-          element.addEventListener('click', async(event) => {
-            const clickedElement = event.target;
-            const salesType = clickedElement.getAttribute('data-type');
-            console.log('Clicked on:', salesType);
-        
-            try {
-              const response = await fetch('/adminSalesReport/daily', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ salesType }),
-              });
-        
-              if (response.ok) {
-                const data = await response.json();
-              
-        
-                const salesData = data.data;
-
-              
+     
 
 
-              
-        
-                const dates = salesData.map(data => data._id);
-                const salesAmounts = salesData.map(data => data.totalSales);
-        
-                // Check if the chart already exists, and destroy it
-                if (dailySalesChart) {
-                  dailySalesChart.destroy();
-                }
-        
-                const ctx = document.getElementById('dailySalesChart').getContext('2d');
-                dailySalesChart = new Chart(ctx, {
-                  type: 'bar',
-                  data: {
-                    labels: dates,
-                    datasets: [{
-                      label: `${salesType} sales`,
-                      data: salesAmounts,
-                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                      borderColor: 'rgba(75, 192, 192, 1)',
-                      borderWidth: 1,
-                    }],
-                  },
-                  options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                      y: {
-                        beginAtZero: true,
-                      },
-                    },
-                  },
-                });
-              } else {
-                console.error("Failed to fetch data.");
-              }
-            } catch (error) {
-              console.error('Error while fetching data', error);
-            }
+    <script>
+
+      //L ast 7day chart
+const LastWeekChartOrder=document.getElementById('mySales-1')
+
+
+const LastMonthChartOrder=document.getElementById('mySales-2')
+
+     
+// last 7 days (one week ) order report and revenue report generated
+
+//order report
+
+async function fetchSevenData() {
+  try {
+    const response = await fetch('/adminChart/sevenDayChart');
+    const data = await response.json();
+
+    if(data){
+    console.log(data.dailyData,":it ok");
+
+
+    const xValues =['','','','','','','',]; 
+const yValues =[0,0,0,0,0,0,0];  
+const barColors = ["red", "green","blue","orange","brown"];
+data.dailyData.map((item,index)=>yValues[index]=item.totalPrice)
+
+data.dailyData.map((item,index)=>xValues[index]=item.date)
+
+
+const dailySales=document.getElementById('dailySales')
+    dailySales.textContent=` ₹ ${yValues[0]}`;
+
+    const weeklySales=document.getElementById('weeklySales')
+    weeklySales.textContent=`₹ ${yValues.reduce((total,value,i)=>total+value,0)}`
+console.log(xValues,"my last week date");
+console.log(yValues,"my total price");
+new Chart(LastWeekChartOrder, {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      label:'last 7 days revenue',
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {  
+    legend: {display: false},
+    title: {
+      display: true,
+      text: "Monthly Sales Data"
+    }
+  }
+});
+
+
+    }
+
+    // Extract data from the JSON response
+   
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+fetchSevenData();
+
+
+    </script>
+
+
+
+<script>
+
+  
+
+//FETCH THIRTY DAYS LAST
+
+
+
+async function fetchThirtyData() {
+
+  const montlsalesChartDisplay=document.getElementById('mySales-2')
+  try {
+    const response = await fetch('/adminChart/thirtyDayChart');
+    const data = await response.json();
+
+    if(data){
+    console.log(data.dailyData,":it ok");
+
+const xValues = [];
+const yValues =[];
+const barColors = ["red", "green","blue","orange","brown"];
+ data.dailyData.forEach((item) => {
+  yValues.push(item.totalPrice);
+  xValues.push(item.date)
+  
+ });
+console.log(xValues,"my last week date");
+console.log(yValues,"my total price");
+
+
+const monthSales=document.getElementById('monthSales')
+monthSales.textContent=`₹ ${yValues.reduce((total,value,i)=>total+value,0)}`
+
+new Chart(montlsalesChartDisplay, {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      label:'revenue last 30 days',
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: true,
+      text: "Monthly Sales Data"
+    }
+  }
+});
+
+
+    }
+
+    // Extract data from the JSON response
+   
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+
+
+
+
+fetchThirtyData()
+</script>
+
+
+
+<script>
+
+
+       
+      const downloadSalesReport = document.querySelector('#download-sales-report');
+  
+      downloadSalesReport.addEventListener('click', () => {
+        fetch('/admin/salesExcelReport')
+          .then((response) => response.blob())
+          .then((blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'sales-report.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch((error) => {
+            console.error('Error downloading Excel file:', error);
           });
-        });
-        </script>
+      });
+  
+  
+  
+      </script>
 
+
+
+
+<script>
+
+
+       
+  const downloadSalesReportMonthly = document.querySelector('#download-sales-report-month');
+
+  downloadSalesReportMonthly.addEventListener('click', () => {
+    fetch("/adminSalesReportMontly")
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'sales-report-month.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error('Error downloading Excel file:', error);
+      });
+  });
+
+
+
+  </script>
+
+<!-- daily sales excel report -->
+
+
+
+<script>
+
+
+       
+  const downloadSalesReportDaily = document.querySelector('#download-sales-report-daily');
+
+  downloadSalesReportDaily.addEventListener('click', () => {
+    fetch("/adminSalesReportDaily")
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'sales-report-month.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error('Error downloading Excel file:', error);
+      });
+  });
+
+
+
+  </script>
 
 
         
       
-      
-</body>
+
 </body>
 
 </html>
@@ -169,6 +355,5 @@
 
 
 
-<script>
 
 

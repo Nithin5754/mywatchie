@@ -10,127 +10,227 @@
 
 </head>
 
+
+
+<style>
+  .hiddenSection-box{
+  display: none;
+}
+
+.hiddenSection-box.live{
+  display: block;
+}
+</style>
+
 <body class=" bg-gray-50 font-sans">
 
   <%- include('./partials/adminNav.ejs',{SideBarSection}) %>
 
     <%- include('./partials/adminSideBar.ejs') %>
 
-
+  
     <main>
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+  
+
+      <section id="services" class="services container mx-auto px-4 sm:px-4 lg:px-4 mb-10  bg-gray-100  rounded-xl ">
+        <h3 class="text-gray-500 text-3xl font-extrabold text-center pt-10">REVENUE CHART</h3>
+
+        <div class="filters flex justify-around py-3 ">
+          <p data-id="btn-1" class="service-btn py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 text-center">Last 7 days(week)</p>
+
+          <p data-id="btn-2" class="service-btn py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 text-center">Last 30 days (Month)</p>
+          
+          <p data-id="btn-3" class="service-btn py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 text-center">Last 12 Months(year)</p>
+
+          <p data-id="btn-4" class= "service-btn py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 text-center">Today(hourly</p>
+         </div>
+       
+
+ 
+
+                  
+        <div class="hiddenSection-box live grid col-span-12 sm:col-span-8   " id="btn-1" >
+          <div class="p-4 relativeshadow-lg rounded flex flex-col items-center">
+            <div class="flex justify-center items-center w-full gap-14 h-72">  
+    <div class="w-96 max-w-5xl">  <canvas id="myChart-1"></canvas></div>
+    <div class="w-96 max-w-5xl">  <canvas id="myChart-2"></canvas></div>
+    
+            </div>
+          </div>
+        </div>
+
+
+
+      <!-- last thirty day chart -->
+      <div id="btn-2" class="hiddenSection-box  grid col-span-12 sm:col-span-8   ">
+        <div class="p-4 relativeshadow-lg rounded flex flex-col items-center">
+          <div class="flex justify-center items-center w-full gap-14 h-72">  
+  <div class="w-96 max-w-5xl">  <canvas id="myChart-3"></canvas></div>
+  <div class="w-96 max-w-5xl">  <canvas id="myChart-4"></canvas></div>
+  
+          </div>
+        </div>
+      </div>
+
+      <!-- end of last thgirty day chart -->
+
+      <!-- last 12 months chart -->
+      <div id="btn-3" class="hiddenSection-box  grid col-span-12 sm:col-span-8   ">
+        <div class="p-4 relativeshadow-lg rounded flex flex-col items-center">
+          <div class="flex justify-center items-center w-full gap-14 h-72">  
+  <div class="w-96 max-w-5xl">  <canvas id="myChart-5"></canvas></div>
+  <div class="w-96 max-w-5xl">  <canvas id="myChart-6"></canvas></div>
+  
+          </div>
+        </div>
+      </div>
+
+      <!-- end of 12 months chart -->
+
+
+
+        <!-- last Hourly chart -->
+        <div id="btn-4" class="hiddenSection-box  grid col-span-12 sm:col-span-8   ">
+          <div class="p-4 relativeshadow-lg rounded flex flex-col items-center">
+            <div class="flex justify-center items-center w-full gap-14 h-72">  
+    <div class="w-96 max-w-5xl">  <canvas id="myChart-7"></canvas></div>
+    <div class="w-96 max-w-5xl">  <canvas id="myChart-8"></canvas></div>
+    
+            </div>
+          </div>
+        </div>
+  
+        <!-- end of Hourly chart -->
+
+      
+
+      </section>
+      
+
+
+
+      <section class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-12 gap-6">
+
+    
+
+
+
           <div class="col-span-12  sm:col-span-4">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fas fa-list-ol"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="totalOrders"><%= totalOrders %></div>
-              <div class="te text-xl font-extrabold">Total Orders</div>
+              <div class="te text-xl font-bold">Total Orders</div>
             </div>
           </div>
     
           <div class="col-span-12 sm:col-span-4">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fas fa-list-ol"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5"><%= productOrdersCount %></div>
-              <div class="te text-xl font-extrabold">Total Orders Pending</div>
+              <div class="te text-xl font-bold">Total Orders Pending</div>
             </div>
           </div>
     
           <div class="col-span-12 sm:col-span-4">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fa-regular fa-user"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="totalUsers"><%= userCount %></div>
-              <div class="te text-xl font-extrabold">Total Users</div>
+              <div class="te text-xl font-bold">Total Users</div>
             </div>
           </div>
     
           <div class="col-span-12 sm:col-span-6">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fas fa-money-bill"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="totalSales">₹<%= totalSalesPrice %></div>
-              <div class="te text-xl font-extrabold">Total Sales <span class="text-sm">(Month)</span></div>
+              <div class="te text-xl font-bold">Total Sales <span class="text-sm">(Month)</span></div>
             </div>
           </div>
     
           <div class="col-span-12 sm:col-span-6">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fas fa-tshirt"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5"><%= productList %></div>
-              <div class="te text-xl font-extrabold">Total Products Listed</div>
+              <div class="te text-xl font-bold">Total Products Listed</div>
             </div>
           </div>
     
       
         </div>
-      </div>
+      </section>
     
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-12 sm:col-span-4">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fas fa-money-bill"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="cash" data-cash="<%= totalCashPurchase %>">₹<%= totalCashPurchase %></div>
-              <div class="te text-xl font-extrabold">Cash Sales</div>
+              <div class="te text-xl font-bold">Cash Sales</div>
             </div>
           </div>
 
           <div class="col-span-12 sm:col-span-4">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fas fa-laptop"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5"><%= categoryList %></div>
-              <div class="te text-xl font-extrabold">Total Categories Listed</div>
+              <div class="te text-xl font-bold">Total Categories Listed</div>
             </div>
           </div>
     
           <div class="col-span-12 sm:col-span-4">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
               <div class="flex justify-between items-center w-full">
                 <p class="text-2xl text-gray-400"><i class="fas fa-book"></i></p>
               </div>
               <div class="text-2xl text-gray-500 font-medium leading-8 mt-5" id="bank" data-bank="<%= totalDebitPurchase %>">₹<%= totalDebitPurchase %></div>
-              <div class="te text-xl font-extrabold">Bank Payment</div>
+              <div class="te text-xl font-bold">Bank Payment</div>
             </div>
           </div>
     
           <div class="col-span-12 sm:col-span-4">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
-              <div class="flex justify-between items-center w-full">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-between items-center w-full h-72">
                 <canvas id="myChart"></canvas>
               </div>
             </div>
           </div>
           <div class="col-span-12 sm:col-span-8">
-            <div class="p-4 relative bg-gray-200  border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
-              <div class="flex justify-center items-center w-full h-52">
+            <div class="p-4 relative bg-gray-100 border border-gray-300 shadow-lg rounded-2xl flex flex-col items-center">
+              <div class="flex justify-center items-center w-full h-72">
                 <canvas id="mystatus"></canvas>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      
+
+
+
+
+    
 
    
       
-      <div id="data-delivery" data-delivery="<%= JSON.stringify(deliveredProductCount) %>"></div>
-      <div id="data-cancelled" data-cancelled="<%= JSON.stringify(cancelledProductCount) %>"></div>
-      <div id="data-userCancelled" data-userCancelled="<%= JSON.stringify(userCancelledProductCount) %>"></div>
-      <div id="data-pending" data-pending="<%= JSON.stringify(pendingProductCount) %>"></div>
+      <div id="data-delivery" data-delivery="<%= JSON.stringify(deliveredProductCount) %>"   ></div>
+      <div id="data-cancelled" data-cancelled="<%= JSON.stringify(cancelledProductCount) %>"   ></div>
+      <div id="data-userCancelled" data-userCancelled="<%= JSON.stringify(userCancelledProductCount) %>"  ></div>
+      <div id="data-pending" data-pending="<%= JSON.stringify(pendingProductCount) %>"  ></div>
     </main>
     
     <!-- chart js -->
@@ -143,6 +243,7 @@
 
 
       <script src="/js/search.js"></script>
+      <script src="/js/chart.js"></script>
 
 
 
@@ -153,11 +254,8 @@
    
     
 const cashId=document.querySelector('#cash')
-
 const cash=cashId.getAttribute('data-cash')
-
 const bankId=document.querySelector('#bank')
-
 const bank=bankId.getAttribute('data-bank')
 console.log(bank,"my bank price");
 
@@ -224,6 +322,7 @@ new Chart("mystatus", {
   data: {
     labels: xValues,
     datasets: [{
+      label:'HGTJG6JTGJHG6J',
       backgroundColor: barColors,
       data: yValues
     }]
@@ -283,32 +382,6 @@ new Chart("mystatus", {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
 
 
 </body>

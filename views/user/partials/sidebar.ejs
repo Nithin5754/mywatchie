@@ -1,8 +1,8 @@
-<aside class="bg-gray-900 opacity-40 text-white w-52 p-4 pt-9 flex flex-col justify-start sticky top-0 left-0 h-screen">
-  <h2 class="text-xl font-bold mt-14 text-gray-100">Filter and Sort</h2>
+<aside class="bg-gray-300 opacity-40 text-white w-52 p-4 pt-9 flex flex-col justify-start sticky top-0 left-0 h-screen border border-gray-400 bg-white shadow-lg">
+  <h2 class="text-xl font-bold mt-14 text-gray-900">Filter and Sort</h2>
   <div>
     <h3 class="text-md font-semibold text-gray-900">Discount</h3>
-    <select class="w-full py-1 px-2 rounded-md bg-gray-700 text-gray-100 " name="discountSort" id="discountSort"
+    <select class="w-full py-1 px-2 rounded-md bg-gray-500 text-gray-900 " name="discountSort" id="discountSort"
       data-category="<%= categoryName %>">
       <option value="all" <%=isDiscount==='all' ?'selected':'' %>>All</option>
       <option value='90' <%=isDiscount==='90' ?'selected':'' %> >90% and more</option>
@@ -18,8 +18,8 @@
 
   <!-- Filter by Brand -->
   <div class="mb-4">
-    <h3 class="text-md font-semibold text-gray-100">Brand</h3>
-<select class="w-full py-1 px-2 rounded-md bg-gray-700 text-gray-100" name="brandSort" id="brandSort"
+    <h3 class="text-md font-semibold text-gray-900">Brand</h3>
+<select class="w-full py-1 px-2 rounded-md bg-gray-500 text-gray-900" name="brandSort" id="brandSort"
   data-category="<%= categoryName %>">
 
   <% const uniqueBrands=Array.from(new Set( isAvailableBrands.map(item=> item.brand))) %>
@@ -34,8 +34,8 @@
   </div>
 
   <div>
-    <h3 class="text-md font-semibold text-gray-100">star rating</h3>
-    <select class="w-full py-1 px-2 rounded-md bg-gray-700 opacity-50text-gray-100" name="ratingSort" id="ratingSort"
+    <h3 class="text-md font-semibold text-gray-900">star rating</h3>
+    <select class="w-full py-1 px-2 rounded-md bg-gray-500 text-gray-900" name="ratingSort" id="ratingSort"
       data-category="<%= categoryName %>">
       <option value="all" <%=isStar==='all' ?'selected':'' %>>All</option>
       <option value='5' <%=isStar==='5' ?'selected':'' %> >5 and more<span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span></option>
@@ -50,8 +50,8 @@
 
   <!-- Sort by -->
   <div>
-    <h3 class="text-md font-semibold text-gray-100">Sort By</h3>
-    <select class="w-full py-1 px-2 rounded-md bg-gray-700 text-gray-100" name="sortby " id="priceSort" data-category="<%= categoryName %>">
+    <h3 class="text-md font-semibold text-gray-900">Sort By</h3>
+    <select class="w-full py-1 px-2 rounded-md bg-gray-500 text-gray-900" name="sortby " id="priceSort" data-category="<%= categoryName %>">
       <option value="relevance" <%= isSort==='relevance'?'selected':'' %>>Relevance</option>
       <option value="price-low-to-high" <%= isSort==='price-low-to-high'?'selected':'' %> >Price Low to High</option>
       <option value="price-high-to-low" <%= isSort==='price-high-to-low'?'selected':'' %>>Price High to Low</option>

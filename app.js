@@ -25,6 +25,11 @@ const confirmRoutes = require('./routes/confirmRouter');
 const walletRoutes=require('./routes/walletRouter')
 
 const salesRoutes=require('./routes/salesRoutes');
+
+
+const chartRoutes=require('./routes/chartRoutes')
+
+const excelRoutes=require('./routes/excelRoutes')
 // global midlleware
 
 app.use(express.json());
@@ -58,6 +63,8 @@ app.use('/', checkOutRoutes);
 app.use('/', confirmRoutes);
 app.use('/',walletRoutes)
 app.use('/',salesRoutes)
+app.use('/',chartRoutes)
+app.use('/',excelRoutes)
 
 app.get('*', (req, res) => {
   res.status(404).render('404page');
@@ -73,6 +80,7 @@ const start = async () => {
       console.log('server started.....');
     });
   } catch (error) {
+
     console.error('Error connecting to the database:', error);
   }
 };
