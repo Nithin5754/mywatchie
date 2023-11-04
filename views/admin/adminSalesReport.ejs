@@ -27,47 +27,66 @@
     
    </section>
          
-     <section class="flex flex-wrap justify-center gap-10 mt-16 m-auto">
-           <div class="w-3/12 ">
-            <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">Daily Sales</h5>
-              <div class="flex flex-row gap-5 justify-center">
-              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="dailySales">0</h1>
-              <button id="download-sales-report-daily" class="text-gray-900  text-xl">  <i  class="fa fa-file-excel-o"></i></button>
-              <button class="text-xl"><i class="fa fa-file-pdf-o"></i></button>
-         
+   <section class="flex flex-wrap justify-center gap-10 mt-16 m-auto">
+    <div class="w-3/12">
+      <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover-bg-gray-700 common-section">
+        <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">Daily Sales</h5>
+        <div class="flex flex-row justify-center items-center gap-5">
+          <h1 class="text-3xl text-green-700 dark:text-gray-400" id="dailySales">0</h1>
+          <button id="download-sales-report-daily" class="text-gray-900 text-xl">
+            <i class="fa fa-file-excel-o"></i>
+          </button>
+          <a href='/adminSales-daily-report/pdf' id="daily-pdf-button-sales" class="text-xl">
+            <i class="fa fa-file-pdf-o"></i>
+          </a>
+        </div>
+      </div>
+    </div>
 
-            </div>
 
-            </a>
-           </div>
-           <div class="w-3/12">
-            <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">weekly Sales</h5>
-           <div class="flex flex-row gap-5 justify-center">
-            <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="weeklySales">0</h1>
-            <button id="download-sales-report" class="text-gray-900  text-xl">  <i  class="fa fa-file-excel-o"></i></button>
-            <button class="text-xl"><i class="fa fa-file-pdf-o"></i></button>
-           </div>
-            
-          
-           
 
-            </a>
-           </div>
 
-           <div class="w-3/12">
-            <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">month Sales</h5>
-              <div class="flex flex-row gap-5 justify-center">
-              <h1 class="text-3xl md\:font-mono text-center text-green-700 dark:text-gray-400" id="monthSales">0</h1>
-              <button id="download-sales-report-month" class="text-gray-900 text-xl">  <i  class="fa fa-file-excel-o"></i></button>
-              <button class="text-xl"><i class="fa fa-file-pdf-o"></i></button>
-              </div>
-            </a>
-           </div>
-     </section>
+    <div class="w-3/12">
+      <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover-bg-gray-700 common-section">
+        <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">weekly Sales</h5>
+        <div class="flex flex-row justify-center items-center gap-5">
+          <h1 class="text-3xl text-green-700 dark:text-gray-400" id="weeklySales">0</h1>
+          <button id="download-sales-report" class="text-gray-900 text-xl">
+            <i class="fa fa-file-excel-o"></i>
+          </button>
+          <a href='/adminSales-weekly-report/pdf' id="weekly-pdf-button-sales" class="text-xl">
+            <i class="fa fa-file-pdf-o"></i>
+          </a>
+        </div>
+      </div>
+    </div>
 
+
+
+
+
+
+
+
+
+
+
+    <div class="w-3/12">
+      <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover-bg-gray-700 common-section">
+        <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white text-center chart">month Sales</h5>
+        <div class="flex flex-row justify-center items-center gap-5">
+          <h1 class="text-3xl text-green-700 dark:text-gray-400" id="monthSales">0</h1>
+          <button id="download-sales-report-month" class="text-gray-900 text-xl">
+            <i class="fa fa-file-excel-o"></i>
+          </button>
+          <a href='/adminSales-month-report/pdf' id="month-pdf-button-sales" class="text-xl">
+            <i class="fa fa-file-pdf-o"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
 
 
    
@@ -88,7 +107,7 @@
 
      <!-- daily -->
 
-   
+  
  
 
     </main> 
@@ -343,6 +362,32 @@ fetchThirtyData()
 
 
   </script>
+
+
+
+<script>
+  const dailyPdfSales = document.getElementById('adminSales-daily-report/pdf');
+  const weeklyPdfSales = document.getElementById('adminSales-weekly-report/pdf');
+  const monthPdfSales = document.getElementById('adminSales-month-report/pdf');
+
+  dailyPdfSales.addEventListener('click', () => {
+    console.log("hello");
+    window.location.href = "/adminSales-daily-report/pdf";
+  });
+
+
+  weeklyPdfSales.addEventListener('click', () => {
+    console.log("hello");
+    window.location.href = "/adminSales-weekly-report/pdf";
+  });
+
+
+
+  monthPdfSales.addEventListener('click', () => {
+    console.log("hello");
+    window.location.href = "/adminSales-month-report/pdf";
+  });
+</script>
 
 
         
