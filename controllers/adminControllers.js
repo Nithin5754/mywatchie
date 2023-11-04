@@ -506,8 +506,11 @@ const oderProductDispay = async (req, res) => {
       .find({ orderNumber: orderId })
       .populate('items.product')
       .exec();
+      console.log(isOrder,"hello");
+ const date= moment(isOrder[0].orderDate).format('MMMM Do YYYY, h:mm a')
 
-    res.render('admin/orderProductDisplay', { isOrder });
+
+    res.render('admin/orderProductDisplay', { isOrder,date,SideBarSection:"Order Management"});
   } catch (error) {
     console.log(error, 'error fetching order product in admin side');
   }
@@ -521,6 +524,8 @@ const orderProductUserAddress = async (req, res) => {
       .find({ orderNumber: orderId })
       .populate('items.product')
       .exec();
+
+    
 
     res.render('admin/orderUserDetails', { isOrder });
   } catch (error) {}

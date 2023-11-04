@@ -11,10 +11,11 @@
 
 <body class="bg-gray-100 font-sans">
 
-  <!-- Admin Nav Bar -->
-  <nav class="bg-blue-500 text-white p-4">
-    <!-- Your admin navigation content here -->
-  </nav>
+
+  <%- include('./partials/adminNav.ejs',{SideBarSection}) %>
+
+    <%- include('./partials/adminSideBar.ejs') %>
+
 
   <!-- Main Content -->
   <main class="container mx-auto p-6">
@@ -24,15 +25,38 @@
       <h2 class="italic font-bold">back</h2>
     </a></h1>
 </div>
+
+
+
+  <section>
+    
+      <!-- Order Information Box -->
+<div class="p-4 border rounded-md bg-white shadow-md mt-4">
+  <h2 class="text-xl font-semibold mb-2">Order Information</h2>
+  <ul class="text-gray-900">
+    <li><strong>Order ID:</strong> <%= isOrder[0].orderNumber%></li>
+ 
+    <li><strong>Order Date:</strong><%= date %></li>
+    <li><strong>Total Amount:</strong><%= isOrder[0].totalPrice%></li>
+    <li><strong>User:</strong> <%= isOrder[0].shippingAddress.username%></li>
+    <li><strong>Order Status:</strong><%= isOrder[0].status%></li>
+    <li><strong>Payment Method:</strong> <%= isOrder[0].paymentMethod?isOrder[0].paymentMethod:"cash"%></li>
+  </ul>
+</div>
+
+  </section>
+
+  <section>
+    
     <!-- Page Heading -->
-    <h1 class="text-3xl font-semibold mb-4">Ordered Products</h1>
+    <h2 class="text-xl font-semibold mb-6 mt-6 items-center">Order Products</h2>
 
     <!-- Ordered Products Table -->
     <div class="overflow-x-auto shadow-md sm:rounded-lg">
       <table class="min-w-full bg-white border rounded-lg shadow-lg">
         <thead class="bg-gray-800 text-white">
           <tr>
-            <th class="py-3 px-6 text-left">ID</th>
+            <th class="py-3 px-6 text-left">SI.no</th>
             <th class="py-3 px-6 text-left">Product Name</th>
             <th class="py-3 px-6 text-left">Quantity</th>
             <th class="py-3 px-6 text-left">Price</th>
@@ -67,9 +91,37 @@
       </table>
     </div>
 
+  </section>
+
+  <section>
+    <!-- Billing Address Box -->
+<div class="p-4 border rounded-md bg-white shadow-md mt-4">
+  <h2 class="text-xl font-semibold mb-2">Billing Address</h2>
+  <address class="text-gray-900">
+    <%= isOrder[0].shippingAddress.username%><br>
+    <%= isOrder[0].shippingAddress.city%><br>
+    <%= isOrder[0].shippingAddress.postalCode%>, <%= isOrder[0].shippingAddress.address_tag%>
+  </address>
+</div>
+
+<div class="">
+  <h1 class="items-start "><a href="/adminOrderManagement" class="flex flex-row items-center gap-2"><i
+        class="fa-solid fa-arrow-left"></i>
+      <h2 class="italic font-bold  rounded-sm">back to orders</h2>
+    </a></h1>
+</div>
+
+
+  </section>
+   
   </main>
-  <!-- font awesome script link -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.x.x/dist/alpine.js" defer></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
+  <!-- font-awesome -->
+  <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
+
 
 </body>
 

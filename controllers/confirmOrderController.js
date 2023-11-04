@@ -49,6 +49,7 @@ const confirmPage = async (req, res) => {
     let userCart = await Cart.findOne({ userId: verifyUserEmail._id }).populate(
       'items.product',
     );
+ 
     if (!userCart) {
       console.log('no cart');
     }
@@ -83,6 +84,7 @@ const confirmPage = async (req, res) => {
       email: userEmail,
       phoneNumber: verifyUserEmail.mobileNumber,
       status: 'pending',
+      paymentMethod:paymentMethod
     });
 
     req.session.latestOrdreNumber = getOrderNumber;
@@ -98,7 +100,7 @@ const confirmPage = async (req, res) => {
 
 
 
-    console.log(orderConfirm,"hello order cart");
+
 
 
 
@@ -158,7 +160,7 @@ const confirmPage = async (req, res) => {
     const formattedDate = originalDate.toLocaleDateString('en-US', options);
 
 
-    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+ let cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
 
    

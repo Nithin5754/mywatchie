@@ -11,13 +11,13 @@
     <link rel="stylesheet" href="/css/darkmode.css">
 </head>
 
-<body class="bg-gray-100  flex items-center justify-center dark-mode">
+<body class="bg-gray-100  flex items-center justify-center ">
 
 <%-
   include('./partials/header.ejs',{iswallet,isProfile,isUrl,islogout,isCreateAccount,isCreateAccountUrl,verifyUserEmail,cartItems,orderUrl})
   %>
 
- <main class="mt-24 w-full">
+ <main class="mt-24 w-full px-8 m-auto">
 
   <section>
         <div class="mb-10 ml-10">
@@ -27,6 +27,24 @@
             </a></h1>
         </div>
   </section>
+
+  <section class="mb-6">
+    
+    <!-- Order Information Box -->
+<div class="p-4 border rounded-md bg-white shadow-md mt-4">
+<h2 class="text-xl font-semibold mb-2">Order Information</h2>
+<ul class="text-gray-900">
+  <li><strong>Order ID:</strong> <%= isOrder[0].orderNumber%></li>
+
+  <li><strong>Order Date:</strong><%= date %></li>
+  <li><strong>Total Amount:</strong><%= isOrder[0].totalPrice%></li>
+  <li><strong>User:</strong> <%= isOrder[0].shippingAddress.username%></li>
+  <li><strong>Order Status:</strong><%= isOrder[0].status%></li>
+  <li><strong>Payment Method:</strong> <%= isOrder[0].paymentMethod?isOrder[0].paymentMethod:"cash"%></li>
+</ul>
+</div>
+
+</section>
     <section class="bg-white p-4 rounded shadow-lg w-full ">
   
     
@@ -72,6 +90,27 @@
       </div>
     
     
+    </section>
+
+    <section class="mt-6 mb-6">
+      <!-- Billing Address Box -->
+  <div class="p-4 border rounded-md bg-white shadow-md mt-4">
+    <h2 class="text-xl font-semibold mb-2">Billing Address</h2>
+    <address class="text-gray-900">
+      <%= isOrder[0].shippingAddress.username%><br>
+      <%= isOrder[0].shippingAddress.city%><br>
+      <%= isOrder[0].shippingAddress.postalCode%>, <%= isOrder[0].shippingAddress.address_tag%>
+    </address>
+  </div>
+  
+  <div class="">
+    <h1 class="items-start "><a href="/adminOrderManagement" class="flex flex-row items-center gap-2"><i
+          class="fa-solid fa-arrow-left"></i>
+        <h2 class="italic font-bold  rounded-sm">back to orders</h2>
+      </a></h1>
+  </div>
+  
+  
     </section>
  </main>
 

@@ -2,6 +2,7 @@ const UserCollection = require('../models/userSchema');
 const categoryCollections = require('../models/admin/categorySchema');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const moment=require('moment')
 
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
@@ -245,6 +246,12 @@ const userDetailspage = async (req, res) => {
       ? userPrimaryAddress
       : temporaryAddress;
 
+
+
+      const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+      
+      
+
     return res.render('user/userdetails', {
       verifyUserEmail,
       isAddressTheir,
@@ -358,7 +365,7 @@ const userOrderProductList = async (req, res) => {
       .populate('items.product')
       .exec();
 
-    console.log(isOrder, 'my order');
+      const date= moment(isOrder[0].orderDate).format('MMMM Do YYYY, h:mm a')
     res.render('user/orderHistoryViewProduct', {
       isOrder,
       isProfile,
@@ -368,7 +375,8 @@ const userOrderProductList = async (req, res) => {
       isCreateAccountUrl,
       cartItems,
       orderUrl,
-      iswallet
+      iswallet,
+      date
     });
   } catch (error) {
     res.send('error fetching finding the order product from user side', error);
