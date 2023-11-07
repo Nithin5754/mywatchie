@@ -27,6 +27,7 @@ const {
   adminLogout,
 
   orderManagement,
+  invoiceAdmin,
   orderManagementPost,
   oderProductDispay,
   orderProductUserAddress,
@@ -75,6 +76,8 @@ router.route('/getSalesDataByWeek').get(getSalesDataByWeek)
 router
   .route('/adminUserManagement')
   .get(checkAdminAuthentication, adminUserManagement);
+
+  router.route('/adminOrderManagement/invoiceAdmin/:orderId').get(invoiceAdmin)
 
 // ADMIN PRODUCT MANAGEMENT SECTION
 router

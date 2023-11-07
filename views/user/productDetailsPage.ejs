@@ -154,10 +154,13 @@
               <p class="max-w-md mb-8 text-gray-800">
                 <%= productLists.product_description %>
               </p>
+
+
+            
               <p class="inline-block mb-8 text-4xl font-bold text-gray-800 ">
-                <span>$ <%= productLists.product_price %></span>
-                <span class="text-base font-normal text-gray-100 line-through dark:text-gray-400">$<%=
-                    productLists.product_price+500 %></span>
+                <span>$ <%= (productLists.product_price * (1 - productLists.product_discount / 100)).toFixed(2) %></span>
+                <span class="text-base font-normal text-gray-100 line-through dark:text-gray-400 ">$<%=
+                    productLists.product_price %></span>
               </p>
             </div>
             <div class="flex items-center mb-8">

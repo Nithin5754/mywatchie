@@ -77,6 +77,15 @@ const productSendToCart = async (req, res) => {
     }
 
     const productPrice = await product.findOne({ _id: productId });
+    const gettingProductOffer = await product.findOne({ _id: productId }).populate('offers');
+
+    let productDiscount = 0; 
+    let productUpadatedPrice=productPrice.product_price
+    if (gettingProductOffer.offers) {
+      productDiscount = gettingProductOffer.offers.offerValue;
+      productUpadatedPrice=productPrice.product_price_After_discount
+    }
+    console.log(productDiscount, "hello there");
 
     userCart = await Cart.findOne({ userId: verifyUserEmail._id });
     if (!userCart) {
@@ -87,26 +96,28 @@ const productSendToCart = async (req, res) => {
           {
             product: productId,
             quantity: 1,
-            single_product_total_price: productPrice.product_price,
+            single_product_total_price: productUpadatedPrice,
+            product_discount: productDiscount,
           },
         ],
-        total: productPrice.product_price,
+        total: productUpadatedPrice,
         totalQuantity: 1,
       });
 
       await userCart.save();
     } else {
       const isProductInCart = await userCart.items.find(
-        item => item.product.toString() === productId,
+        (item) => item.product.toString() === productId
       );
 
       if (!isProductInCart) {
         userCart.items.push({
           product: productId,
           quantity: 1,
-          single_product_total_price: productPrice.product_price,
+          single_product_total_price: productUpadatedPrice,
+          product_discount: productDiscount,
         });
-        userCart.total += productPrice.product_price;
+        userCart.total += productUpadatedPrice;
         userCart.totalQuantity += 1;
       }
     }
@@ -210,7 +221,6 @@ const productDeleteFromTheCart = async (req, res) => {
 module.exports = {
   cartDisplay,
   productSendToCart,
-  // updateCartQuantity,
   updateCart,
   productDeleteFromTheCart,
 };

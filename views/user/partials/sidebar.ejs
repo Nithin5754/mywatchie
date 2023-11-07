@@ -16,22 +16,7 @@
   </div>
 
 
-  <!-- Filter by Brand -->
-  <div class="mb-4">
-    <h3 class="text-md font-semibold text-gray-900">Brand</h3>
-<select class="w-full py-1 px-2 rounded-md bg-gray-500 text-gray-900" name="brandSort" id="brandSort"
-  data-category="<%= categoryName %>">
 
-  <% const uniqueBrands=Array.from(new Set( isAvailableBrands.map(item=> item.brand))) %>
-    <% uniqueBrands.forEach((brand, i)=> { %>
-      <option value="<%= brand %>" <%=i===0 ? 'selected' : '' %>><%= brand %>
-      </option>
-      <% }); %>
-        <!-- Add more brand options here -->
-</select>
-
-
-  </div>
 
   <div>
     <h3 class="text-md font-semibold text-gray-900">star rating</h3>

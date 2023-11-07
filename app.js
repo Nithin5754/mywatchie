@@ -32,6 +32,8 @@ const chartRoutes=require('./routes/chartRoutes')
 const excelRoutes=require('./routes/excelRoutes')
 
 const pdfRoutes=require('./routes/salesPdfRoutes')
+
+const offerRoutes=require('./routes/offerRoutes')
 // global midlleware
 
 app.use(express.json());
@@ -68,6 +70,7 @@ app.use('/',salesRoutes)
 app.use('/',chartRoutes)
 app.use('/',excelRoutes)
 app.use('/',pdfRoutes)
+app.use('/',offerRoutes)
 
 app.get('*', (req, res) => {
   res.status(404).render('404page');

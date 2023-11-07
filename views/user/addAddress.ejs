@@ -33,59 +33,43 @@
       <!-- Add Address Form -->
       <div class="p-4 border mx-10 shadow-lg rounded-md">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add Address</h2>
-        <form action="/userDetails/address/<%= confirm %>" method="post">
-      
-      
+        <form action="/userDetails/address/<%= confirm %>" method="post" id="addressForm" onsubmit="return validateForm()">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label for="aUsername" class="text-gray-600 text-lg">username:</label>
-              <input type="text" id="aUsername" placeholder="enter username" name="aUsername"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <label for="aUsername" class="text-gray-600 text-lg">Username:</label>
+              <input type="text" id="aUsername" placeholder="enter username" name="aUsername" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="tag-address" class="text-gray-600 text-lg">Address Tag:</label>
-              <input type="text" id="tag-address" name="aTag" placeholder="Example:home"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="tag-address" name="aTag" placeholder="Example:home" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="street" class="text-gray-600 text-lg">Address line-1:</label>
-              <input type="text" id="street" placeholder="enter your address" name="aAdderess"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="street" placeholder="enter your address" name="aAddress" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
-      
             <div>
               <label for="addressTwo" class="text-gray-600 text-lg">Address line-2:</label>
-              <input type="text" id="addressTwo" placeholder="enter your secondary address" name="aAdderessTwo"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="addressTwo" placeholder="enter your secondary address" name="aAddressTwo" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="city" class="text-gray-600 text-lg">City:</label>
-              <input type="text" id="city" name="aCity" placeholder="city name"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="city" name="aCity" placeholder="city name" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="country" class="text-gray-600 text-lg">Country:</label>
-              <input type="text" id="country" name="aCountry" placeholder="country name"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="country" name="aCountry" placeholder="country name" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="postalCode" class="text-gray-600 text-lg">Postal Code:</label>
-              <input type="text" id="postalCode" name="aPincode" placeholder="pin ncode"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="postalCode" name="aPincode" placeholder="pin code" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
             <div>
               <label for="deliveryInfo" class="text-gray-600 text-lg">Delivery Information:</label>
-              <input type="text" id="deliveryInfo" placeholder="enter your delivery Information" name="aDeliveryInfo"
-                class="w-full border border-gray-300 p-2 rounded-md">
+              <input type="text" id="deliveryInfo" placeholder="enter your delivery Information" name="aDeliveryInfo" class="w-full border border-gray-300 p-2 rounded-md">
             </div>
-      
           </div>
-      
-      
-          <button type="submit"
-            class="bg-blue-500 hover:bg-blue-600 text-white mt-6 py-2 px-4 rounded-md transition duration-300 ease-in-out">
-            Add Address
-          </button>
+          <p class="alert text-white"></p>
+          <button type="submit" class="bg-blue-500 hover-bg-blue-600 text-white mt-6 py-2 px-4 rounded-md transition duration-300 ease-in-out">Add Address</button>
         </form>
       </div>
 
@@ -175,6 +159,27 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
       <!-- font awesome script link -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"></script>
+
+      <script>
+        function validateForm() {
+          const username = document.getElementById("aUsername").value;
+          const tag = document.getElementById("tag-address").value;
+          const address = document.getElementById("street").value;
+          const addressTwo = document.getElementById("addressTwo").value;
+          const city = document.getElementById("city").value;
+          const country = document.getElementById("country").value;
+          const postalCode = document.getElementById("postalCode").value;
+          const deliveryInfo = document.getElementById("deliveryInfo").value;
+          const alert=document.querySelector('.alert')
+    
+          if (username.trim() === "" || tag.trim() === "" || address.trim() === "" || city.trim() === "" || country.trim() === "" || postalCode.trim() === "" || deliveryInfo.trim() === "") {
+            alert.innerHTML="please fill all the field"
+            return false; 
+          }
+    
+          return true;
+        }
+      </script>
 </body>
 
 </html>

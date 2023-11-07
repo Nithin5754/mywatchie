@@ -21,6 +21,7 @@ const {
   userDetailsEditForm,
   userDetailsEdit,
   userOrderCancel,
+  invoiceUser,
   orderHistory,
   userOrderProductList,
   homepage,
@@ -104,6 +105,7 @@ router
   .route('/userOrder/:cancelOrderId')
   .get(userAfterLoginAuthentication, userOrderCancel);
 // router.route("/userDetails/address/:updateAddress").get(editAddressFormDisplay)
+router.route('/invoiceUser/:orderId').get(invoiceUser)
 
 router.route('/otpVerfication').get(otpPage).post(otpVerification);
 router

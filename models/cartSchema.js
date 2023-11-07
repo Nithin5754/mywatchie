@@ -19,6 +19,10 @@ const CartSchema = new mongoose.Schema({
         default: 1,
     
       },
+      product_discount:{
+        type: Number,
+        default: 0,
+      },
       single_product_total_price: {
         type: Number,
         required: true,

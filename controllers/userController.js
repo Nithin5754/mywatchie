@@ -3,6 +3,7 @@ const categoryCollections = require('../models/admin/categorySchema');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const moment=require('moment')
+const pdfService=require('../services/pdf-invoice')
 
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
 const twiloGet = require('../utilities/twilio/twilio');
@@ -348,6 +349,77 @@ const orderHistory = async (req, res) => {
   }
 };
 
+
+
+const invoiceUser=async(req,res,next)=>{
+  
+  const  getLatestOrderNumber=req.params.orderId
+
+  const paymentMethod=req.session.paymentMethod
+
+  try {
+
+    const orderConfirm = await UserOrder.findOne({
+      orderNumber:getLatestOrderNumber,
+    });
+    if (!orderConfirm) {
+      return res.send('error in finding new order');
+    }
+    console.log(orderConfirm,"orderConfirm ");
+
+    const isOrderProduct = await UserOrder.find({orderNumber:getLatestOrderNumber})
+    .populate('items.product')
+    .exec();
+
+    if(!isOrderProduct){
+      return res.send('error finding  order product for invoice')
+    }
+
+
+ 
+function formatOrderDate(dateString) { 
+  const options={ year: 'numeric' , month: 'long' , day: 'numeric' , hour: 'numeric' , minute: 'numeric' }; 
+    const formattedDate=new Date(dateString).toLocaleString('en-US', options); 
+      return formattedDate;
+        } 
+
+        const baseTotalPrice = orderConfirm.totalPrice; // Base total price
+        const taxRate = 0.05; // Tax rate (5%)
+        const shippingCost = orderConfirm.totalPrice >= 400 ? 100 : 0;
+        const totalPrice = (baseTotalPrice + baseTotalPrice * taxRate + shippingCost).toFixed(2);
+
+    
+  const stream=res.writeHead(200,{
+    'Content-Type':'application/pdf',
+    'Content-Disposition':'attachment;filename=myWatchie.invoice.pdf',
+  });
+  const dataOrder={
+ orderNumber:orderConfirm.orderNumber,
+  orderDate:formatOrderDate(orderConfirm.orderDate),
+  username:orderConfirm.shippingAddress.username,
+  city:orderConfirm.shippingAddress.city,
+  postalCode:orderConfirm.shippingAddress.postalCode,
+  address_tag:orderConfirm.shippingAddress.city,
+  phoneNumber:orderConfirm.phoneNumber,
+  totalPrice:totalPrice,
+  paymentMethod:paymentMethod
+     
+  }
+  
+
+  pdfService.buildPDF((chunk)=>stream.write(chunk),
+  ()=>stream.end(),dataOrder,isOrderProduct)
+  } catch (error) {
+    console.log("pdfservice fetching error",error);
+  }
+
+
+
+}
+
+
+
+
 // ORDER HISTORY PRODUCT  SINGLE ORDER PRODUCTS LIST SHOW
 
 const userOrderProductList = async (req, res) => {
@@ -382,6 +454,8 @@ const userOrderProductList = async (req, res) => {
     res.send('error fetching finding the order product from user side', error);
   }
 };
+
+
 
 // EDIT USER DETAILS SELECT THE ADDRESS THE WHICH IS PRIMARY
 
@@ -488,6 +562,29 @@ const userDetailsEdit = async (req, res) => {
       .send('Error in updating existing users and updating address');
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const userOrderCancel = async (req, res) => {
   const userEmail = req.session.userEmail;
@@ -1044,6 +1141,7 @@ module.exports = {
   userProfileAdd,
   userDetailspage,
   orderHistory,
+  invoiceUser,
   userOrderProductList,
   addAddressForm,
   userDetailsEditForm,

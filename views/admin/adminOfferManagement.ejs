@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Home Page</title>
+  <link rel="stylesheet" href="dist/output.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.x.x/dist/alpine.min.js" defer></script>
+
+
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <%- include('./partials/adminNav.ejs',{SideBarSection}) %>
+
+    <%- include('./partials/adminSideBar.ejs') %>
+
+    <style>
+        .hide{
+          display: none;
+        }
+    </style>
+     
+
+    <main>
+      <h2 class="text-2xl font-semibold ml-20 mb-10">Offer Management</h2>
+
+      <section class="mb-10">
+        <div class="px-6 py-4 whitespace-nowrap">
+          <div class="flex flex-row gap-4">
+
+            <div class="flex  flex-row  gap-5">
+              <button class="add-btn-create px-4 py-2 bg-blue-600 text-white rounded" id="open-create" >
+                create offer
+                  </button>
+     
+                  <button class="add-btn-view px-4 py-2 bg-blue-600 text-white rounded" id="open-view" >
+                   view offer
+                     </button>
+            </div>
+          
+
+
+<!-- edit the offer page -->
+
+ 
+<!-- edit offer ends -->
+
+
+
+
+
+
+
+<!-- main model for viewing offer -->
+
+ <div   style="display: none;"
+   class="open-view-form fixed top-0 mt-20 left-0 right-0 z-50  w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+   <div class="relative w-full">
+     <!-- Modal content -->
+     <div class="relative bg-white  rounded shadow dark:bg-gray-700">
+       <button type="button"
+         class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white close-view"
+         data-modal-hide="authentication-modal">
+         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+         </svg>
+        
+       </button>
+       <div class="px-6 py-6 lg:px-8">
+         <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Offer</h3>
+
+         <!-- Stock Table -->
+         <table class="mt-4 w-full bg-white rounded shadow">
+          <thead>
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Offer Name
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Valid From
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Valid To
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Offer Percentage
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Action
+              </th>
+            </tr>
+          </thead>
+
+            <% function formatOrderDate(dateString) { %>
+              <% const options={ year: 'numeric' , month: 'long' , day: 'numeric' , hour: 'numeric' , minute: 'numeric' }; %>
+                <% const formattedDate=new Date(dateString).toLocaleString('en-US', options); %>
+                  <%= formattedDate %>
+                    <% } %>
+                    
+
+                    <tbody>
+                      <% offers.forEach((offer,index) => { %>
+                        <tr class="border-b hover:bg-gray-100">
+                          <td class="px-6 py-3 text-left text-sm text-gray-900"><%= offer.offerName %></td>
+                          <td class="px-6 py-3 text-left text-sm text-gray-900"><%= formatOrderDate(offer.validFrom) %></td>
+                          <td class="px-6 py-3 text-left text-sm text-gray-900"><%= formatOrderDate(offer.validTo) %></td>
+                          <td class="px-6 py-3 text-left text-sm text-gray-900"><%= offer.offerValue %></td>
+                          <td class="px-6 py-3 text-left text-sm text-gray-900">
+                            <a data-offer="<%= offer._id  %>" class="text-blue-600 hover:underline delete-offer">Delete</a> |
+                            <button class="add-btn-edit text-red-600 hover:underline" data-edit="boxEdit<%= index + 1 %>">Edit</button>
+
+                            
+
+
+
+                       
+                            
+
+                            <div  id="boxEdit<%= index + 1 %>"
+                              class="open-edit hidden fixed top-0 left-0 right-0 z-50  w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                              <div class="relative w-full max-w-md max-h-full">
+                                <!-- Modal content -->
+                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                  <button type="button"
+                                    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white close-edit"
+                                    data-modal-hide="authentication-modal">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                   
+                                  </button>
+
+
+                         
+
+
+
+
+                                  <div class="px-6 py-6 lg:px-8">
+                                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">edit Offer</h3>
+                           
+                                    <form class="space-y-6" action="/adminOfferManagement/update/<%= offer._id %>" method="post">
+                                      <div>
+                                        <label for="offerNameedit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Offer Name</label>
+                                        <input type="text" id="offerNameedit" name="offerNameedit" 
+                                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                          value="<%= offer.offerName %>"
+                                        >
+                                    
+                                        <label for="offerValueedit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Offer (%)</label>
+                                        <input type="number" id="offerValueedit" name="offerValueedit" 
+                                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value="<%= offer.offerValue %>"
+                                        >
+                                    
+                                        <label for="validFromedit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid from</label>
+                                        <input type="date" id="validFromedit" name="validFromedit" value="<%= offer.validFrom %>"
+                                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                        >
+                                    
+                                        <label for="validToedit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid to</label>
+                                        <input type="date" id="validToedit" name="validToedit" value="<%= offer.validTo %>"
+                                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                        >
+                                      </div>
+                                    
+                                      <div class="flex justify-end">
+                                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+                                          Edit Offer
+                                        </button>
+                                      </div>
+                                    </form>
+                                    
+                           
+                           
+                             
+                                  </div>
+
+
+
+
+
+
+
+
+
+
+                                  
+                                </div>
+                              </div>
+                            </div>
+
+
+
+
+
+
+
+
+                          </td>
+                        </tr>
+                      <% }) %>
+                    </tbody>
+                    
+          <!-- Table body rows go here -->
+        </table>
+        
+
+  
+       </div>
+     </div>
+   </div>
+ </div>
+
+
+
+
+ 
+ <!-- Main modal for creating offer -->
+ <div  style="display: none;"
+   class="open-create-form fixed top-0 mt-20 left-0 right-0 z-50  w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+   <div class="relative w-full max-w-md max-h-full">
+     <!-- Modal content -->
+     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+       <button type="button"
+         class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white close-create"
+         data-modal-hide="authentication-modal">
+         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+         </svg>
+        
+       </button>
+       <div class="px-6 py-6 lg:px-8">
+         <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Offer</h3>
+
+
+         <form class="space-y-6" action="/adminOfferManagement/newOffer" method="post">
+          <div>
+            <label for="offer-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">offer name</label>
+            <input type="text"  id="stock-offer" name="offerName" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+        >
+            
+            
+            <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">offer (%)</label>
+            <input type="text"  id="stock-offer" name="offerValue" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+        >
+           
+  
+          <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid from</label>
+          <input type="Date" id="stock-offer" name="validFrom" value="<%= new Date().toISOString().slice(0, 10) %>"
+                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+
+                 <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid to</label>
+                 <input type="Date" id="stock-offer" name="validTo" value="<%= new Date().toISOString().slice(0, 10) %>"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+                 
+          
+          </div>
+       
+      <div class="flex justify-end">
+      
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+       create offer
+        </button>
+      </div>
+        
+        </form>
+
+
+  
+       </div>
+     </div>
+   </div>
+ </div>
+ 
+
+          </div>
+         
+       </td>
+      </section>
+
+        <section class="flex  justify-center items-center">
+
+       
+       <div class="container">
+            <!-- Content -->
+            <div class=" p-4">
+            
+              <!-- Stock Table -->
+              <table class="mt-4 w-full bg-white rounded shadow">
+                <thead>
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product image</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">offers (%)</th>
+                    
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">view more </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Sample data row, repeat as needed -->
+              
+                    <% gettingProductOffer.forEach((item,index) => { %>
+                          <tr>
+      <td class="px-6 py-4 whitespace-nowrap"><%= index+1%></td>
+      <td class="px-6 py-4 whitespace-nowrap"><div class="w-20 flex m-auto"><img src="<%= item.product_image_url[0] %>" alt="<%= item.product_name %>"></div></td>
+      <td class="px-6 py-4 whitespace-nowrap"><%= item.product_name %></td>
+      <td class="px-6 py-4 whitespace-nowrap"><%=  item.product_category%></td>
+      <td class="px-6 py-4 whitespace-nowrap"><%=  item.product_discount %></td>
+    
+      <td class="px-6 py-4 whitespace-nowrap">
+         <div class="flex flex-row gap-4">
+            <button class="add-btn px-4 py-2 bg-blue-600 text-white rounded" id="open" data-box="box<%= index + 1 %>">
+          add offer
+            </button>
+
+<!-- Main modal -->
+<div  id="box<%= index + 1 %>"
+  class="open-qty hidden fixed top-0 left-0 right-0 z-50  w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="relative w-full max-w-md max-h-full">
+    <!-- Modal content -->
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      <button type="button"
+        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white close-button"
+        data-modal-hide="authentication-modal">
+        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+        </svg>
+       
+      </button>
+      <div class="px-6 py-6 lg:px-8">
+        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Offer</h3>
+        <form class="space-y-6" action="/adminOfferManagement/<%= item._id %>" method="post">
+          <div>
+            <label for="offer-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select offer</label>
+            <select id="offer-name" name="offerName" class="bg-gray-900 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+              <% offers.forEach((offer) => { %>
+                <option value="<%= offer.offerName %>" ><%= offer.offerName %></option>
+          <%    }); %>
+               
+            </select>
+                 
+          
+          </div>
+       
+      <div class="flex justify-end">
+      
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+      add offer
+        </button>
+      </div>
+        
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+         </div>
+        
+      </td>
+
+ <td>
+  <a class="add-btn-details px-4 py-2 bg-blue-600 text-white rounded" id="open" data-boxDetails="boxDetails<%= index + 1 %>">
+   view more
+  </a>
+
+  <div id="boxDetails<%= index + 1 %>" class="open-qty fixed hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow z-50 w-full max-w-md p-4 overflow-x-hidden overflow-y-auto rounded-lg shadow">
+    <div class="bg-white dark:bg-gray-700 rounded-lg relative">
+        <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white close-button-details" data-modal-hide="authentication-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+        </button>
+        <div class="p-6 lg:p-8">
+            <h1 class="text-xl font-semibold">Offer Details</h1>
+            <h3>offer name: <%= item.offers ? item.offers.offerName : "not available" %></h3>
+            <h4>Valid from: <%= item.offers ? item.offers.validFrom : "not available" %></h4>
+            <h4>Valid To: <%= item.offers ? item.offers.validTo : "not available" %></h4>
+            
+         
+
+
+          
+            <!-- Add more details here -->
+        </div>
+    </div>
+</div>
+
+ </td>
+            
+                </tr>
+                 <%   }); %>
+             
+             
+                </tbody>
+              </table>
+            </div>
+       </div>   
+       
+        </section>
+    </main>
+
+
+
+
+
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
+      <!-- font-awesome -->
+      <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
+
+      <script src="/js/search.js"></script>
+      <script src="/js/addQty.js"></script>
+      <script>
+        document.addEventListener('click', async (event) => {
+          if (event.target.classList.contains('delete-offer')) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            const offerId = event.target.getAttribute('data-offer');
+              try {
+                const response = await fetch(`/adminOfferManagement/delete/${offerId}`, {
+                  method: 'POST',
+                });
+                if (response.ok) {
+                  // Refresh the page or update the offer list
+                  location.reload();
+                } else {
+                  console.error('Error deleting the offer');
+                }
+              } catch (error) {
+                console.error('Error deleting the offer:', error);
+              }
+            
+          }
+        });
+      </script>
+      
+
+</body>
+</body>
+
+</html>
+
+
+
+
+
+<!-- <div class="open-qty hidden max-w-md mx-auto bg-white rounded p-4 shadow-md">
+  <h2 class="text-2xl font-semibold mb-4">Add Product Quantity</h2>
+  <form>
+    <div class="mb-4">
+      <label for="quantity" class="block text-sm font-medium text-gray-600">Quantity</label>
+      <input type="number" id="quantity" name="quantity"
+        class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+        placeholder="Enter quantity" required>
+    </div>
+
+  </form>
+</div> -->

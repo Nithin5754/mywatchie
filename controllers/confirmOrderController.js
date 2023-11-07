@@ -69,8 +69,8 @@ const confirmPage = async (req, res) => {
       items: userCart.items.map(item => ({
         product: item.product,
         quantity: item.quantity,
-        orderPrice: item.product.product_price,
-        priceOfTotalQTy: item.product.product_price * item.quantity,
+        orderPrice: item.product. product_price_After_discount? item.product. product_price_After_discount: item.product. product_price,
+        priceOfTotalQTy: item.product. product_price_After_discount? item.product. product_price_After_discount: item.product. product_price * item.quantity,
       })),
       totalPrice: isCart.total,
 

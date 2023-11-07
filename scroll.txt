@@ -1,81 +1,88 @@
-  <!-- First Section: Product List with Swiper -->
-  <section>
+document.addEventListener('DOMContentLoaded', () => {
+  const quantitySelects = document.querySelectorAll('[id^="qty"]');
+  const totalElement = document.querySelector('#total');
+
+  const afterShipment = document.querySelector('#afterShipping');
+  let total = 0;
+  let afterShipTotal = 0;
+  let totalQuantity = 0;
+
+  quantitySelects.forEach(quantitySelect => {
+    quantitySelect.addEventListener('change', event => {
+      const productId = quantitySelect.getAttribute('data-product-id');
+      const newQuantity = event.target.value; 
+
+      const priceElement = document.querySelector(`#price${productId}`);
+      const productPrice = parseFloat(priceElement.getAttribute('data-price'));
 
 
-
+      const priceDiscountElement = document.querySelector(`#priceDiscount${productId}`);
+      const productDiscountPrice = parseFloat(priceDiscountElement.getAttribute('data-priceDiscount'));
+      const discountedPrice =productPrice-(productPrice *productDiscountPrice/100);
     
-    <h1 class="text-center font-extrabold text-3xl mt-5"><%= categoryName %></h1>
-    <div class="swiper mySwiper">
-      <div class="swiper-wrapper">
-        <% isProductListFilter.forEach((element, index)=> { %>
-    <div
-      class="swiper-slide relative m-2 md:m-4 lg:m-10 flex w-full h-auto max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-      <a class="relative mx-2 mt-2 md:mx-3 md:mt-3 lg:mx-4 lg:mt-4 h-28 md:h-52 overflow-hidden rounded-xl flex flex-col justify-between"
-        href="/productList/details/<%= element._id %>">
-        <img id="image" class="object-contain object-center w-full sm:h-48 md:h-52 lg:h-60 rounded-md"
-          src="/<%= element.product_image_url[0] %>" alt="<%= element.product_image_url[0] %>" />
-        <span
-          class="absolute top-0 left-0 m-2 rounded-full px-2 text-center text-xs md:text-sm lg:font-medium text-white bg-black">
-          <%= element.product_discount %>
-            OFF
-        </span>
-      </a>
-      <div class="mt-2 md:mt-4 px-2 md:px-5 pb-2 md:pb-5">
-        <a href="#">
-          <h5 class="sm:text-lg md:text-xl lg:text-2xl tracking-tight">
-            <%= element.product_name %>
-          </h5>
-        </a>
-        <div class="mt-1 md:mt-2 mb-3 md:mb-5 flex items-center justify-between">
-          <p>
-            <span class="sm:text-lg md:text-xl lg:text-2xl font-bold ">$<%= element.product_price %></span>
-            <span class="text-xs sm:text-sm md:lg:text-lg text-gray-300 line-through">$<%= element.product_price+500 %>
-                </span>
-          </p>
-          <div class="flex items-center space-x-1 md:space-x-2">
-            <svg aria-hidden="true" class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600" fill="currentColor" viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-              </path>
-            </svg>
-            <!-- Repeat this for each star -->
-            <span class="h-4 sm:h-5 md:h-6 lg:h-7 text-red-600">★</span>
-            <span
-              class="mr-2 ml-3 rounded bg-red-700 px-1 sm:px-2 md:px-3 lg:px-4 text-xs sm:text-sm md:lg:text-lg font-semibold text-white">5.0</span>
-          </div>
-        </div>
-        <div class="flex flex-row justify-around flex-wrap w-full">
-          <button
-            class="flex items-center justify-center w-full bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700 rounded-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-            </svg>
-            Buy now
-          </button>
-        </div>
-      </div>
-    </div>
 
-       
-         
-           
-                <% }) %>
-      </div>
-      <div class="swiper-pagination"></div>
-    </div>
-  </section>
+      console.log(productDiscountPrice);
+      const newSingleProductTotalDiscounted = (discountedPrice * newQuantity).toFixed(2);
+
+      const newSingleProductTotal = (productPrice * newQuantity).toFixed(2);
+
+      // Update the displayed total price
+      const singleProductPriceElement = document.querySelector(
+        `#single-product${productId}`,
+      );
+      singleProductPriceElement.textContent = `$${newSingleProductTotal}`;
+
+      //discountedtotal
+      const singleProductPriceElementDiscounted = document.querySelector(
+        `#single-productDiscounted${productId}`,
+      );
+      singleProductPriceElementDiscounted.textContent = `$${newSingleProductTotalDiscounted}`;
+
+      // Calculate the total by iterating through all products
+      total = 0;
+      quantitySelects.forEach(select => {
+        const id = select.getAttribute('data-product-id');
+        const price = parseFloat(
+          document.querySelector(`#price${id}`).getAttribute('data-price'),
+        );
+
+  
+        const quantity = parseInt(select.value);
+          const discount = parseFloat(document.querySelector(`#priceDiscount${id}`).getAttribute('data-priceDiscount'));
+
+
+        total += (price - (price * discount / 100)) * quantity;
+    
+      });
+
+      afterShipTotal = total + 100;
+
+      // Update the total price element
+      totalElement.textContent = `$${total.toFixed(2)}`;
+
+
+      afterShipment.textContent = `$${afterShipTotal.toFixed(2)}`;
 
 
 
-     const page = parseInt(req.query.page)||1
-      const limit = 8;
-      const startIndex = (page - 1) * limit;
-
-
-
-
-       .limit(limit)
-       .skip(startIndex)
-       .exec();
+      // Perform an HTTP request to your Node.js controller
+      fetch(`/cart/updateQuantity/${productId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quantity: newQuantity,
+          productPrice: productPrice,
+          newSingleProductTotal: newSingleProductTotal,
+          total: total,
+          afterShipTotal: afterShipTotal,
+        }),
+      })
+        .then(response => response.json())
+        .catch(error => {
+          console.error('Error updating product quantity:', error);
+        });
+    });
+  });
+});

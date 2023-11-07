@@ -7,6 +7,7 @@ const categoryCollections = require('../models/admin/categorySchema');
 const userOrder = require('../models/orderSchema');
 const Sales=require('../models/admin/salesSchema')
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
+const pdfService=require('../services/pdf-invoice')
 
 const verifyAdmin = async (req, res) => {
   const { adminEmail, adminPassword } = req.body;
@@ -189,6 +190,8 @@ const createProduct = async (req, res) => {
       product_image_url: imagePaths,
       brand: productBrand,
       product_rating: productRatings,
+      product_discount:0,
+      product_price_After_discount:productPrice
     });
 
     await newProduct.save();
@@ -232,6 +235,7 @@ const adminUpdateProduct = async (req, res) => {
         product_discount: productDiscount,
         product_rating: productRatings,
         product_qty: productQuantity,
+        product_price_After_discount:productPrice
       },
       { new: true },
     );
@@ -468,6 +472,78 @@ const orderManagement = async (req, res) => {
     res.status(500).send('display product error in admin page');
   }
 };
+
+
+
+
+const invoiceAdmin=async(req,res,next)=>{
+  
+  const  getLatestOrderNumber=req.params.orderId
+
+  const paymentMethod=req.session.paymentMethod
+
+  try {
+
+    const orderConfirm = await userOrder.findOne({
+      orderNumber:getLatestOrderNumber,
+    });
+    if (!orderConfirm) {
+      return res.send('error in finding new order');
+    }
+    console.log(orderConfirm,"orderConfirm ");
+
+    const isOrderProduct = await userOrder.find({orderNumber:getLatestOrderNumber})
+    .populate('items.product')
+    .exec();
+
+    if(!isOrderProduct){
+      return res.send('error finding  order product for invoice')
+    }
+
+
+ 
+function formatOrderDate(dateString) { 
+  const options={ year: 'numeric' , month: 'long' , day: 'numeric' , hour: 'numeric' , minute: 'numeric' }; 
+    const formattedDate=new Date(dateString).toLocaleString('en-US', options); 
+      return formattedDate;
+        } 
+
+        const baseTotalPrice = orderConfirm.totalPrice; // Base total price
+        const taxRate = 0.05; // Tax rate (5%)
+        const shippingCost = orderConfirm.totalPrice >= 400 ? 100 : 0;
+        const totalPrice = (baseTotalPrice + baseTotalPrice * taxRate + shippingCost).toFixed(2);
+
+    
+  const stream=res.writeHead(200,{
+    'Content-Type':'application/pdf',
+    'Content-Disposition':'attachment;filename=myWatchie.invoice.pdf',
+  });
+  const dataOrder={
+ orderNumber:orderConfirm.orderNumber,
+  orderDate:formatOrderDate(orderConfirm.orderDate),
+  username:orderConfirm.shippingAddress.username,
+  city:orderConfirm.shippingAddress.city,
+  postalCode:orderConfirm.shippingAddress.postalCode,
+  address_tag:orderConfirm.shippingAddress.city,
+  phoneNumber:orderConfirm.phoneNumber,
+  totalPrice:totalPrice,
+  paymentMethod:paymentMethod
+     
+  }
+  
+
+  pdfService.buildPDF((chunk)=>stream.write(chunk),
+  ()=>stream.end(),dataOrder,isOrderProduct)
+  } catch (error) {
+    console.log("pdfservice fetching error",error);
+  }
+
+
+
+}
+
+
+
 
 const orderManagementPost = async (req, res) => {
   const { data } = req.body;
@@ -765,6 +841,7 @@ module.exports = {
   verifyAdmin,
   adminLogout,
   orderManagement,
+  invoiceAdmin,
   orderManagementPost,
   oderProductDispay,
   orderProductUserAddress,

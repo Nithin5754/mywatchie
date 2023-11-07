@@ -1,5 +1,6 @@
 const product = require('../models/admin/productSchema');
 const Cart = require('../models/cartSchema');
+const Offer=require('../models/admin/offerSchema')
 
 let islogout;
 let isCreateAccount;
@@ -36,6 +37,8 @@ const productList = async (req, res) => {
     let isProductListFilter = '';
     iswallet='/userwallet'
 
+  
+
     const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
     isAvailableBrands = await product.find({ product_category: categoryName });
@@ -46,6 +49,8 @@ const productList = async (req, res) => {
     const totalProducts = await product.countDocuments({
       product_category: categoryName,
     });
+
+
 
     const maxPage = Math.ceil(totalProducts / limit);
     if (page > maxPage) {
@@ -81,26 +86,6 @@ const productList = async (req, res) => {
           .skip(startIndex)
           .exec();
         break;
-    }
-
-    if (brandContent === 'RM') {
-      isProductListFilter = await product
-        .find({ product_category: categoryName, brand: brandContent })
-        .limit(limit)
-        .skip(startIndex)
-        .exec();
-    } else if (brandContent === 'TITAN') {
-      isProductListFilter = await product
-        .find({ product_category: categoryName, brand: brandContent })
-        .limit(limit)
-        .skip(startIndex)
-        .exec();
-    } else if (brandContent === 'ALL') {
-      isProductListFilter = await product
-        .find({ product_category: categoryName })
-        .limit(limit)
-        .skip(startIndex)
-        .exec();
     }
 
     if (discount === '90') {
@@ -171,7 +156,55 @@ const productList = async (req, res) => {
     }
 
     if (rate === '5') {
-      console.log('rate', rate);
+      isProductListFilter = await product
+      .find({
+        product_category: categoryName,
+        
+       product_rating:{$eq:5}
+      })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+    }else    if (rate === '4') {
+      isProductListFilter = await product
+      .find({
+        product_category: categoryName,
+        
+       product_rating:{$eq:4}
+      })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+    }else if (rate === '3') {
+      isProductListFilter = await product
+      .find({
+        product_category: categoryName,
+        
+       product_rating:{$eq:3}
+      })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+    }else  if (rate === '2') {
+      isProductListFilter = await product
+      .find({
+        product_category: categoryName,
+        
+       product_rating:{$eq:2}
+      })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+    }else     if (rate === '1') {
+      isProductListFilter = await product
+      .find({
+        product_category: categoryName,
+        
+       product_rating:{$eq:1}
+      })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
     }
 
     res.render('user/productPage', {

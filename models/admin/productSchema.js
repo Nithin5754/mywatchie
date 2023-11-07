@@ -24,20 +24,29 @@ const ProductSchema = new mongoose.Schema({
       type: String,
       default: Date.now,
     },
-  ],
+  ], 
 
   product_discount: {
     type: Number,
   },
+  product_price_After_discount:{
+     type:Number,
+     min:0
+  },
   product_rating: {
     type: Number,
   },
+
   product_category: {
     type: String,
   },
   product_publishDate: {
     type: Date,
     default: Date.now,
+  },
+  offers:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Offer',
   },
   isListed: {
     type: Boolean,

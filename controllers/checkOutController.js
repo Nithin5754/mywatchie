@@ -4,6 +4,7 @@ const Razorpay = require('razorpay');
 const Address = require('../models/addressSchema');
 const UserCollection = require('../models/userSchema');
 const wallet=require('../models/walletSchema')
+const Product=require('../models/admin/productSchema')
 
 
 
@@ -35,6 +36,7 @@ const orderManagement = async (req, res) => {
       return res.redirect('/ordermanagement');
     }
 
+
     const temporaryAddress = 'add address';
     const isUserPrimaryAddress = verifyUserEmail.isPrimaryAddress;
 
@@ -59,7 +61,11 @@ const orderManagement = async (req, res) => {
 
     let isProduct = isCartProduct.items.map(item => item.product);
 
+
     let isquantity = isCartProduct.items.map(item => item.quantity);
+
+
+    
 
     let isSingleTotalPrice = isCartProduct.items.map(
       item => item.single_product_total_price,
