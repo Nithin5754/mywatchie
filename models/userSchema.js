@@ -54,6 +54,11 @@ const UserSchema = new mongoose.Schema({
       ref: 'Address',
     },
   ],
+  coupon:[
+    {
+      type:String
+    }
+  ]
 });
 
 UserCollection = mongoose.model('userCollection', UserSchema);

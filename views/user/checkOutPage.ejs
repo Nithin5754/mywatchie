@@ -9,6 +9,17 @@
     />
     <title>Place Order</title>
   </head>
+  <style>
+    .scrollBar {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll; 
+}
+
+.scrollBar::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+  </style>
 
   <body class="bg-gray-100 font-sans">
     <!-- header.ejs -->
@@ -144,12 +155,19 @@
           </div>
           <% } %>
 
+          <div class="mt-4 flex flex-row gap-5">
+            <span class="font-semibold">Discount :</span>
+             <p id="totalPriceElement" class=" font-semibold">0</p>
+          </div>
+
           <!-- Tax (if applicable) -->
           <div class="mt-4">
             <h3 class="font-semibold">
               Tax (5%): $<%= (userCart.total * 0.05).toFixed(2) %>
             </h3>
           </div>
+
+          
 
           <!-- Total Price -->
           <div class="mt-4">
@@ -171,19 +189,197 @@
         <p class="text-md font-semibold">Total Balance</p>
        <SPan>$</SPan> <p class="text-lg font-bold text-green-600" id="walletBalance"><%= (isWallet.balance).toFixed(2)  %></p>
       </div>
+
+
+  <!-- coupoun items available -->
+  <div class="mt-4 ml-6 w-96">
+    <% if (isCoupons.length === 0 || isCoupons === '') { %>
+      <h5 class="font-semibold">Coupons not available</h5>
+    <% } else { %>
+      <h5 class="font-semibold">Available Coupons</h5>
+    <% } %>
+  
+    <div class="scrollBar h-52 overflow-scroll">
+      <% isCoupons.forEach((coupon, index) => { %>
+        <% if (userCart.total > coupon.minimumPurchase) { %>
+          <div class="flex items-center justify-between border gap-4 p-2 mb-2 rounded-lg bg-white shadow-md">
+            <div class="font-semibold">
+              <%= coupon.couponName %>
+            </div>
+            <button class="bg-blue-600 text-white px-2 py-2 rounded-md hover:bg-blue-700 focus:outline-none" 
+              data-coupon-name="<%= coupon.couponName %>"
+              data-coupon-value="<%= coupon.couponValue %>"
+              id="data-coupon-btn">
+              Apply
+            </button>
+          </div>
+        <% } %>
+      <% }); %>
+      
+      <div class="mt-4 ml-6 w-96">
+        <button id="coupons-btn" class="bg-red-400 p-1 text-white font-bold hover:bg-red-700 rounded hidden">
+          <i class="fas fa-times"></i> Remove
+        </button>
+      </div>
+      
     </div>
 
-    <!-- Place Order button (Centered) -->
-    <div class="flex justify-center">
-      <button
-        type="submit"
-        onclick="completePurchase()"
+               <!-- Place Order button (Centered) -->
+       <div class="flex justify-center">
+        <button
+        id="placeOrder"
+          type="submit"
+          onclick="completePurchase()"
+          class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 font-extrabold capitalize rounded w-full items-center"
+        >
+          Place Order
+        </button>
+  
+        <button
+        id="removeAlreadyExist"
+        style="display: none;"
         class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 font-extrabold capitalize rounded w-full items-center"
       >
-        Place Order
+        Already used
       </button>
+      </div>
+      </div>
+
+
+      
+ 
+
     </div>
-    <div id="success-message" style="display: none">Payment Successful!</div>
+
+
+    <div id="success-message" style="display:none">Payment Successful!</div>
+
+
+
+
+<script>
+
+  const removeCoupons=document.getElementById('coupons-btn')
+
+ const couponButtons = document.querySelectorAll('#data-coupon-btn');
+ let previousButton = null;
+let previousCouponValue = 0;
+let cartPriceSubTotal = parseFloat(document.getElementById('totalPrice').textContent);
+console.log(cartPriceSubTotal,"hello my dear");
+ couponButtons.forEach((btn) => {
+ btn.addEventListener('click', () => {
+  const couponSingleValue = parseFloat(btn.getAttribute('data-coupon-value'));
+  const couponName = btn.getAttribute('data-coupon-name');
+  console.log(couponName,"MY COUPON");
+
+  const cartTotalElement = document.getElementById('totalPriceElement');
+  let cartPrice = parseFloat(cartTotalElement.textContent);
+
+if (previousButton) {
+    previousButton.disabled = false;
+    previousButton.textContent = 'Apply';
+    previousButton.style.textDecoration = "none";
+    cartPrice -= previousCouponValue;
+    cartPriceSubTotal += previousCouponValue;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "applied";
+
+  removeCoupons.style.display="block"
+  
+  btn.style.textDecoration = "line-through";
+  
+
+  cartPrice = couponSingleValue;
+
+  cartTotalElement.textContent = cartPrice.toFixed(2);
+
+
+
+  cartPriceSubTotal -= cartPrice;
+document.getElementById('totalPrice').textContent = cartPriceSubTotal.toFixed(2);
+
+
+
+fetch('/admincouponManagement/addtocustomer',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+
+    },
+    body: JSON.stringify({
+  couponValue:couponSingleValue,
+  newCartTotal:cartPriceSubTotal,
+  appliedCoupon:couponName
+})
+  })
+  .then((response)=>response.json())
+  .then((data)=>{
+    const placeOrder=document.getElementById('placeOrder')
+      const removeOrderBtn=document.getElementById('removeAlreadyExist')
+      if(data.valid){
+      placeOrder.style.display="none"
+      removeOrderBtn.style.display="block"
+      removeOrderBtn.style.backgroundColor="red"
+      console.log("data.valid",data.valid);
+
+    }else{
+      placeOrder.style.display="block"
+      placeOrder.style.backgroundColor="blue"
+      removeOrderBtn.style.display="none"
+
+      console.log("data.valid",data.valid);
+    }
+  })
+  .catch((error)=>console.log(error,"error sending coupon send "))
+  previousButton = btn;
+  previousCouponValue = couponSingleValue;
+ });
+});
+
+
+removeCoupons.addEventListener('click',()=>{
+    window.location.reload()
+  })
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <script>
           const totalPrice = document.getElementById('totalPrice').textContent;

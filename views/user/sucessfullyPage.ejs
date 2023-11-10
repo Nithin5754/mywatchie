@@ -25,8 +25,7 @@
         <p><span class="font-semibold">Order Date:</span> <%= formattedDate %></p>
         <% let shipping=0 %>
         <% if (orderConfirm.totalPrice >=400) { %> <% shipping=100 } %>
-        <p><span class="font-semibold">Total Amount:</span> $ <%= ( orderConfirm.totalPrice+( orderConfirm.totalPrice * 0.05)+shipping).toFixed(2)
-          %></p>
+        <p><span class="font-semibold">Total Amount:</span> $ <%=  orderConfirm.totalPrice.toFixed(2) %></p>
 
 
         <!-- You can display more order details here -->

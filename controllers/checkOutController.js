@@ -5,6 +5,7 @@ const Address = require('../models/addressSchema');
 const UserCollection = require('../models/userSchema');
 const wallet=require('../models/walletSchema')
 const Product=require('../models/admin/productSchema')
+const couponCollection=require('../models/admin/couponS')
 
 
 
@@ -36,7 +37,6 @@ const orderManagement = async (req, res) => {
       return res.redirect('/ordermanagement');
     }
 
-
     const temporaryAddress = 'add address';
     const isUserPrimaryAddress = verifyUserEmail.isPrimaryAddress;
 
@@ -62,7 +62,17 @@ const orderManagement = async (req, res) => {
     let isProduct = isCartProduct.items.map(item => item.product);
 
 
+
     let isquantity = isCartProduct.items.map(item => item.quantity);
+
+    const currentDate = new Date();
+    const isCoupons = await couponCollection.find({
+      validFrom: { $lte: currentDate },
+      validTo: { $gte: currentDate },
+    })
+    if(!isCoupons){
+      isCoupons=''
+    }
 
 
     
@@ -76,6 +86,10 @@ const orderManagement = async (req, res) => {
       console.log("wallet is not their");
       res.redirect('/ordermanagement')
     }
+
+
+  
+  
 
 
 
@@ -95,6 +109,8 @@ const orderManagement = async (req, res) => {
       verifyUserEmail,
       isWallet,
       iswallet,
+
+      isCoupons
     });
   } catch (error) {
     console.log('order page error' + error);

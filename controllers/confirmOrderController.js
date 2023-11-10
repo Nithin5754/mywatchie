@@ -32,6 +32,12 @@ const confirmPage = async (req, res) => {
   const userEmail = req.session.userEmail;
   const paymentMethod = req.params.paymentMethod;
 
+
+ const latestCouponAppliedSection= req.session.userCurrentCoupon
+ console.log(latestCouponAppliedSection,"order price");
+
+
+
   req.session.paymentMethod=paymentMethod
 
   islogout = 'log out';
@@ -55,6 +61,14 @@ const confirmPage = async (req, res) => {
     }
 
     let isCart = await Cart.findOne({ userId: verifyUserEmail._id });
+    let totalCartBalance = parseFloat(isCart.total) + parseFloat(isCart.total) * 0.05;
+    
+    if (isCart.total >= 400) {
+      totalCartBalance += 100;
+    }
+    
+    totalCartBalance = parseFloat(totalCartBalance.toFixed(2));
+    let couponValueApplied=req.session.userCurrentCoupon?latestCouponAppliedSection.newCartTotal:totalCartBalance
 
     const getOrderNumber = generateOrderNumber();
 
@@ -65,6 +79,30 @@ const confirmPage = async (req, res) => {
     });
 
 
+
+    if( req.session.userCurrentCoupon){
+      const isUpdateUser = await UserCollection.findOneAndUpdate(
+        { email: userEmail },
+        {
+          $push: {
+            coupon: req.session.userCurrentCoupon.appliedCoupon
+          }
+        },
+        {
+          new: true,
+          upsert: true
+        }
+      );
+      if (!isUpdateUser) {
+        return res.redirect("back");
+      }
+    }
+    
+
+
+
+
+
     const newOrder = new UserOrder({
       items: userCart.items.map(item => ({
         product: item.product,
@@ -72,7 +110,8 @@ const confirmPage = async (req, res) => {
         orderPrice: item.product. product_price_After_discount? item.product. product_price_After_discount: item.product. product_price,
         priceOfTotalQTy: item.product. product_price_After_discount? item.product. product_price_After_discount: item.product. product_price * item.quantity,
       })),
-      totalPrice: isCart.total,
+      appliedCoupon:couponValueApplied,
+      totalPrice:couponValueApplied?couponValueApplied:isCart.total-couponValueApplied,
 
       orderNumber: getOrderNumber,
       shippingAddress: {
@@ -163,6 +202,9 @@ const confirmPage = async (req, res) => {
  let cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
 
 
+
+      delete req.session.userCurrentCoupon;
+
    
 
     return res.render('user/sucessfullyPage', {
@@ -248,9 +290,6 @@ function formatOrderDate(dateString) {
   } catch (error) {
     console.log("pdfservice fetching error",error);
   }
-
-
-
 }
 
 module.exports = { confirmPage ,invoice};

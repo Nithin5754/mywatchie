@@ -23,6 +23,10 @@ const UserOrderSchema = new mongoose.Schema({
     default: Date.now,
   },
 
+  appliedCoupon:{
+    type:Number
+  },
+
   totalPrice: {
     type: Number,
   },
