@@ -17,7 +17,7 @@ const Product=require('../models/admin/productSchema')
 // const product=require('../models/admin/productSchema')
 
 let userEmail;
-let productAvailable;
+let productAvailable='';
 
 const {
   mailGenerator,
