@@ -60,7 +60,7 @@ let iswallet;
 
 const userBeforeLogin = async (req, res) => {
   try {
-    const randomBanner = await getRandomMultipleImages();
+    const randomBanner = await getRandomBannerImage();
     const randomCategory = await categoryCollections.aggregate([
       { $sort: { product_category: -1 } },
       { $limit: 4 },
@@ -140,7 +140,7 @@ if(!isWallet){
 }
 
 
-    const randomBanner = await getRandomMultipleImages();
+    const randomBanner = await getRandomBannerImage();
     console.log(randomBanner,"my banner");
     return res.render('user/home', {
       randomBanner,
