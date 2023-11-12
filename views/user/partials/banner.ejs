@@ -1,70 +1,80 @@
 
-  <div class="swiper mySwiper bg-gray-100 p-4  ">
-    <div class="swiper-wrapper ">
-      <div class="swiper-slide bg-cover bg-center bg-fixed h-screen text-white py-24 px-10 object-fill"
-        style="background-image: url('<%= randomBanner%>');">
-        <div class="md:w-1/2">
-          <p class="font-bold text-sm uppercase">Watches</p>
-          <p class="text-3xl font-bold">big-billion day Offer</p>
-          <p class="text-2xl mb-10 leading-none">lowest price of the year</p>
-          <a href="#"
-            class="bg-purple-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800">Buy Now</a>
-        </div>
-      </div>
+<style>
+  /* Set full height for the swiper container and slides */
 
-      <div class="swiper-slide bg-cover bg-center bg-fixed h-screen text-white py-24 px-10 object-fill"
-        style="background-image: url('<%= randomBanner %>');">
-        <div class="md:w-1/2">
-          <p class="font-bold text-sm uppercase">Watches</p>
-          <p class="text-3xl font-bold">big-billion day Offer</p>
-          <p class="text-2xl mb-10 leading-none">lowest price of the year</p>
-          <a href="#"
-            class="bg-purple-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800">Buy Now</a>
-        </div>
-      </div>
-
-
-      <div class="swiper-slide bg-cover bg-center bg-fixed h-screen text-white py-24 px-10 object-fill"
-        style="background-image: url('<%= randomBanner %>');">
-        <div class="md:w-1/2">
-          <p class="font-bold text-sm uppercase">Watches</p>
-          <p class="text-3xl font-bold">big-billion day Offer</p>
-          <p class="text-2xl mb-10 leading-none">lowest price of the year</p>
-          <a href="#"
-            class="bg-purple-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800">Buy Now</a>
-        </div>
-      </div>
+  .swiper-slide-banner {
+    height: 87vh;
+  }
 
 
 
-      <div class="swiper-slide bg-cover bg-center bg-fixed h-screen text-white py-24 px-10 object-fill"
-        style="background-image: url('<%= randomBanner %>');">
-        <div class="md:w-1/2">
-          <p class="font-bold text-sm uppercase">Watches</p>
-          <p class="text-3xl font-bold">big-billion day Offer</p>
-          <p class="text-2xl mb-10 leading-none">Attractive designs for your brand</p>
-          <a href="#"
-            class="bg-purple-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800">Contact
-            us</a>
-        </div>
-      </div>
+  /* Add any other styles you need */
+  .swiper-slide-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+
+  }
+
+  @media screen and (max-width:767px) {
+  .swiper-slide-banner {
+    
+  height:30vh;
+  }
+  .slide-banner-text-1{
+    font-size: 20px;
+
+  }
+  .slide-banner-text-2{
+    font-size: 14px;
+  }
+  .slide-banner-button-1{
+    padding: 8px;
+    font-size: 12px;
+  }
+
+}
 
 
 
-      <div class="swiper-slide bg-cover bg-center bg-fixed h-screen text-white py-24 px-10 object-fill"
-        style="background-image: url('<%= randomBanner %>');">
-        <div class="md:w-1/2">
-          <p class="font-bold text-sm uppercase">PATEK PHLIPPPIE</p>
-          <p class="text-3xl font-bold">Multimedia products</p>
-          <p class="text-2xl mb-10 leading-none">Attractive designs for your brand</p>
-          <a href="#"
-            class="bg-purple-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800">Contact
-            us</a>
-        </div>
-      </div>
+
+@media screen and (max-width: 767px) {
+  .swiper-slide-banner {
+    
+  height:10vh;
+  }
+  
+}
+</style>
+
+
+
+<div class="swiper mySwiper bg-gray-100 p-4">
+  <div class="swiper-wrapper">
+
+    <% randomBanner.forEach((banner) => { %>
       
+    <div class="swiper-slide  swiper-slide-banner text-white py-24 px-10 "
+    style="background-image: url('<%= banner %>');">
+    <div class="  ">
+      <div>
+      
+        <a href="/productFullList"
+          class="slide-banner-button-1 bg-blue-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800">Shop Now</a>
+      </div>
     </div>
-    <div class="swiper-pagination mt-4"></div>
+    
   </div>
+   <% }); %>
+
+
+    <!-- Add more slides as needed -->
+
+  </div>
+  <div class="swiper-pagination mt-4"></div>
+</div>
 </div>
 

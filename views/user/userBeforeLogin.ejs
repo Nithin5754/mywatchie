@@ -6,15 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mywatchie.com</title>
   <link rel="stylesheet" href="dist/output.css">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 
   <!-- Link Swiper's CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
   <!-- googlr icons materials -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link rel="stylesheet" href="/css/darkmode.css">
 
 </head>
+<style>
+  .clamp-lines {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1; /* Adjust the number of lines you want to display */
+    line-height: 1.5em; /* Adjust the line height if needed */
+  }
+</style>
 
 <body class=" scroll-smooth capitalize bg-slate-300 text-black">
   <!-- Include Alpine.js -->
@@ -30,6 +40,24 @@
 
       </section>
 
+
+            
+<!-- best of products -->
+  <section style="margin-bottom:5rem ">
+    <h1 class="text-3xl mt-8 mb-8 text-center font-bold ">Best of Products</h1>
+  <%- include('./partials/bestOfWatches.ejs',{productAvailable,isLogin}) %>
+  <div class="flex justify-center items-center">
+   <% if(isLogin){%>
+    <p class="bg-blue-800 p-2 text-white rounded text-center w-24"><a href="/productFullList">more</a></p>
+   <%}else{ %>
+    <p class="bg-blue-800 p-2 text-white rounded text-center w-24"><a href="/login">more</a></p>
+
+  <% } %>
+  </div>
+
+</section>
+<!-- best of products ends -->
+
       <!-- category section -->
 
       <section style="margin-bottom:5rem">
@@ -39,16 +67,82 @@
       </section>
 
 
+
+
+
+
     </main>
 
+    <%- include('./partials/foooter.ejs') %>
+
+
     <!-- Alpine.js and Swiper JS scripts -->
+    <script src="/js/darkmode.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" ></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <!-- font-awesome -->
     <script src="https://kit.fontawesome.com/72e1a8d80d.js" crossorigin="anonymous"></script>
     <script src="/js/swiper.js"></script>
     <script src="/js/search.js"></script>
+    <script src="/js/notificationCircle.js"></script>
+    <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  
+  <script>
+    var swiper = new Swiper(".mySwiper", {
+      pagination: {
+        el: ".swiper-pagination",
+        dynamicBullets: true,
+      },
+    });
+  </script>
+  
+  
+  
+  <!-- swiperjs -->
+  
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  
+  <!-- Initialize Swiper -->
+  <script>
+    var swiper = new Swiper(".bestProduct", {
+      freeMode: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+  
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      breakpoints: {
+        320: {
+          slidesPerView: 1,
+       
+        },
+        480: {
+          slidesPerView: 1,
+     
+        },
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 30,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 50,
+        },
+  
+        // Add more breakpoints as needed
+      },
+    });
+  </script>
 
 </body>
 

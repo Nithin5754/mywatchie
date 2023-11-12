@@ -6,6 +6,7 @@ const moment=require('moment')
 const pdfService=require('../services/pdf-invoice')
 
 const getRandomBannerImage = require('../utilities/unsplash/getRandomwatches');
+const getRandomMultipleImages=require('../utilities/unsplash/multipleImages')
 const twiloGet = require('../utilities/twilio/twilio');
 const Address = require('../models/addressSchema');
 const Cart = require('../models/cartSchema');
@@ -16,6 +17,7 @@ const Product=require('../models/admin/productSchema')
 // const product=require('../models/admin/productSchema')
 
 let userEmail;
+let productAvailable;
 
 const {
   mailGenerator,
@@ -28,6 +30,8 @@ const {
 const login = async (req, res) => {
   try {
     const randomBannerImage = await getRandomBannerImage();
+
+  await UserCollection.deleteMany({status:false})
 
     if (req.session.invalid) {
       req.session.invalid = false;
@@ -56,11 +60,13 @@ let iswallet;
 
 const userBeforeLogin = async (req, res) => {
   try {
-    const randomBanner = await getRandomBannerImage();
+    const randomBanner = await getRandomMultipleImages();
     const randomCategory = await categoryCollections.aggregate([
       { $sort: { product_category: -1 } },
       { $limit: 4 },
     ]);
+
+ productAvailable=await Product.find().limit(12)
     
     isProfile = 'login';
     isUrl = '/login';
@@ -84,7 +90,8 @@ const userBeforeLogin = async (req, res) => {
       cartItems,
       orderUrl,
       isLogin,
-      iswallet
+      iswallet,
+      productAvailable
     });
   } catch (error) {
     console.error('Error fetching before login user:', error.message);
@@ -119,6 +126,8 @@ const homepage = async (req, res) => {
 
     const isWallet= await wallet.findOne({ userId: verifyUserEmail._id });
 
+ productAvailable=await Product.find().limit(12)
+
 let newWallet;
 
 if(!isWallet){
@@ -131,7 +140,8 @@ if(!isWallet){
 }
 
 
-    const randomBanner = await getRandomBannerImage();
+    const randomBanner = await getRandomMultipleImages();
+    console.log(randomBanner,"my banner");
     return res.render('user/home', {
       randomBanner,
       randomCategory,
@@ -144,7 +154,8 @@ if(!isWallet){
       cartItems,
       orderUrl,
       isLogin,
-      iswallet
+      iswallet,
+      productAvailable
     });
   } catch (error) {
     console.error('Error fetching images:', error.message);
@@ -854,72 +865,161 @@ const signup = async (req, res) => {
   }
 };
 
-const signupData = async (req, res) => {
-  try {
-    console.log(req.body);
-    const { username, email, number, password, confirmPassword } = req.body;
 
-    const checkingUser = await UserCollection.findOne({ email });
+const signupData= async (req, res) => {
+  const { username, email, number, password, confirmPassword } = req.body;
+     try {
+      const checkingUser = await UserCollection.findOne({email:email });
 
-    if (password !== confirmPassword) {
-      console.log('Passwords do not match');
-      return res.status(400).send('Passwords do not match');
-    }
-
-    if (checkingUser) {
-      return res.send('User with the same email already exists');
-    } else {
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-      const otp = generateOTP(6);
-      req.session.UserSignUpOtP = otp;
-      console.log('Generated OTP:', otp);
-
-      const Email = {
-        body: {
-          name: username,
-          intro: 'Welcome to myWatchie.com here is your OTP .',
-          outro: `otp :${otp} expire in 5 minutes`,
-        },
-      };
-
-      const emailTemplate = mailGenerator.generate(Email);
-
-      const mailOptions = {
-        from: 'nithinjoji0756@gmail.com',
-        to: email,
-        subject: 'Welcome to MyApp - Activate Your Account',
-        html: emailTemplate,
-      };
-
-      try {
-        await transporter.sendMail(mailOptions);
-        const newUser = new UserCollection({
-          username,
-          email,
-          mobileNumber: number,
-          password: hashedPassword,
-          otp,
-        });
-
-        await newUser.save();
-        // User signup successful; send a response
-        return res.redirect('/otpVerfication');
-      } catch (error) {
-        // Handle errors and send an error response
-        console.error('Error sending email:', error);
-        return res
-          .status(500)
-          .send('Error sending email. Please try again later.');
+      if(password!==confirmPassword){
+        res.redirect("back")
       }
-    }
-  } catch (error) {
-    // Handle errors and send an error response
-    console.error('Error during user registration:', error);
-    return res.status(500).send('Error during user registration');
-  }
-};
+
+
+      if(checkingUser&&checkingUser.email===email){
+        console.log("useremailfound");
+        return  res.redirect("back")
+      }
+      if(checkingUser&&checkingUser.username===username){
+        console.log("usernamefound");
+      return  res.redirect("back")
+      
+      }
+      const existingUserWithUsername = await UserCollection.findOne({ username });
+
+      if (existingUserWithUsername) {
+  
+        return res.redirect("back");
+      }else{
+        const saltRounds = 10;
+              const hashedPassword = await bcrypt.hash(password, saltRounds);
+        
+              const otp = generateOTP(6);
+              req.session.UserSignUpOtP = otp;
+              console.log('Generated OTP:', otp);
+        
+              const Email = {
+                body: {
+                  name: username,
+                  intro: 'Welcome to myWatchie.com here is your OTP .',
+                  outro: `otp :${otp} expire in 5 minutes`,
+                },
+              };
+        
+              const emailTemplate = mailGenerator.generate(Email);
+        
+              const mailOptions = {
+                from: 'nithinjoji0756@gmail.com',
+                to: email,
+                subject: 'Welcome to MyApp - Activate Your Account',
+                html: emailTemplate,
+              };
+              try {
+                        await transporter.sendMail(mailOptions);
+                        const newUser = new UserCollection({
+                          username,
+                          email,
+                          mobileNumber: number,
+                          password: hashedPassword,
+                          otp,
+                        });
+                
+                        await newUser.save();
+
+
+                        const currentDate =new Date().getTime();
+                    
+                    
+                      // how to  store current date for timer in singuppost
+                        req.session.userbeforeLogin=currentDate
+                        return res.redirect('/otpVerfication');
+                      } catch (error) {
+                        // Handle errors and send an error response
+                        console.error('Error sending email:', error);
+                        return res
+                          .status(500)
+                          .send('Error sending email. Please try again later.');
+                      }
+        
+                   
+      }
+ 
+     } catch (error) {
+      console.log("error in updating signup page",error);
+     }
+
+  
+}
+
+
+
+// const signupData = async (req, res) => {
+//   try {
+//     console.log(req.body);
+//     const { username, email, number, password, confirmPassword } = req.body;
+
+//     const checkingUser = await UserCollection.findOne({ email });
+
+//     if (password !== confirmPassword) {
+//       console.log('Passwords do not match');
+//       return res.status(400).send('Passwords do not match');
+//     }
+  
+
+//     if (checkingUser) {
+//       return res.send('User with the same email already exists');
+//     } else {
+//       const saltRounds = 10;
+//       const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+//       const otp = generateOTP(6);
+//       req.session.UserSignUpOtP = otp;
+//       console.log('Generated OTP:', otp);
+
+//       const Email = {
+//         body: {
+//           name: username,
+//           intro: 'Welcome to myWatchie.com here is your OTP .',
+//           outro: `otp :${otp} expire in 5 minutes`,
+//         },
+//       };
+
+//       const emailTemplate = mailGenerator.generate(Email);
+
+//       const mailOptions = {
+//         from: 'nithinjoji0756@gmail.com',
+//         to: email,
+//         subject: 'Welcome to MyApp - Activate Your Account',
+//         html: emailTemplate,
+//       };
+
+//       try {
+//         await transporter.sendMail(mailOptions);
+//         const newUser = new UserCollection({
+//           username,
+//           email,
+//           mobileNumber: number,
+//           password: hashedPassword,
+//           otp,
+//         });
+
+//         await newUser.save();
+//         // User signup successful; send a response
+//         return res.redirect('/otpVerfication');
+//       } catch (error) {
+//         // Handle errors and send an error response
+//         console.error('Error sending email:', error);
+//         return res
+//           .status(500)
+//           .send('Error sending email. Please try again later.');
+//       }
+//     }
+//   } catch (error) {
+//     // Handle errors and send an error response
+//     console.error('Error during user registration:', error);
+//     return res.status(500).send('Error during user registration');
+//   }
+// };
 
 //login validation
 const loginPost = async (req, res) => {
@@ -936,6 +1036,7 @@ const loginPost = async (req, res) => {
   try {
     // Check if a user with the provided email exists
     const user = await UserCollection.findOne({ email: lEmail });
+
 
     if (!user) {
       req.session.invalid = true;
@@ -971,7 +1072,8 @@ const loginPost = async (req, res) => {
 // OTP PAGE WILL DISPLAY IN THIS COMMAND==========================
 
 const otpPage = (req, res) => {
-  res.render('user/otp');
+  const userBeforeLog=req.session.userbeforeLogin
+  res.render('user/otp',{userBeforeLog});
 };
 
 const otpVerification = async (req, res) => {
@@ -998,8 +1100,9 @@ const otpVerification = async (req, res) => {
     console.log('3');
     await UserCollection.updateMany(
       { _id: userWithOTP._id },
-      { $unset: { otp: 1, otpCreatedAt: 1 } },
+      { $unset: { otp: 1, otpCreatedAt: 1 } }
     );
+    await UserCollection.findByIdAndUpdate( userWithOTP._id ,{status:true})
 
     console.log('4');
 
@@ -1023,6 +1126,9 @@ const resendSignup = async (req, res) => {
     { otp: previousOtp },
     { $set: { otp: resendOtp, otpCreatedAt: newResendTime } },
   );
+
+  const currentDate =new Date().getTime();
+  req.session.userbeforeLogin=currentDate
   res.redirect('/otpVerfication');
 };
 //=================================================================================================================================================

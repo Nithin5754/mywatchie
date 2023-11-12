@@ -6,10 +6,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
     lowercase: true,
-    unique: [true, 'Email is already exits'],
+
   },
   username: {
     type: String,
+    required:true
   },
   user_image_url: {
     type: String,
@@ -58,7 +59,12 @@ const UserSchema = new mongoose.Schema({
     {
       type:String
     }
-  ]
+  ],
+  status:{
+    type:Boolean,
+    default:false,
+    required:true
+  }
 });
 
 UserCollection = mongoose.model('userCollection', UserSchema);

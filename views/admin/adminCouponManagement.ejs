@@ -35,7 +35,7 @@
 
  <div 
    class="openCoupon fixed top-0 left-0 right-0 z-50  h-full w-full overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] ">
-<p class="absolute bg-gray-900 h-full w-full opacity-80"></p>
+ <p class="absolute bg-gray-900 h-full w-full opacity-80"></p>
    <div class="fixed inset-0 flex items-center justify-center">
      <!-- Modal content -->
      <div class="relative  bg-white rounded-lg shadow dark:bg-gray-700 w-[500px]">
@@ -98,6 +98,86 @@
 
 </div>
 
+
+
+<!-- edit section coupon -->
+<div 
+class="openCoupon-edit fixed top-0 left-0 right-0 z-50  h-full w-full overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] ">
+<p class="absolute bg-gray-900 h-full w-full opacity-80"></p>
+<div class="fixed inset-0 flex items-center justify-center">
+  <!-- Modal content -->
+  <div class="relative  bg-white rounded-lg shadow dark:bg-gray-700 w-[500px]">
+    <button type="button" 
+      class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white close-coupon-Box-edit"
+      data-modal-hide="authentication-modal">
+      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+      </svg>
+     
+    </button>
+    <div class="px-6 py-6 lg:px-8">
+      <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Create Coupon</h3>
+
+
+      <form class="space-y-6" onsubmit="return validateForm()" id="edit-form">
+       <div>
+         <label for="coupon-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Coupon Name</label>
+         <input type="text" id="couponName-edit" name="couponName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+       </div>
+     
+     
+       <label for="couponValue" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" id="couponTypeTitle">Coupon Value</label>
+       <input type="text" id="couponValue-edit" name="couponValue" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+       <span class="errorMsg text-red-800"></span>
+
+       <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount Type:</p>
+       <input type="radio" id="percentage" name="discountType" value="percentage" onchange="validateForm()">
+       <label for="percentage">Percentage</label>
+       <input type="radio" id="fixed" name="discountType" value="fixed" onchange="validateForm()">
+       <label for="fixed">Fixed</label>
+     
+     
+       <label for="couponMinimumPurchase" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Minimum Purchase</label>
+       <input type="text" id="couponMinimumPurchase-edit" name="couponMinimumPurchase" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+     
+       <label for="validFrom" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid from</label>
+       <input type="date" id="validFrom-edit" name="validFrom" value="<%= new Date().toISOString().slice(0, 10) %>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+     
+       <label for="validTo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid to</label>
+       <input type="date" id="validTo-edit" name="validTo" value="<%= new Date().toISOString().slice(0, 10) %>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+       <span class="alreadyExist text-red-600"></span>
+     
+       <div class="flex justify-end">
+         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none">
+           Create Coupon
+         </button>
+       </div>
+     </form>
+     
+
+
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- coupon edit ends here -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <section class="flex justify-center items-center">
   <div class="container ">
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -132,6 +212,8 @@
           <th class="py-3 px-6 text-left">COUPON CODE</th>  
           <th class="py-3 px-6 text-left">VALID FROM</th>
           <th class="py-3 px-6 text-left">VALID TO</th>
+          <th class="py-3 px-6 text-left">ACTION</th>
+        
            
         </tr>
       </thead>
@@ -186,19 +268,20 @@
         </div>
   
       </td>
+      <td class="px-6 py-4">
+        <div class="font-normal text-gray-500 ">
+         <P class="coupon-edit" data-couponEdit="<%= coupon._id %>"> <i class="fas fa-edit"></i></P>
+         
+        </div>
+      </td>
      </tr>
-        
       <% }); %>
     </tbody>
-
     </table>
   </div>
 
       </table>
     </div>
-
-
-
     </div>
 
   </div>

@@ -39,6 +39,8 @@ const {
 const {
   productList,
   productDetails,
+  fullPageProductView,
+  updateFullPageView,
 } = require('../controllers/productUserControllers');
 
 const {
@@ -126,5 +128,7 @@ router
 router
   .route('/productList/details/:productId')
   .get(userAfterLoginAuthentication, productDetails);
+
+  router.route('/productFullList').get(fullPageProductView).post(updateFullPageView)
 
 module.exports = router;

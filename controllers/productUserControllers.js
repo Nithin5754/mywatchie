@@ -1,6 +1,7 @@
 const product = require('../models/admin/productSchema');
 const Cart = require('../models/cartSchema');
 const Offer=require('../models/admin/offerSchema')
+const categoryCollection=require('../models/admin/categorySchema')
 
 let islogout;
 let isCreateAccount;
@@ -232,6 +233,86 @@ const productList = async (req, res) => {
   }
 };
 
+
+
+const fullPageProductView=async(req,res)=>{
+  const isProfile = req.session.profileName;
+  const userEmail = req.session.userEmail;
+
+  try {
+    const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+    if (!verifyUserEmail) {
+      return res.redirect('/homepage');
+    }
+     let isProductView;
+     let sorted;
+    const categoryNameRecevied= req.session.sortCategroy
+    const priceSortRecevied= req.session.sortPrice
+    if(priceSortRecevied==="Price Low to High"){
+     sorted=1
+    }else if(priceSortRecevied==="Price High to Low"){
+      sorted=-1
+
+    }
+
+    if(categoryNameRecevied){
+    isProductView=await product.find({product_category:categoryNameRecevied}).sort({product_price:sorted})
+
+    }
+     else{
+      isProductView=await product.find({}).sort({product_price:sorted})
+    }
+
+   
+   const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+  
+    islogout = 'log out';
+    isCreateAccount = 'contact us';
+    isCreateAccountUrl = '/homepage';
+    isUrl = '/userDeatils';
+    orderUrl = '/orderHistory';
+    iswallet='/userwallet';
+
+
+
+    const avilableCategories=await categoryCollection.find()
+     
+
+
+   
+    res.render('user/fullProductView',{
+      isProductView,
+      isProfile,
+      isUrl,
+      islogout,
+      orderUrl,
+      isCreateAccount,
+      isCreateAccountUrl,
+      cartItems,
+      verifyUserEmail,
+      iswallet,
+      avilableCategories,
+      categoryNameRecevied,
+      priceSortRecevied
+    })
+  } catch (error) {
+    console.log(error,"error:fetching viewing product list");
+  }
+}
+
+
+const updateFullPageView=(req,res)=>{
+  const {category,priceSort }=req.body
+  console.log(category);
+  console.log(priceSort);
+
+  req.session.sortCategroy=category
+  req.session.sortPrice=priceSort
+  res.json({sucess:"sucessufully recevied"})
+}
+
+
+
 const productDetails = async (req, res) => {
   const isProfile = req.session.profileName;
   const userEmail = req.session.userEmail;
@@ -285,5 +366,7 @@ const productDetails = async (req, res) => {
 module.exports = {
   productList,
   productDetails,
+  fullPageProductView,
+  updateFullPageView,
   // productSort,
 };

@@ -57,7 +57,7 @@
   <!-- Second Section: Product List without Swiper -->
   <section class="">
     <h1 class="text-center font-extrabold text-3xl mt-14 text-gray-500"><%= categoryName %></h1>
-    <ul class="grid grid-cols-3 justify-center items-center">
+    <ul class="lg:grid grid-cols-4 md:grid-cols-3 grid-cols-1  justify-center items-center">
       
       <% isProductListFilter.forEach((element, index)=> { %>
         
@@ -143,7 +143,7 @@
 </main>
 
 </div>
-
+<%- include('./partials/foooter.ejs') %>
 
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>

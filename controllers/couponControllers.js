@@ -14,7 +14,17 @@ const { randomUUID } = new ShortUniqueId({ length: 10 });
 const adminCouponManagement=async(req,res)=>{  
 
    try {
-    const isCoupons=await couponCollection.find()
+    const currentDate = new Date();
+    await couponCollection.deleteMany({
+      $or: [
+        { validFrom: { $gt: currentDate } },
+        { validTo: { $lt: currentDate } }
+      ]
+    });
+    const isCoupons = await couponCollection.find({
+      validFrom: { $lte: currentDate },
+      validTo: { $gte: currentDate },
+    })
 
     res.render('admin/adminCouponManagement',{SideBarSection:'Coupon Management',isCoupons})
    } catch (error) {
@@ -114,9 +124,56 @@ const validateCouponAlreadyExist=async(req,res)=>{
   res.status(200).json({ valid: true });
 }
 
+const editCoupon=async(req,res)=>{
+   const {getEditValue}=req.body
+   req.session.editCouponId=getEditValue
+   try {
+
+    const isCouponExist=await couponCollection.findOne({_id:getEditValue})
+    console.log(isCouponExist,"helo my coupon ");
+
+ if(isCouponExist){
+  res.status(200).json({ data: isCouponExist });
+ }else{
+  res.status(400).json({error:"not found"})
+ }
+    
+   } catch (error) {
+    console.log(error,"error in editing existing coupon");
+   }
+}
 
 
-module.exports={adminCouponManagement,adminCouponCreate,adminCoponSelectByUser,validateCouponAlreadyExist}
+const editUpdateCoupon=async(req,res)=>{
+  const {couponName,couponValue,couponMinimumPurchase,validFrom,validTo,discountType}=req.body
+  console.log(couponName,couponValue,couponMinimumPurchase,validFrom,validTo,discountType,"updated coupon")
+
+  const isCouponUpdated = await couponCollection.findOneAndUpdate(
+    { _id: req.session.editCouponId },
+    {
+      $set: {
+        couponName,
+        couponValue,
+        couponMinimumPurchase,
+        validFrom,
+        validTo,
+        discountType
+      }
+    }
+  );
+  
+if(!isCouponUpdated){
+  return res.status(200).json({error:"error in updating coupon in db"})
+}
+
+
+
+  res.status(200).json({sucess:"ok"})
+
+}
+
+
+module.exports={adminCouponManagement,adminCouponCreate,adminCoponSelectByUser,validateCouponAlreadyExist,editCoupon,editUpdateCoupon}
 
 
 

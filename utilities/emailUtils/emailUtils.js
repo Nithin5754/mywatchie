@@ -31,18 +31,34 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to generate OTP
+
+// function generateOTP(length) {
+ 
+//   const maxValue = Math.pow(10, length) - 1;
+
+
+//   const randomOTP = crypto.randomInt(0, maxValue);
+
+
+//   const otp = randomOTP.toString().padStart(length, '0');
+
+//   return otp;
+// }
+
+
+let generatedOTPs = new Set();
+
 function generateOTP(length) {
-  // Calculate the maximum value based on the length
-  const maxValue = Math.pow(10, length) - 1;
+ let otp;
+ do {
+   const maxValue = Math.pow(10, length) - 1;
+   const randomOTP = crypto.randomInt(0, maxValue);
+   otp = randomOTP.toString().padStart(length, '0');
+ } while (generatedOTPs.has(otp));
 
-  // Generate a random number within the specified range
-  const randomOTP = crypto.randomInt(0, maxValue);
-
-  // Convert the random number to a string and pad it with leading zeros
-  const otp = randomOTP.toString().padStart(length, '0');
-
-  return otp;
+ generatedOTPs.add(otp);
+ return otp;
 }
+
 
 module.exports = { mailGenerator, transporter, generateOTP };
