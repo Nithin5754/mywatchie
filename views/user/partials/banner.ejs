@@ -55,10 +55,9 @@
 <div class="swiper mySwiper bg-gray-100 p-4">
   <div class="swiper-wrapper">
 
- 
-      
-    <div class="swiper-slide  swiper-slide-banner text-white py-24 px-10 "
-    style="background-image: url('<%= randomBanner%>');">
+    <% randomBanner.forEach((random) => {  %>
+          <div class="swiper-slide  swiper-slide-banner text-white py-24 px-10 "
+    style="background-image: url('<%= random%>');">
     <div class="  ">
       <div>
       
@@ -68,6 +67,12 @@
     </div>
     
   </div>
+      
+   <% }); %>
+
+ 
+      
+
 
 
 

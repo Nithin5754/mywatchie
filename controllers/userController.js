@@ -17,7 +17,7 @@ const Product=require('../models/admin/productSchema')
 // const product=require('../models/admin/productSchema')
 
 let userEmail;
-let productAvailable='';
+let productAvailable;
 
 const {
   mailGenerator,
@@ -60,7 +60,7 @@ let iswallet;
 
 const userBeforeLogin = async (req, res) => {
   try {
-    const randomBanner = await getRandomBannerImage();
+    const randomBanner = await getRandomMultipleImages();
     const randomCategory = await categoryCollections.aggregate([
       { $sort: { product_category: -1 } },
       { $limit: 4 },
@@ -140,7 +140,7 @@ if(!isWallet){
 }
 
 
-    const randomBanner = await getRandomBannerImage();
+    const randomBanner = await getRandomMultipleImages();
     console.log(randomBanner,"my banner");
     return res.render('user/home', {
       randomBanner,
