@@ -14,7 +14,8 @@
 
   <section class="flex sm:flex-row w-2/4 sm:justify-between flex-col">
 
-    <div class="mt-24  flex flex-col  w-64 gap-5">
+    <div class="mt-24  flex flex-col  w-64 gap-3">
+      <p class="text-gray-900 font-bold items-center  ml-5"><%= paginate.page %> out of <%= maxPage %></p>
       <button id="dropdownDefault" 
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 m-4"
         type="button">
@@ -138,6 +139,24 @@
   
 </section>
 
+
+<section class="my-6">
+  <div class="pagination flex justify-center gap-4"> 
+    <% if (paginate.hasPreviousPages) { %>
+      <a href="?page=<%= paginate.page-1 %>"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Previous</a>
+      <% } %>
+
+        <% if (paginate.hasNextPages && page<maxPage) { %>
+          <a href="?page=<%= paginate.page+1  %>"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:bg-blue-700 focus:outline-none transition duration-300 ease-in-out">
+            Next
+          </a>
+          <% } %>
+
+         
+  </div>
+</section>
 
 
 

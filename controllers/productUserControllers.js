@@ -255,16 +255,35 @@ const fullPageProductView=async(req,res)=>{
 
     }
 
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 9;
+    const startIndex = (page - 1) * limit;
+    const totalProducts = await product.countDocuments();
+    const maxPage = Math.ceil(totalProducts / limit);
+    if (page > maxPage) { 
+      return res.redirect(`/adminUserManagement?page=${maxPage}`);
+    }
+
+
+
     if(categoryNameRecevied){
     isProductView=await product.find({product_category:categoryNameRecevied}).sort({product_price:sorted})
+    .limit(limit)
+    .skip(startIndex)
+    .exec();
 
     }
      else{
       isProductView=await product.find({}).sort({product_price:sorted})
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
     }
 
    
-   const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+   const cartItems = await Cart.findOne({ userId: verifyUserEmail._id })
+
   
     islogout = 'log out';
     isCreateAccount = 'contact us';
@@ -293,7 +312,9 @@ const fullPageProductView=async(req,res)=>{
       iswallet,
       avilableCategories,
       categoryNameRecevied,
-      priceSortRecevied
+      priceSortRecevied,
+      page,
+      maxPage,
     })
   } catch (error) {
     console.log(error,"error:fetching viewing product list");
@@ -301,10 +322,29 @@ const fullPageProductView=async(req,res)=>{
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const updateFullPageView=(req,res)=>{
   const {category,priceSort }=req.body
   console.log(category);
   console.log(priceSort);
+
+
+
+
 
   req.session.sortCategroy=category
   req.session.sortPrice=priceSort
