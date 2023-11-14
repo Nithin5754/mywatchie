@@ -122,22 +122,18 @@ const homepage = async (req, res) => {
     isLogin = true;
     iswallet='/userwallet'
 
-    // const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
-    // if (!cartItems) {
-    //   console.log('no cart');
-    //   let userCart = new Cart({
-    //     userId: verifyUserEmail._id,
-    //     items: [],
-    //     total: null,
-    //     totalQuantity: null,
-    //   });
+    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id });
+    if (!cartItems) {
+      console.log('no cart');
+      let userCart = new Cart({
+        userId: verifyUserEmail._id,
+        items: [],
+        total: null,
+        totalQuantity: null,
+      });
 
-    //   await userCart.save();
-    // }
-
-
-
-
+      await userCart.save();
+    }
 
 
     const isWallet= await wallet.findOne({ userId: verifyUserEmail._id });
