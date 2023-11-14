@@ -77,9 +77,8 @@ const userblock = async (req, res) => {
     if (!user) {
       return res.status(404).send('User not found');
     }
-
+   req.session.isBlock=true
     user.isBlocked = true;
-    req.session.isBlock= user.isBlocked
     await user.save();
     return res.redirect('/adminUserManagement');
   } catch (error) {

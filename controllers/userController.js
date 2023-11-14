@@ -587,28 +587,6 @@ const userDetailsEdit = async (req, res) => {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const userOrderCancel = async (req, res) => {
   const userEmail = req.session.userEmail;
   const cancelOrderNumber = req.params.cancelOrderId;
@@ -914,7 +892,7 @@ const signupData= async (req, res) => {
                 body: {
                   name: username,
                   intro: 'Welcome to myWatchie.com here is your OTP .',
-                  outro: `otp :${otp} expire in 5 minutes`,
+                  outro: `otp :${otp} expire in 2 minutes`,
                 },
               };
         
@@ -965,73 +943,8 @@ const signupData= async (req, res) => {
 
 
 
-// const signupData = async (req, res) => {
-//   try {
-//     console.log(req.body);
-//     const { username, email, number, password, confirmPassword } = req.body;
 
-//     const checkingUser = await UserCollection.findOne({ email });
 
-//     if (password !== confirmPassword) {
-//       console.log('Passwords do not match');
-//       return res.status(400).send('Passwords do not match');
-//     }
-  
-
-//     if (checkingUser) {
-//       return res.send('User with the same email already exists');
-//     } else {
-//       const saltRounds = 10;
-//       const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-//       const otp = generateOTP(6);
-//       req.session.UserSignUpOtP = otp;
-//       console.log('Generated OTP:', otp);
-
-//       const Email = {
-//         body: {
-//           name: username,
-//           intro: 'Welcome to myWatchie.com here is your OTP .',
-//           outro: `otp :${otp} expire in 5 minutes`,
-//         },
-//       };
-
-//       const emailTemplate = mailGenerator.generate(Email);
-
-//       const mailOptions = {
-//         from: 'nithinjoji0756@gmail.com',
-//         to: email,
-//         subject: 'Welcome to MyApp - Activate Your Account',
-//         html: emailTemplate,
-//       };
-
-//       try {
-//         await transporter.sendMail(mailOptions);
-//         const newUser = new UserCollection({
-//           username,
-//           email,
-//           mobileNumber: number,
-//           password: hashedPassword,
-//           otp,
-//         });
-
-//         await newUser.save();
-//         // User signup successful; send a response
-//         return res.redirect('/otpVerfication');
-//       } catch (error) {
-//         // Handle errors and send an error response
-//         console.error('Error sending email:', error);
-//         return res
-//           .status(500)
-//           .send('Error sending email. Please try again later.');
-//       }
-//     }
-//   } catch (error) {
-//     // Handle errors and send an error response
-//     console.error('Error during user registration:', error);
-//     return res.status(500).send('Error during user registration');
-//   }
-// };
 
 //login validation
 const loginPost = async (req, res) => {
@@ -1102,8 +1015,8 @@ const otpVerification = async (req, res) => {
     // Check if the OTP has expired
     const otpCreationTime = userWithOTP.otpCreatedAt;
     const otpExpirationTime = new Date(otpCreationTime);
-    // OTP expires in 60seconds
-    otpExpirationTime.setMinutes(otpExpirationTime.getMinutes() + 1);
+
+    otpExpirationTime.setMinutes(otpExpirationTime.getMinutes() + 2);
 
     if (new Date() > otpExpirationTime) {
       console.log('expired');

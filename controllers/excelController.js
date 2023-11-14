@@ -52,20 +52,43 @@ const salesReportExcelDaily = async (req, res) => {
             $lte: currentEndDate,
           },
           status: { $nin: ['cancelled', 'userCancelled'] }
-        });
+        }).populate('items.product');
 
         console.log(data, "my data");
-
+        
+        // Accessing product details for each order
+        data.forEach(order => {
+          console.log('Order Number:', order.orderNumber);
+          order.items.forEach(item => {
+            console.log('Product ID:', item.product._id);
+            console.log('Product Name:', item.product.product_name); // Replace 'name' with the actual field in your product schema
+            console.log('Order Price:', item.orderPrice);
+            console.log('Quantity:', item.quantity);
+            console.log('Price of Total Quantity:', item.priceOfTotalQTy);
+            // ... Other product details you want to access
+          });
+          
+        });
+  
         const order = data.map((item) => ({
           orderNumber: item.orderNumber,
           date: moment(item.orderDate).format('DD/MM/YYYY'),
           price: item.totalPrice,
           status: item.status,
-          street: item.shippingAddress.username,
+      username: item.shippingAddress.username,
           city: item.shippingAddress.city,
           state: item.shippingAddress.address_tag,
           zipCode: item.shippingAddress.postalCode,
           phoneNumber: item.phoneNumber,
+          products:item.items.map(item => ({
+            productId: item.product._id,
+            productName: item.product.product_name, 
+            orderPrice: item.orderPrice,
+            quantity: item.quantity,
+            priceOfTotalQTy: item.priceOfTotalQTy,
+            
+          })),
+       
         }));
 
         isOrder.push(...order);
@@ -241,7 +264,7 @@ let isOrder=[];
               $lte: currentEndDate,
             },
             status: { $nin: ['cancelled', 'userCancelled'] }
-          });
+          })
 
           console.log(data,"my data");
     
