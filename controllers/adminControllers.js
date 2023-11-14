@@ -79,6 +79,7 @@ const userblock = async (req, res) => {
     }
 
     user.isBlocked = true;
+    req.session.isBlock= user.isBlocked
     await user.save();
     return res.redirect('/adminUserManagement');
   } catch (error) {
@@ -98,8 +99,8 @@ const userunblock = async (req, res) => {
     if (!user) {
       return res.status(404).send('User not found');
     }
-
     user.isBlocked = false;
+    req.session.isBlock=user.isBlocked 
     await user.save();
     return res.redirect('/adminUserManagement');
   } catch (error) {

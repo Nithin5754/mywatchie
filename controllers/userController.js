@@ -1074,6 +1074,7 @@ const loginPost = async (req, res) => {
 
     req.session.invalid = false;
     req.session.isUser = true;
+req.session.isBlock=true
     req.session.profileName = user.username;
     req.session.userEmail = user.email;
     console.log('My email is ' + req.session.userEmail);
