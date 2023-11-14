@@ -916,18 +916,6 @@ video {
   margin-top: 2rem;
 }
 
-.mb-40 {
-  margin-bottom: 10rem;
-}
-
-.mb-20 {
-  margin-bottom: 5rem;
-}
-
-.mb-24 {
-  margin-bottom: 6rem;
-}
-
 .block {
   display: block;
 }
@@ -1178,6 +1166,10 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-7 {
+  width: 1.75rem;
 }
 
 .min-w-full {
@@ -1790,6 +1782,22 @@ video {
   padding: 2rem;
 }
 
+.p-7 {
+  padding: 1.75rem;
+}
+
+.p-5 {
+  padding: 1.25rem;
+}
+
+.p-52 {
+  padding: 13rem;
+}
+
+.p-96 {
+  padding: 24rem;
+}
+
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -1885,6 +1893,51 @@ video {
   padding-bottom: 2rem;
 }
 
+.px-96 {
+  padding-left: 24rem;
+  padding-right: 24rem;
+}
+
+.px-\[\] {
+  padding-left: ;
+  padding-right: ;
+}
+
+.px-\[500p\] {
+  padding-left: 500p;
+  padding-right: 500p;
+}
+
+.px-\[500px\] {
+  padding-left: 500px;
+  padding-right: 500px;
+}
+
+.px-\[00px\] {
+  padding-left: 00px;
+  padding-right: 00px;
+}
+
+.px-\[700px\] {
+  padding-left: 700px;
+  padding-right: 700px;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.px-\[5500px\] {
+  padding-left: 5500px;
+  padding-right: 5500px;
+}
+
+.px-\[550px\] {
+  padding-left: 550px;
+  padding-right: 550px;
+}
+
 .pb-2 {
   padding-bottom: 0.5rem;
 }
@@ -1919,6 +1972,10 @@ video {
 
 .pt-6 {
   padding-top: 1.5rem;
+}
+
+.pl-4 {
+  padding-left: 1rem;
 }
 
 .text-left {
@@ -2705,6 +2762,16 @@ video {
     background-color: rgb(55 65 81 / var(--tw-bg-opacity));
   }
 
+  .dark\:hover\:bg-blue-400:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(96 165 250 / var(--tw-bg-opacity));
+  }
+
+  .dark\:hover\:bg-gray-500:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+  }
+
   .dark\:hover\:text-gray-300:hover {
     --tw-text-opacity: 1;
     color: rgb(209 213 219 / var(--tw-text-opacity));
@@ -2770,6 +2837,10 @@ video {
     grid-column: span 8 / span 8;
   }
 
+  .sm\:mb-24 {
+    margin-bottom: 6rem;
+  }
+
   .sm\:ml-8 {
     margin-left: 2rem;
   }
@@ -2780,10 +2851,6 @@ video {
 
   .sm\:mt-24 {
     margin-top: 6rem;
-  }
-
-  .sm\:mb-24 {
-    margin-bottom: 6rem;
   }
 
   .sm\:grid {

@@ -16,8 +16,9 @@
 
     <div class="mt-24  flex flex-col  w-64 gap-3">
       <p class="text-gray-900 font-bold items-center  ml-5"><%= paginate.page %> out of <%= maxPage %></p>
-      <button id="dropdownDefault" 
-        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 m-4"
+      <div class="flex">
+        <button id="dropdownDefault" 
+        class="text-white bg-gray-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex dark:bg-blue-600 dark:hover:bg-gray-500 dark:focus:ring-blue-800 w-28 m-4"
         type="button">
         Filter 
         <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -25,6 +26,15 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
+
+      <button id="searchBtn" 
+      class="text-white bg-gray-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex dark:bg-blue-600 dark:hover:bg-gray-500 dark:focus:ring-blue-800 w-28 m-4"
+      type="button">
+      search
+     <span class="pl-4"> <i class="fas fa-search"></i></span>
+    </button>
+      </div>
+
   
       <div class="filter-box hidden flex flex-col gap-4 w-64 bg-white h-72 justify-center items-center rounded p-4">
         <!-- Category Filter -->
@@ -55,6 +65,7 @@
         <div class="flex justify-center">
           <button class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 " type="button" onclick="submitForm()">Apply Filter</button>
         </div>
+    
       </div>
     </div>
   
@@ -71,11 +82,23 @@
 
 <!-- Second Section: Product List without Swiper -->
 <section class="mt-8">
+
+  <section>
+    <%- include('./partials/productFullSearch.ejs') %>
+</section>
+
+<ul id="noResultsMessage" class="flex flex-wrap  justify-center gap-2 " style="display: none;">
+  <p id="emptyProduct"  class="text center m-auto px-[550px] py-10"></p>
+
+</ul>
+
+
+
   <% if (isProductView.length>0) { %>
       <ul class="flex flex-wrap  justify-center gap-2 ">
     <% isProductView.forEach((element, index)=> { %>
   
-      <li class="searchable-item relative m-4 ml-10 mb-8 md:m-4 lg:m-10 flex w-full h-auto max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
+      <li class="searchable-item-all relative m-4 ml-10 mb-8 md:m-4 lg:m-10 flex w-full h-auto max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
         <a class="relative mx-2 mt-2 md:mx-3 md:mt-3 lg:mx-4 lg:mt-4 h-28 md:h-52 overflow-hidden rounded-xl flex flex-col justify-between"
           href="/productList/details/<%= element._id %>">
           <img id="image" class="object-contain w-full h-full md:h-52 lg:h-60" src="/<%= element.product_image_url[0] %>" alt="<%= element.product_image_url[0] %>" />
@@ -141,7 +164,7 @@
 </section>
 
 
-<section class="my-6">
+<section class="my-6" >
   <div class="pagination flex justify-center gap-4"> 
     <% if (paginate.hasPreviousPages) { %>
       <a href="?page=<%= paginate.page-1 %>"
@@ -207,6 +230,37 @@
   </script>
       
 </script>
+
+
+
+<script>
+  const searchInput = document.getElementById('userSearch-all');
+  const searchableItems = document.querySelectorAll('.searchable-item-all');
+  const noResultsMessage = document.getElementById('noResultsMessage'); 
+
+  // Reference to the message element
+
+  searchInput.addEventListener('input', () => {
+    const searchText = searchInput.value.toLowerCase();
+    let found = false; // Flag to check if any matching items are found
+
+    searchableItems.forEach(item => {
+      const itemText = item.textContent.toLowerCase();
+
+      if (itemText.includes(searchText)) {
+        item.style.display = 'block';
+        found = true; // Set the flag to true if a matching item is found
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+  
+    noResultsMessage.style.display = found ? 'none' : 'block';
+ 
+
+  });
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js"></script>
 <script>
   bodymovin.loadAnimation({
@@ -214,7 +268,14 @@
     path:'/json/emptyProduct.json',
   });
 </script>
-   
+<script>
+  const searchBtn=document.getElementById('searchBtn')
+  const searchInp=document.getElementById('search-fullProduct-Box')
+
+  searchBtn.addEventListener('click',()=>{
+    searchInp.style.display=  searchInp.style.display==='none'?'block':'none'
+  })
+</script>
 
 </body>
 </html>

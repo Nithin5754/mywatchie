@@ -29,43 +29,27 @@
 
 <!-- drawer init and show -->
 <div  class="text-end   mt-24 ml-4">
-  <button  id="sidebarbutton" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
+  <button  id="sidebarbutton" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" type="button" >
   Filters
   </button>
+  <button id="searchBtn-categoryWise" 
+  class="text-white bg-gray-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex dark:bg-blue-600 dark:hover:bg-gray-500 dark:focus:ring-blue-800 w-28 m-4"
+  type="button">
+  search
+ <span class="pl-4"> <i class="fas fa-search"></i></span>
+</button>
+
+
+
 </div>
 <aside >
-
-
-
-
-
-
-
-
-<!-- Button -->
-<!-- <div class="h-12 w-12">
-  <button type="button" id="sidebarbutton" class="inline-flex mt-24 p-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 ">
-    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-      <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
-    </svg>
-  </button>
-</div> -->
-<!-- id="sidebar" -->
-<!-- Sidebar -->
-
-
-
-
-
-
-
 
 
 <!-- drawer component -->
 <div  id="sidebar" style="display: none;" class="   fixed mt-20 top-0 left-0 z-40 w-64 h-screen p-4 overflow-y-auto  -translate-x-full bg-white dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-navigation-label">
   <div class="flex flex-row justify-between relative">
     <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">filters</h5>
-    <button type="button" id="close-filter" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-1 right-1 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+    <button type="button" id="close-filter" data-drawer-hide="drawer-navigation"  class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-1 right-1 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
       <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
       </svg>
@@ -149,7 +133,9 @@
   <!-- Second Section: Product List without Swiper -->
   <section>
     <h1 class="text-center font-extrabold text-3xl mt-14 text-gray-500"><%= categoryName %></h1>
-   
+
+    
+
 
    <% if(isProductListFilter.length>0){ %>
    <ul class="flex flex-wrap  justify-center  ">
@@ -234,8 +220,7 @@
     </ul>
   <% }  %>
 
-     
-
+  
   </section>
 
 
@@ -311,24 +296,11 @@
 <script src="/js/rating.js"></script>
 
 
-<script>
-  const searchInput = document.getElementById('userSearch');
-  const searchableItems = document.querySelectorAll('.searchable-item'); // Select items by class
 
-  searchInput.addEventListener('input', () => {
-    const searchText = searchInput.value.toLowerCase();
 
-    searchableItems.forEach(item => {
-      const itemText = item.textContent.toLowerCase();
 
-      if (itemText.includes(searchText)) {
-        item.style.display = 'block'; // Show the item
-      } else {
-        item.style.display = 'none'; // Hide the item
-      }
-    });
-  });
-</script>
+
+
 <script>
    const sideBarButton=document.querySelector('#sidebarbutton')
    const sidebar=document.querySelector('#sidebar')
@@ -348,6 +320,46 @@
 
 
 </script>
+
+
+
+
+<script>
+  const searchBtn=document.getElementById('searchBtn-categoryWise')
+  const searchInp=document.getElementById('search-categoryWise-Box')
+
+  searchBtn.addEventListener('click',()=>{
+    searchInp.style.display=  searchInp.style.display==='none'?'block':'none'
+  })
+</script>
+
+
+
+<script>
+  const searchInput = document.getElementById('userSearch');
+  const searchableItems = document.querySelectorAll('.searchable-item'); 
+
+  searchInput.addEventListener('input', () => {
+    const searchText = searchInput.value.toLowerCase();
+   
+
+    searchableItems.forEach(item => {
+      const itemText = item.textContent.toLowerCase();
+
+      if (itemText.includes(searchText)) {
+        item.style.display = 'block';
+      
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+   
+  });
+
+</script>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.5/lottie.min.js"></script>
 <script>
   bodymovin.loadAnimation({
@@ -355,12 +367,6 @@
     path:'/json/emptyProduct.json',
   });
 </script>
-
-
-
-
-
-
 
 </body>
 
