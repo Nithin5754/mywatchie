@@ -34,7 +34,7 @@
 
  
     
-    <main style="margin-top:5rem " >
+    <main style="margin-top:5rem" >
   
       <section class="relative mb-5">
         <%- include('./partials/banner.ejs',{randomBanner}) %>
@@ -44,7 +44,7 @@
       
 
 <!-- best of products -->
-  <section style="margin-bottom:5rem ">
+  <section style="margin-bottom:5rem" >
     <h1 class="text-3xl mt-8 mb-8 text-center font-bold ">Best of Products</h1>
   <%- include('./partials/bestOfWatches.ejs',{productAvailable}) %>
   <div class="flex justify-center items-center ">
@@ -57,7 +57,7 @@
 
       <!-- category section -->
      
-      <section style="margin-bottom:5rem ">
+      <section id="category" style="margin-bottom:5rem ">
         <h1 class="text-4xl mt-8 mb-8 text-center font-bold ">Category</h1>
       <!-- Include your content here -->
         <%- include('./partials/category.ejs',{ randomCategory,isLogin}) %>
@@ -99,13 +99,21 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <!-- Initialize Swiper -->
+<!-- Initialize Swiper -->
 <script>
+  var clickableDelay = 1000; // Set the delay time in milliseconds (1 second in this example)
+  var lastClickTime = 0;
+
   var swiper = new Swiper(".bestProduct", {
     freeMode: true,
     navigation: {
       nextEl: ".swiper-button-next",
       prevEl: ".swiper-button-prev",
     },
+    autoplay: {
+      delay: 3000, // Adjust the delay (in milliseconds) as needed
+    },
+    speed: 800,
 
     pagination: {
       el: ".swiper-pagination",
@@ -114,11 +122,9 @@
     breakpoints: {
       320: {
         slidesPerView: 1,
-     
       },
       480: {
         slidesPerView: 1,
-   
       },
       640: {
         slidesPerView: 2,
@@ -132,9 +138,20 @@
         slidesPerView: 3,
         spaceBetween: 50,
       },
-
       // Add more breakpoints as needed
     },
+  });
+
+  // Handle click event on pagination
+  swiper.on('click', function() {
+    var currentTime = new Date().getTime();
+    if (currentTime - lastClickTime > clickableDelay) {
+      // Allow the click if the delay has passed
+      lastClickTime = currentTime;
+    } else {
+      // Prevent the click if the delay hasn't passed
+      swiper.allowClick = false;
+    }
   });
 </script>
 

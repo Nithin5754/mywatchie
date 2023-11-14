@@ -65,9 +65,16 @@ if(dataOrder.paymentMethod==='debit'){
 }else{
   payOption='cash on delivery'
 }
+let afterDiscount=dataOrder.totalPrice
+
+
 doc.fontSize(12).text('Summary:');
+doc.text(`shipping cost: ${  dataOrder.shippingCost}  `);
+if(dataOrder.couponValue){
+  doc.text(`discount amount: ${dataOrder.couponValue}  `);
+}
 doc.text(`payment method: ${  payOption}  `);
-doc.text(`Total Price: $${dataOrder.totalPrice} inc all tax(6%) `);
+doc.text(`Total Price: $${  afterDiscount}  inc all tax(5%) `);
 
 
   doc.moveDown();

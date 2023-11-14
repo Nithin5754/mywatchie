@@ -26,6 +26,9 @@ const UserOrderSchema = new mongoose.Schema({
   appliedCoupon:{
     type:Number
   },
+  couponValue:{
+    type:Number
+  },
 
   totalPrice: {
     type: Number,

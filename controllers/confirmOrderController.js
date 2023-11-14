@@ -101,7 +101,7 @@ const confirmPage = async (req, res) => {
 
 
 
-
+console.log(couponValueApplied,"hai hello");
 
     const newOrder = new UserOrder({
       items: userCart.items.map(item => ({
@@ -111,9 +111,10 @@ const confirmPage = async (req, res) => {
         priceOfTotalQTy: item.product. product_price_After_discount? item.product. product_price_After_discount: item.product. product_price * item.quantity,
       })),
       appliedCoupon:couponValueApplied,
-      totalPrice:couponValueApplied?couponValueApplied:isCart.total-couponValueApplied,
-
-      orderNumber: getOrderNumber,
+      // totalPrice:couponValueApplied?couponValueApplied:isCart.total,
+     couponValue:latestCouponAppliedSection?latestCouponAppliedSection.couponValue:0,
+      totalPrice:couponValueApplied,
+      orderNumber: getOrderNumber,  
       shippingAddress: {
         username: isPrimarytheir.address_username,
         city: isPrimarytheir.city,
@@ -232,6 +233,9 @@ const confirmPage = async (req, res) => {
 
 const invoice=async(req,res,next)=>{
   const  getLatestOrderNumber=req.session.latestOrdreNumber 
+  const latestCouponAppliedSection= req.session.userCurrentCoupon
+  console.log(latestCouponAppliedSection,"hello");
+
 
 const paymentMethod=req.session.paymentMethod
 
@@ -261,10 +265,11 @@ function formatOrderDate(dateString) {
       return formattedDate;
         } 
 
-        const baseTotalPrice = orderConfirm.totalPrice; // Base total price
-        const taxRate = 0.05; // Tax rate (5%)
+        // const baseTotalPrice = orderConfirm.totalPrice; // Base total price
+        // const taxRate = 0.05; // Tax rate (5%)
         const shippingCost = orderConfirm.totalPrice >= 400 ? 100 : 0;
-        const totalPrice = (baseTotalPrice + baseTotalPrice * taxRate + shippingCost).toFixed(2);
+        // const totalPrice = (baseTotalPrice + baseTotalPrice * taxRate + shippingCost).toFixed(2);
+        const totalPrice=orderConfirm.appliedCoupon
 
     
   const stream=res.writeHead(200,{
@@ -279,11 +284,15 @@ function formatOrderDate(dateString) {
   postalCode:orderConfirm.shippingAddress.postalCode,
   address_tag:orderConfirm.shippingAddress.city,
   phoneNumber:orderConfirm.phoneNumber,
+  couponValue:orderConfirm.couponValue?orderConfirm.couponValue:0,
+  shippingCost:shippingCost,
   totalPrice:totalPrice,
   paymentMethod:paymentMethod
      
   }
-  
+
+
+
 
   pdfService.buildPDF((chunk)=>stream.write(chunk),
   ()=>stream.end(),dataOrder,isOrderProduct)

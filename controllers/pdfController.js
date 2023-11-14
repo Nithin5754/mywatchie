@@ -5,6 +5,8 @@ const moment=require('moment')
 
 const userOrder=require('../models/orderSchema')
 
+const Product=require('../models/admin/productSchema')
+
 
 
 
@@ -117,7 +119,7 @@ const SalesWeeklyReport=async(req,res,next)=>{
           $lte: currentEndDate,
         },
         status: { $nin: ['cancelled', 'userCancelled'] }
-      });
+      })
 
       console.log(data, "my data");
 
@@ -184,9 +186,9 @@ const SalesMonthReport=async(req,res,next)=>{
           $lte: currentEndDate,
         },
         status: { $nin: ['cancelled', 'userCancelled'] }
-      });
+      })
 
-      console.log(data, "my data");
+      console.log(data, "my data nithin joji");
 
       const order = data.map((item) => ({
         orderNumber: item.orderNumber,
@@ -198,6 +200,7 @@ const SalesMonthReport=async(req,res,next)=>{
         state: item.shippingAddress.address_tag,
         zipCode: item.shippingAddress.postalCode,
         phoneNumber: item.phoneNumber,
+    
       }));
 
       isOrder.push(...order);

@@ -3,7 +3,7 @@
   /* Set full height for the swiper container and slides */
 
   .swiper-slide-banner {
-    height: 87vh;
+    height: 77vh;
   }
 
 
@@ -52,18 +52,18 @@
 
 
 
-<div class="swiper mySwiper bg-gray-100 p-4">
+<div class="swiper mySwiper bg-gray-100 p-4 ">
   <div class="swiper-wrapper">
 
     <% randomBanner.forEach((random) => {  %>
-          <div class="swiper-slide  swiper-slide-banner text-white py-24 px-10 "
+          <div class="relative swiper-slide  swiper-slide-banner text-white py-24 px-10 "
     style="background-image: url('<%= random%>');">
-    <div class="  ">
-      <div>
+    <div class="absolute bottom-14  ">
+     
       
-        <a href="/productFullList"
-          class="slide-banner-button-1 bg-blue-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800">Shop Now</a>
-      </div>
+        <a href="#"
+          class="slide-banner-button-1 bg-blue-800 py-4 px-8 text-white font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800"><button>Show now</button></a>
+ 
     </div>
     
   </div>

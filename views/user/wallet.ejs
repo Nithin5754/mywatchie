@@ -54,23 +54,25 @@
                 <%= formattedDate %>
                   <% } %>
 
-                  <div class="txn-history mt-4 w-8/12 m-auto bg-white rounded-lg shadow-lg p-4">
+                  <div class="txn-history mt-4 md:w-10/12 lg:w-8/12 w-full m-auto bg-white rounded-lg shadow-lg p-4">
                     <p class="text-lg font-semibold"><b>History</b></p>
                 
                     <% isWallet.transactions.sort((a, b) => new Date(b.date) - new Date(a.date)).map((history,index) => { %>
-                        <div class="txn-list flex justify-between items-center border-b border-gray-300 py-2">
-                            <div class="flex flex-row gap-5">
-                                <p><%= index+1 %></p>
-                                <p><%= history.description %></p>
-                                <p class="text-gray-600 text-sm"><%= formatOrderDate(history.date) %></p>
-                            </div>
-                            <%if(history.description==='product purchased'){%>
-                              <p class="text-red-800">-$<%= history.amount %></p>
-                           <% }else{ %>
-                            <p class="text-green-800">+$<%= history.amount %></p>
-
-                         <%  }%>
+                    <%   if(index<=15){ %>
+                      <div class="txn-list flex justify-between items-center border-b border-gray-300 py-2">
+                        <div class="flex flex-row gap-5">
+                            <p><%= index+1 %></p>
+                            <p><%= history.description %></p>
+                            <p class="text-gray-600 text-sm "><%= formatOrderDate(history.date) %></p>
                         </div>
+                        <%if(history.description==='product purchased'){%>
+                          <p class="text-red-800">-$<%= history.amount %></p>
+                       <% }else{ %>
+                        <p class="text-green-800">+$<%= history.amount %></p>
+
+                     <%  }%>
+                    </div>
+                    <%}%>
                     <% }) %>
                 </div>
                 

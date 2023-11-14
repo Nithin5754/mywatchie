@@ -159,10 +159,10 @@ data.dailyData.map((item,index)=>xValues[index]=item.date)
 
 
 const dailySales=document.getElementById('dailySales')
-    dailySales.textContent=` ₹ ${yValues[0]}`;
+    dailySales.textContent=` ₹ ${yValues[0].toFixed(2)}`;
 
     const weeklySales=document.getElementById('weeklySales')
-    weeklySales.textContent=`₹ ${yValues.reduce((total,value,i)=>total+value,0)}`
+    weeklySales.textContent=`₹ ${yValues.reduce((total,value,i)=>total+value,0).toFixed(2)}`
 console.log(xValues,"my last week date");
 console.log(yValues,"my total price");
 new Chart(LastWeekChartOrder, {
@@ -232,7 +232,7 @@ console.log(yValues,"my total price");
 
 
 const monthSales=document.getElementById('monthSales')
-monthSales.textContent=`₹ ${yValues.reduce((total,value,i)=>total+value,0)}`
+monthSales.textContent=`₹ ${yValues.reduce((total,value,i)=>total+value,0).toFixed(2)}`
 
 new Chart(montlsalesChartDisplay, {
   type: "bar",

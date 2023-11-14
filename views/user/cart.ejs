@@ -76,10 +76,12 @@
                                 <div class="flex flex-row gap-3">
                                   
                                   <p data-price="<%= item.product_price_After_discount?item.product_price_After_discount:item.product_price %>" id="price<%= item._id %>" class="mx-0 mt-1 mb-0 text-sm text-gray-400">
-                                    <%= item.product_price_After_discount?item.product_price_After_discount:item.product_price %>
+                                    <%= (item.product_price_After_discount ? item.product_price_After_discount : item.product_price).toFixed(2) %>
+
                                   </p>
                                   <p  id="price<%= item._id %>" class="mx-0 mt-1 mb-0 text-sm text-gray-400 line-through">
-                                    <%= item.product_price%>
+                                    <%= (item.product_price).toFixed(2) %>
+
                                   </p>
 
                                 </div>
