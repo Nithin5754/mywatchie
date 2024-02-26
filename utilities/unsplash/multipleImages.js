@@ -1,7 +1,7 @@
 // app.js
 const { getRandomImages } = require('./unsplash_api');
 
-const query = 'watches-love'; // i want all the random watches
+const query = 'watches'; // i want all the random watches
 const numberOfImages = 5; 
 
 

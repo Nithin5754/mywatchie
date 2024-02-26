@@ -235,6 +235,101 @@ const productList = async (req, res) => {
 
 
 
+// const fullPageProductView=async(req,res)=>{
+//   const isProfile = req.session.profileName;
+//   const userEmail = req.session.userEmail;
+
+//   try {
+//     const verifyUserEmail = await UserCollection.findOne({ email: userEmail });
+//     if (!verifyUserEmail) {
+//       return res.redirect('/homepage');
+//     }
+//      let isProductView;
+//      let sorted;
+//     const categoryNameRecevied= req.session.sortCategroy
+
+//     const priceSortRecevied= req.session.sortPrice
+//     if(priceSortRecevied==="Price Low to High"){
+//      sorted=1
+//     }else if(priceSortRecevied==="Price High to Low"){
+//       sorted=-1
+
+//     }
+
+//   let totalProducts;
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = 9;
+//     const startIndex = (page - 1) * limit;
+//     if(categoryNameRecevied){
+//       totalProducts = await product.countDocuments({product_category:categoryNameRecevied});
+
+//     }else{
+//    totalProducts = await product.countDocuments();
+
+//     }
+//     const maxPage = Math.ceil(totalProducts / limit);
+//     if (page > maxPage) { 
+//       return res.redirect(`/productFullList?page=${maxPage}`);
+//     }
+
+
+
+//     if(categoryNameRecevied){
+//     isProductView=await product.find({product_category:categoryNameRecevied}).sort({product_price:sorted})
+//     .limit(limit)
+//     .skip(startIndex)
+//     .exec();
+
+//     }
+//      else{
+//       isProductView=await product.find({}).sort({product_price:sorted})
+//       .limit(limit)
+//       .skip(startIndex)
+//       .exec();
+//     }
+
+   
+//    const cartItems = await Cart.findOne({ userId: verifyUserEmail._id })
+
+  
+//     islogout = 'log out';
+//     isCreateAccount = 'contact us';
+//     isCreateAccountUrl = '/homepage';
+//     isUrl = '/userDeatils';
+//     orderUrl = '/orderHistory';
+//     iswallet='/userwallet';
+
+
+
+//     const avilableCategories=await categoryCollection.find()
+     
+
+
+   
+//     res.render('user/fullProductView',{
+//       isProductView,
+//       isProfile,
+//       isUrl,
+//       islogout,
+//       orderUrl,
+//       isCreateAccount,
+//       isCreateAccountUrl,
+//       cartItems,
+//       verifyUserEmail,
+//       iswallet,
+//       avilableCategories,
+//       categoryNameRecevied,
+//       priceSortRecevied,
+//       page,
+//       maxPage,
+//     })
+//   } catch (error) {
+//     console.log(error,"error:fetching viewing product list");
+//   }
+// }
+
+
+
 const fullPageProductView=async(req,res)=>{
   const isProfile = req.session.profileName;
   const userEmail = req.session.userEmail;
@@ -262,7 +357,7 @@ const fullPageProductView=async(req,res)=>{
     const totalProducts = await product.countDocuments();
     const maxPage = Math.ceil(totalProducts / limit);
     if (page > maxPage) { 
-      return res.redirect(`/adminUserManagement?page=${maxPage}`);
+      return res.redirect(`/productFullList?page=${maxPage}`);
     }
 
 

@@ -154,7 +154,7 @@
   </ul>
 <%  } else{ %>
   <ul class="flex flex-wrap  justify-center gap-2 ">
-    <p id="emptyProduct" class="text center "></p>
+    <p id="emptyProductTwo" class="text center "></p>
 
   </ul>
 <%}%>
@@ -276,6 +276,15 @@
     searchInp.style.display=  searchInp.style.display==='none'?'block':'none'
   })
 </script>
+<script>
+  bodymovin.loadAnimation({
+    container: document.getElementById('emptyProductTwo'),
+    path:'/json/emptyProduct.json',
+  });
+</script>
+
+
 
 </body>
 </html>
+

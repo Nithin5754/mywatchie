@@ -24,20 +24,29 @@
             
             <form action="/otpVerfication" method="post">
               <div id="otp" class="flex flex-row justify-center text-center px-2 mt-5">
-                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpOne" type="text" id="first" maxlength="1" oninput="moveToNextInput(this, 'second')" />
-                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpTwo" type="text" id="second" maxlength="1" oninput="moveToNextInput(this, 'third')" />
-                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpThree" type="text" id="third" maxlength="1" oninput="moveToNextInput(this, 'fourth')" />
-                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpFour" type="text" id="fourth" maxlength="1" oninput="moveToNextInput(this, 'fifth')" />
-                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpFive" type="text" id="fifth" maxlength="1" oninput="moveToNextInput(this, 'sixth')" />
-                <input class="m-2 border h-10 w-10 text-center form-control rounded" name="otpSix" type="text" id="sixth" maxlength="1" />
+                <input class="m-2 border h-10 w-10  text-center   form-control rounded" name="otpOne" type="text"
+                  id="first" maxlength="1" />
+                <input class="m-2 border h-10 w-10  text-center  form-control rounded" name="otpTwo" type="text"
+                  id="second" maxlength="1" />
+                <input class="m-2 border h-10 w-10  text-center  form-control rounded" name="otpThree" type="text"
+                  id="third" maxlength="1" />
+                <input class="m-2 border h-10 w-10  text-center  form-control rounded" name="otpFour" type="text"
+                  id="fourth" maxlength="1" />
+                <input class="m-2 border h-10 w-10  text-center  form-control rounded" name="otpFive" type="text"
+                  id="fifth" maxlength="1" />
+                <input class="m-2 border h-10 w-10  text-center  form-control rounded" name="otpSix" type="text"
+                  id="sixth" maxlength="1" />
               </div>
-              <div id="timer" class="text-gray-700 mt-2 text-extrabold">2:00</div>
-            
-              <div class="resend" style="display: none;"><a href="/resendSignup">resend</a></div>
-              <div id="userLog" data-userBeforeLog="<%= JSON.stringify(userBeforeLog) %>"></div>
-            
+              <div id="timer" class="text-gray-700 mt-2 text-extrabold"> 2:00</div>
+
+            <div class="resend" style="display: none;"><a href="/resendSignup">resend</a></div>
+            <div id="userLog" data-userBeforeLog="<%= JSON.stringify(userBeforeLog) %>"></div>
+
+           
               <div class="flex justify-center text-center mt-5 ">
-                <button class="flex items-center text-blue-700 hover:text-blue-900 cursor-pointer" type="submit">Verify</button>
+                 
+                <button class="flex items-center text-blue-700 hover:text-blue-900 cursor-pointer"
+                  type="submit">Verify</button>
               </div>
             </form>
           </div>
@@ -85,23 +94,6 @@
       }
     }
   </script>
-
-
-
-
-<script>
-  function moveToNextInput(currentInput, nextInputId) {
-    const maxLength = parseInt(currentInput.getAttribute('maxlength'));
-    const currentLength = currentInput.value.length;
-
-    if (currentLength === maxLength) {
-      const nextInput = document.getElementById(nextInputId);
-      if (nextInput) {
-        nextInput.focus();
-      }
-    }
-  }
-</script>
 
 
 
