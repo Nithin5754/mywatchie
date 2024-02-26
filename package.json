@@ -2,10 +2,10 @@
   "name": "mywatchie.com",
   "version": "1.0.0",
   "description": "using tailwind css and express js",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "concurrently \"npx tailwindcss -i ./public/src/input.css -o ./public/dist/output.css --watch\" \"nodemon app.js\""
+    "start": "concurrently \"npx tailwindcss -i ./public/src/input.css -o ./public/dist/output.css --watch\" \"nodemon index.js\""
   },
   "keywords": [],
   "author": "",
