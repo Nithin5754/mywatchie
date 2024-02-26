@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "concurrently \"npx tailwindcss -i ./public/src/input.css -o ./public/dist/output.css --watch\" \"nodemon index.js\""
+    "start": "concurrently \"npx tailwindcss -i ./public/src/input.css -o ./public/dist/output.css --watch\" \"node index.js\""
   },
   "keywords": [],
   "author": "",
